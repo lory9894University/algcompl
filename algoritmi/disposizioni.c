@@ -1,5 +1,5 @@
 #include <stdio.h>
-#define VECTORSIZE 3
+#define VECTORSIZE 4
 
 void swap(int vector[], int a, int b){
 	int temp= vector[a];
@@ -30,7 +30,7 @@ void permutations(int values[], int j, int size){
 
 
 int main(int argc, char **argv) {
-	int values[VECTORSIZE]={1,2,3};
+	int values[VECTORSIZE]={1,2,3,4};
 	for (int i=0 ; i <= VECTORSIZE; i++)
 		permutations(values, 0, i);
 	return 0;
