@@ -128,18 +128,40 @@ $$\hat{c}(x[0..j)) = f(h(x[0..j))) + \hat{g}(x[0..j))$$
 		\end{align}
 \end{itemize}
 Una volta descritte le 3 misure si può impostare un algoritmo per la risoluzione \textit{Branch\&Bound} che rispetti la seguente invariante: In qualsiasi istante della visita $lower \; bound < z^* < upper \; bound$\\
-L'idea di base è quindi quella di raffinare tramite le diverse iterazioni i due limiti fino ad ottenere la miglior \emph{soluzione} che sarà la \emph{risposta}.
-
+L'idea di base è quindi quella di raffinare tramite le diverse iterazioni i due limiti fino ad ottenere la miglior \emph{soluzione} che sarà la \emph{risposta}.\\
 \textit{Passo base}:
 \begin{adjustwidth}{.8cm}{0cm}
 		Non avendo visitato alcun nodo l' \textit{E-node} è la radice dello spazio degli stati.
 		Il \textit{lower bound} è quindi l'algoritmo greedy scelto applicato al problema completo, allo stesso modo l' \textit{upper bound} è il risultato dell'algoritmo di soluzione di \emph{LKP} applicato al problema completo.
 		In questo stadio la miglior soluzione (che identifichiamo come $x[0..r)$) è la soluzione trovata tramite l'algoritmo greedy.
+\begin{figure*}[!ht]
+\centering
+\includegraphics[width=0.7\textwidth]{./img/C14_profitto_z.png}
+\caption{Bounds del profitto z} \label{FIG:C14_profitto_z}
+\end{figure*}\\
 \end{adjustwidth}
 \textit{Passo induttivo}:
 \begin{adjustwidth}{.8cm}{0cm}
-	Al passo induttivo l'attuale \textit{E-node} sarà $x[0..j)$ e la miglior soluzione $x[0..r)$ garantisce un profitto $z^*(x[0..r))$.
-	Durante la visita dell' \textit{E-node}
+	Al passo induttivo l'attuale \textit{E-node} sarà $x[0..j)$ e il nodo che fornisce la miglior soluzione $x[0..r)$ garantisce un profitto $z^*(x[0..r))$.
+	Durante la visita dell' \textit{E-node} si possono presentare 4 situazioni:
+	\begin{itemize}
+		\item $f(h(x[0..j)) > C$\\
+			Non ha senso "espandere" il nodo e proseguire nella visita del sotto-albero $T[0..j)$ in quanto sicuramente non otterremo una risposta avendo superato la capacità massima.Il nodo viene etichettato come \textbf{"completo"}, si sta effettuando \textit{pruning}.
+		\item$f(h(x[0..j)) + \hat{g}.z(x[0..j)) < z^*(x[0..r))$\\
+			Il profitto ottenibile espandendo il nodo è < dell'approssimazione per difetto trovata in uno dei passi precendenti.Anche inserendo tutti gli oggetti fino a capienza massima non si troverebbe una soluzione migliore di quella attuale (ricordo essere $z^*(x[0..r))$).Il nodo viene etichettato come \textbf{"completo"}, si sta effettuando \textit{pruning}.
+\begin{figure*}[!ht]
+\centering
+\includegraphics[width=0.7\textwidth]{./img/C14_item2.png}
+\caption{nessun miglioramento rispetto alla soluzione del nodo $x[0..r)$} \label{FIG:C14_item2}
+\end{figure*}\\
+		\item $f(h(x[0..j)) < C \land f(h(x[0..j)) + \hat{g}.z(x[0..j)) > z^*(x[0..r))$\\
+			Il sottoalbero $T[0..j)$ può ancora generare \textit{soluzioni}, fra queste potrebbe essere presente la \textit{risposta}.E quindi necessario \textbf{espandere} il nodo e continuare l'esplorazione del sottoalbero.
+		\item $f(h(x[0..j)) < C \land f(h(x[0..j)) > z^*(x[0..r))$\\
+			E' stata trovata una risposta che migliora il profitto $z^*(x[0..r))$ 
+		
+%inserire disegno dell'algoritmo svolto a mano
+			%si può parlare brevemente anche di come scegliere i nodi, FIFO vs LC
+	\end{itemize}
 \end{adjustwidth}
 \section{Problemi computazionali}
 \subsection{D.2}
