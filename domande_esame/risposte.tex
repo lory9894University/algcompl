@@ -143,7 +143,7 @@ L'idea di base è quindi quella di raffinare tramite le diverse iterazioni i due
 \textit{Passo induttivo}:
 \begin{adjustwidth}{.8cm}{0cm}
 	Al passo induttivo l'attuale \textit{E-node} sarà $x[0..j)$ e il nodo che fornisce la miglior soluzione $x[0..r)$ garantisce un profitto $z^*(x[0..r))$.
-	Durante la visita dell' \textit{E-node} si possono presentare 4 situazioni:
+	Durante la visita dell' \textit{E-node} si possono presentare 4 situazioni (non esclusive):
 	\begin{itemize}
 		\item $f(h(x[0..j)) > C$\\
 			Non ha senso "espandere" il nodo e proseguire nella visita del sotto-albero $T[0..j)$ in quanto sicuramente non otterremo una risposta avendo superato la capacità massima.Il nodo viene etichettato come \textbf{"completo"}, si sta effettuando \textit{pruning}.
@@ -157,11 +157,18 @@ L'idea di base è quindi quella di raffinare tramite le diverse iterazioni i due
 		\item $f(h(x[0..j)) < C \land f(h(x[0..j)) + \hat{g}.z(x[0..j)) > z^*(x[0..r))$\\
 			Il sottoalbero $T[0..j)$ può ancora generare \textit{soluzioni}, fra queste potrebbe essere presente la \textit{risposta}.E quindi necessario \textbf{espandere} il nodo e continuare l'esplorazione del sottoalbero.
 		\item $f(h(x[0..j)) < C \land f(h(x[0..j)) > z^*(x[0..r))$\\
-			E' stata trovata una risposta che migliora il profitto $z^*(x[0..r))$ 
-		
-%inserire disegno dell'algoritmo svolto a mano
-			%si può parlare brevemente anche di come scegliere i nodi, FIFO vs LC
+			E' stata trovata una \textit{soluzione} che migliora il profitto $z^*(x[0..r))$, viene salvata ed i passi successivi faranno riferimento al profitto generato da $x[0..j)$.
 	\end{itemize}
+	\begin{figure*}[!ht]
+\centering
+\textbf{$((2,4,6,9),(10,10,12,18),15) \in KP$}
+\includegraphics[width=1\textwidth]{./img/C14_BB_manuale.png}
+\caption{Esempio di Branch\&Bound} \label{FIG:C14_BB_manuale}
+\end{figure*}
+	La cosa non specificata dall'algoritmo è il criterio di scelta del prossimo \textit{E-node} tra i vari \textit{live-nodes} disponibili.Utilizzando un criterio FIFO si ottengono buoni risultati, ma usando una tecnica \emph{least-cost} si è scoperto sperimentalmente che le prestazioni sono migliori.
+	Intuitivamente ci sono due motivi per questo: in primis se $z^{LP} = Z^*$ è possibile che venga trovata una soluzione che sappiamo con certezza essere anche \textit{risposta}, si può quindi fare pruning dei restanti rami.
+	In secondo luogo è possibile che giungendo "prima" alle \textit{soluzioni} migliori il valore di $z^*(x[0..r))$ cresca rapidamente causando il "rifiuto" di nodi che con una politica FIFO sarebbero stati espansi.(I nodi vengono rifiutati per la situazione 2)
+%si può parlare brevemente anche di come scegliere i nodi, FIFO vs LC
 \end{adjustwidth}
 \section{Problemi computazionali}
 \subsection{D.2}
