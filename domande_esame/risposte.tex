@@ -18,7 +18,7 @@
 \newtheorem*{theorem}{Teorema}
 \newtheorem*{definition}{Definizione}
 \newtheorem{example}{Example}
-\newenvironment{dimostrazione}{\textit{Dimostrazione}:\begin{adjustwidth}{2cm}{}}{\end{adjustwidth}}
+\newenvironment{dimostrazione}{\textit{Dimostrazione}:\begin{adjustwidth}{1cm}{}}{\end{adjustwidth}}
 
 \begin{document}
 
@@ -86,7 +86,7 @@ Dimostrare che è algoritmo che genera permutazioni di una lista di elementi è 
 \subsection{A.4}
 \begin{itemize}
 	\item \textbf{Permutazioni}:Si può individuare una \emph{risposta} al problema \textbf{Valutazione} generando l'albero di tutte le possibili permutazioni:
-		\begin{center}	\Tree [  [ [ .1 [  [ .2 [.3 4 ] [.4 3 ] ] [ .3 [.2 4 ] [ .4 2 ] ] [ .4 [ .2 3 ] [ .3 2 ] ] ] ] [ .2 [ [ .1 [ .3 4 ] [ .4 3 ] ] [ .3 [ .1 4 ] [ .4 1 ] ] [ .4 [ .1 3 ] [ .3 1 ] ] ] ] [ .3 [ [ .1 [ .2 4 ] [ .4 2 ] ] [ .2 [ .1 4 ] [ .4 1 ] ] [ .4 [ .1 2 ] [ .2 1 ] ] ] ] [ .4 [ [ .1 [ .3 2 ] [ .2 3 ] ] [ .3 [ .1 2 ] [ .2 1 ] ] [ .2 [ .1 3 ] [ .3 1 ] ] ] ] ] ]
+		\begin{center}	\scalebox{0.8}{\Tree [  [ [ .1 [  [ .2 [.3 4 ] [.4 3 ] ] [ .3 [.2 4 ] [ .4 2 ] ] [ .4 [ .2 3 ] [ .3 2 ] ] ] ] [ .2 [ [ .1 [ .3 4 ] [ .4 3 ] ] [ .3 [ .1 4 ] [ .4 1 ] ] [ .4 [ .1 3 ] [ .3 1 ] ] ] ] [ .3 [ [ .1 [ .2 4 ] [ .4 2 ] ] [ .2 [ .1 4 ] [ .4 1 ] ] [ .4 [ .1 2 ] [ .2 1 ] ] ] ] [ .4 [ [ .1 [ .3 2 ] [ .2 3 ] ] [ .3 [ .1 2 ] [ .2 1 ] ] [ .2 [ .1 3 ] [ .3 1 ] ] ] ] ] ]}
 		\end{center}
 		In questo albero un ramo individua una permutazione dell'insieme di partenza, di conseguenza basta percorrerlo calcolando di volta in volta il voto massimo finchè questi non supera il valore fissato (in questa istanza 9).Si ottiene quindi una soluzione, data dalla sequenza di "voti" ottenuta partendo dalla radice e percorrendo il ramo corrispondente fino al padre del nodo che causa il superamento del voto massimo.
 		Eseguendo questa operazione su tutti i rami dell'albero si ottengono tutte le \emph{soluzioni}, scegliendo le soluzioni con votazione migliore si ottengono una o più \emph{risposte}.
@@ -103,4 +103,75 @@ Dimostrare che è algoritmo che genera permutazioni di una lista di elementi è 
 \section{Branch\&Bound}
 \subsection{C.7}
 Guarda la scacchiera come una matrice di 1 e 0
+\subsection{C.14}
+Nella creazione di un algoritmo \textit{Branch\&Bound} per \emph{KP} la prima cosa da fare è stabilire una \textbf{funzione costo}.Questo può essere fatto basandosi sulla gerarchia dei profitti degli algoritmi greedy vista in precedenza.In particolare il costo ad un \textit{E-node} $x[0..j)$ può essere scritto come:
+$$\hat{c}(x[0..j)) = f(h(x[0..j))) + \hat{g}(x[0..j))$$
+\begin{itemize}
+	\item Nella prima parte dell'equazione abbiamo il \textit{costo noto}, che non è altro che la somma di tutti i profitti dei nodi "inseriti nello zaino" fin'ora ed i loro pesi. 
+		\begin{equation}
+                	f(h(x[0..j))\begin{cases}
+			fh.w(x[0..j))= \sum_{0\leq k < j} x_{k}w_{k}\\
+			fh.z(x[0..j))= \sum_{0\leq k < j} x_{k}p_{k}\notag
+                \end{cases}
+	        \end{equation}
+	\item La seconda parte di equazione fornisce una stima per eccesso del profitto ottenibile (\textit{Upper bound}).
+		\begin{equation}
+			\hat{g}(x[0..j))\begin{cases}
+				\hat{g}.w(x[0..j))= (\sum_{j\leq k < split} w_{k})+(c-[fh.w(x[0..j)) + \sum_{j\leq k < split} w_{k}]\\
+				\hat{g}.z(x[0..j))= (\sum_{j\leq k < split} p_{k})+(c-[fh.w(x[0..j)) + \frac{\sum_{j\leq k < split} w_{k}]}{W_{split}}P_{split} \notag
+                	\end{cases}
+	        \end{equation}
+	\item Una terza misura utile a scrivere un algoritmo \textit{Branch\&Bound} per il problema Knapspack è una stima per difetto (\textit{Lower Bound}), facilmente ottenibile tramite l'algoritmo greedy (o greedy split).
+		\begin{align}
+				z^g(x[0..j)) &= \sum_{0\leq k < j} x_{k}p_{k} + \sum_{j\leq k < split} p_{k} + \sum_{split < k < n} x_{k}p_{k} \notag \\
+			&se \sum_{0\leq k < j} x_{k}w_{k} + \sum_{j\leq k < split} w_{k} + \sum_{split < k < n} x_{k}w_{k}\notag
+		\end{align}
+\end{itemize}
+Una volta descritte le 3 misure si può impostare un algoritmo per la risoluzione \textit{Branch\&Bound} che rispetti la seguente invariante: In qualsiasi istante della visita $lower \; bound < z^* < upper \; bound$\\
+L'idea di base è quindi quella di raffinare tramite le diverse iterazioni i due limiti fino ad ottenere la miglior \emph{soluzione} che sarà la \emph{risposta}.
+
+\textit{Passo base}:
+\begin{adjustwidth}{.8cm}{0cm}
+		Non avendo visitato alcun nodo l' \textit{E-node} è la radice dello spazio degli stati.
+		Il \textit{lower bound} è quindi l'algoritmo greedy scelto applicato al problema completo, allo stesso modo l' \textit{upper bound} è il risultato dell'algoritmo di soluzione di \emph{LKP} applicato al problema completo.
+		In questo stadio la miglior soluzione (che identifichiamo come $x[0..r)$) è la soluzione trovata tramite l'algoritmo greedy.
+\end{adjustwidth}
+\textit{Passo induttivo}:
+\begin{adjustwidth}{.8cm}{0cm}
+	Al passo induttivo l'attuale \textit{E-node} sarà $x[0..j)$ e la miglior soluzione $x[0..r)$ garantisce un profitto $z^*(x[0..r))$.
+	Durante la visita dell' \textit{E-node}
+\end{adjustwidth}
+\section{Problemi computazionali}
+\subsection{D.2}
+Dimostrare che i problemi \emph{KP} e \emph{Bounded-KP} sono equivalenti.\\Cioè $KP \Leftrightarrow BKP$.\\
+\begin{dimostrazione}
+	$KP \Rightarrow BKP$: ogni problema \emph{KP} è un problema \emph{BKP}.\\
+	La dimostrazione è immediata in quanto un generico problema\\$((P_1, ... ,P_n),(W_1, ... ,W_n),C)\in KP$ può essere riscritto come\\ $((P_1, ... ,P_n),(W_1, ... ,W_n),(1, ... ,1),C) \in BKP$.
+
+	$KP \Leftarrow BKP$: ogni problema \emph{BKP} è un problema \emph{KP}.\\
+	per prima cosa introduciamo $B_i + 1$ nuove variabili, $\forall i \in B_1 ... B_n$.\\
+	Avremo quindi
+	\begin{align}
+		x_{0}', ... ,&x_{b_i}' \in \{0,1\}  \notag \\
+   		&\;\;\vdots \notag \\
+		x_{0}^n, ... ,&x_{b_i}^n \in \{0,1\}  \notag 
+	\end{align}
+	Queste variabili indicano "quanti" oggetti di tipo $x^i$ sto prendendo, quindi 
+	\begin{equation}
+		x_{j}^i=\begin{cases}
+      		0\; se\; x_i = 0\\
+      		1\; se\; x_i = j \notag
+    		\end{cases}
+	\end{equation}
+	Il problema è diventato un esempio di \emph{BKP} di questo tipo:
+	\begin{center}
+		\scalebox{0.89}{$((p_1, 2p_1 ,...,b_1p_1, ... ,p_n, 2p_n, ..., b_np_n),(w_1, 2w_1 ,...,b_1p_1, ... ,w_n, 2w_n, ..., b_nw_n),C))$}\\
+		$maximize \; \sum_{i=1}^{n} \sum_{j=0}^{b_i} p_j*j*x^i_j$\\
+		$subject \; to \; \sum_{i=1}^{n} \sum_{j=0}^{b_i} w_j*j*x^i_j$\\
+		con la condizione aggiuntiva $ \forall i \sum_{j=0}^{b_i} x_j^i = 1$
+	\end{center}
+	In modo che  si possano prendere solo $j$ oggetti fi tipo $x^i$
+	%non posso prendere 5 x', e poi 3 x', sarebbe come prendere 8 x'
+	DA FINIRE CON OSSERVAZIONE DEL PROF RIGUARDO AL FATTO DI DOVER DIMOSTRARE LA RISOLVIBILITà
+\end{dimostrazione}
 \end{document}
