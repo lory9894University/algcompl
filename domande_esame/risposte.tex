@@ -1,5 +1,6 @@
 \documentclass[a4paper]{article}
 \usepackage{qtree}
+\usepackage{xcolor}
 \usepackage{forest}
 \usepackage{multicol}
 \setlength{\columnsep}{3cm}
@@ -101,6 +102,82 @@ Dimostrare che è algoritmo che genera permutazioni di una lista di elementi è 
 \end{itemize}
 \section{Backtrack}
 \section{Branch\&Bound}
+\subsection{C.1}
+\begin{itemize}
+	\item \textcolor{gray}{\textit{dead node}}: radice di sotto-alberi che non sono più espandibili, perchè completi o a causa del pruning
+		\item \textcolor{red}{\textit{live node}}: nodo "vivo", cioè alcuni dei suoi figli sono ancora da espandere
+		\item \textcolor{red}{\textit{E-node}}: L' \textit{expanded node} è il nodo che si sta visitando in questo momento, cioè il nodo del quale si sta per generare un figlio.L' \textit{E-node} e per definizione un \textit{live node}.
+\end{itemize}
+A seconda di come si gestisce la visita dei nodi e l'assegnamento dell' \textit{E-node} si può generare una visita dello spazio degli stati differente.
+\begin{figure*}[!ht]
+\centering
+\includegraphics[width=0.7\textwidth]{./img/C_1.png}
+\caption{criteri di scelta} \label{FIG:C_1}
+\end{figure*}\\
+Come mostrato in figura~\ref{FIG:C_1} FIFO e LIFO sono "i due estremi di un ventaglio di possibili criteri di scelta".
+Gestendo i live node com uno \emph{stack} e quindi andando ad estrarre l'ultimo nodo inserito si ottiene una visita \textit{depth-first} in cui si trasferisce la condizione di essere \textit{E-node} dal padre al figlio appena generato.
+In tal modo un nodo non diventa "\emph{dead} finchè tutti i suoi figli non sono stati visitati, di conseguenza si tende ad arrivare al fondo dell'albero degli stati il più in fretta possibile.
+\begin{figure*}[!ht]
+\centering
+\includegraphics[width=1\textwidth]{./img/C_1_DFS.png}
+\caption{visita in profondità} \label{FIG:C_1_DFS}
+\end{figure*}\\
+In maniera diametralmente opposta funziona la gestione dei nodi con una \emph{queue} in cui il primo nodo inserito è il primo ad essere estratto.Questa politica genera una visita \textit{breadth-first} in cui prima di passare ai nodi del livello successivo i nodi del livello attuale vengono tutti visitati, una volta generati tutti i figli di un nodo questi diventa "dead".
+Ciò porta a visite dello spazio degli stati che prima di giungere alle foglie dell'albero degli stati "esplorano" tutte le possibilità.
+\begin{figure*}[!ht]
+\centering
+\includegraphics[width=1\textwidth]{./img/C_1_BFS.png}
+\caption{visita in ampiezza} \label{FIG:C_1_BFS}
+\end{figure*}\\
+Come anticipato in figura~\ref{FIG:C_1}, tra DFS e BFS si trovano tutte le possibili politiche intermedie, tra cui le \textit{least cost}. Naturalmente l'individuazione di una politica \textit{least cost} è fortemente dipendente dal problema.
+\subsection{C.2}
+\begin{figure*}[!ht]
+\centering
+\includegraphics[width=1\textwidth]{./img/C_2.png}
+\caption{spazio degli stati 4 regine} \label{FIG:C_2}
+\end{figure*}
+\textbf{Punto 1}: Presupponiamo di visitare l'albero degli stati tramite le due diverse politiche, effettuando pruning quando necessario.
+\begin{itemize}
+	\item \textbf{DFS}:la DFS cerca di giungere il prima possibile ad una soluzione, quindi come mostrato in figura~\ref{FIG:C_2_DFS} si scende lungo il ramo più "a sinistra" finchè non si incontra una violazione dei vincoli che induce il pruning (nel nodo 3 ad esempio abbiamo regine in A4 e B3, sulla stessa diagonale).
+		Il lato negativo è che spesso la visita in profondità si "infila" in cammini che non portano ad una soluzione, come tutto il sottoalbero generato dalla regina in posizione 2 (A4), potrebbe sembrare conveniente visitare più opzioni possibile in modo da eliminare i cammini che non producono soluzioni il prima possibile.
+\begin{figure*}[!ht]
+\centering
+\includegraphics[width=1\textwidth]{./img/C_2_DFS.png}
+\caption{Soluzione con DFS} \label{FIG:C_2_DFS}
+\end{figure*}\\
+	\item \textbf{BFS}:Tramite la visita in ampiezza invece si va ad espandere ogni nodo di un livello dell'albero prima di passare al livello successivo.
+		In generale la politica \textit{FIFO} butta via in un sol colpo un sacco di non soluzioni, ma in questo caso prima di incontrare una violazione di qualche vincolo bisogna scendere fino al secondo livello dell'albero, analizzando 16 nodi (che è esattamente il numero di nodi necessari a trovare la \textbf{risposta} con la visita in profondità).
+		La politica \textit{LIFO} si dimostra quindi molto meno vantaggiosa, oltretutto si porta dietro un altro svantaggio: se infatti la \textit{FIFO} approfittava dello stack generato dalla ricorsione per mantenere i suoi progressi in memoria nella \textit{LIFO} bisogna costruire una struttura dati atta a mantenere i nodi della "frontiera" in memoria, dato che ogni soluzione viene costruita in parallelo.
+		\begin{figure*}[!ht]
+\centering
+\includegraphics[width=1\textwidth]{./img/C_2_BFS.png}
+\caption{Soluzione con BFS} \label{FIG:C_2_BFS}
+\end{figure*}
+\end{itemize}
+\textbf{Punto 2}:
+\begin{adjustwidth}{.8cm}{0cm}
+	Confrontando le due immagini presenti in figura~\ref{FIG:C_2_DFSvsBFS} notiamo chiaramente che la visita \textit{DFS} è più vantaggiosa in questo caso, giungendo alla soluzione in 16 passi rispetto ai 29 della visita \textit{BFS}.\\
+\begin{figure*}[!ht]
+\centering
+\includegraphics[width=0.49\textwidth]{./img/C_2_BFS.png}
+\includegraphics[width=0.49\textwidth]{./img/C_2_DFS.png}
+\caption{confronto visita in profondità ed ampiezza} \label{FIG:C_2_DFSvsBFS}
+\end{figure*}\\
+In generale è vero che la politica \textit{FIFO} permette di "buttare via" in un sol colpo un sacco di non soluzioni, ma in questo caso prima di giungere a nodi non accettabili si è obbligati a visitare gran parte dell'albero degli stati.
+Sto sì eliminando moltissimi sotto-alberi rispetto alla \textit{DFS} ma per farlo ne sto esplorando molti di più.Più l'albero è ampio rispetto alla sua profondità peggiori sono le prestazioni di una visita in \textit{ampiezza}
+
+%non mi piace proprio questa risposta.
+
+
+L'ideale sarebbe visitare in ampiezza ma scendere in profondità quando un ramo sembra promettente, per individuare i rami più promettenti si potrebbe ad esempio ordinare i live node minimizzando una delle seguenti proprietà:
+\begin{enumerate}
+	\item Il numero di nodi nel sottoalbero di $x$ da generare prima di ottenere una \emph{soluzione}.
+	\item il numero di livelli che separano il live node dalla risposta.
+\end{enumerate}
+Il problema derivante dal tentare questo approccio sta proprio nel calcolare le due misure.
+Non conoscendo le \textit{soluzioni}, e di conseguenza nemmeno la \textit{risposta}, l'unico modo di effettuare le misure descritte sopra sarebbe quello di esplorare lo spazio degli stati fino ad una \textit{risposta}.
+Questa situazione è però paradossale, se conoscessi la risposta non la starei cercando, quindi la misurazione delle due proprietà non è un criterio di ranking applicabile.
+\end{adjustwidth}
 \subsection{C.7}
 Guarda la scacchiera come una matrice di 1 e 0
 \subsection{C.14}
