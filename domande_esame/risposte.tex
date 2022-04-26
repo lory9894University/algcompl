@@ -8,6 +8,7 @@
 \usepackage{changepage}
 \usepackage[T1]{fontenc}
 \usepackage{amsmath}
+\usepackage{hyperref}
 \usepackage{listings}
 \usepackage{amsthm}
 \usepackage{amssymb}
@@ -103,6 +104,7 @@ Dimostrare che è algoritmo che genera permutazioni di una lista di elementi è 
 \section{Backtrack}
 \section{Branch\&Bound}
 \subsection{C.1}
+\label{SEC:C_1}
 \begin{itemize}
 	\item \textcolor{gray}{\textit{dead node}}: radice di sotto-alberi che non sono più espandibili, perchè completi o a causa del pruning
 		\item \textcolor{red}{\textit{live node}}: nodo "vivo", cioè alcuni dei suoi figli sono ancora da espandere
@@ -162,7 +164,7 @@ Come anticipato in figura~\ref{FIG:C_1}, tra DFS e BFS si trovano tutte le possi
 \includegraphics[width=0.49\textwidth]{./img/C_2_BFS.png}
 \includegraphics[width=0.49\textwidth]{./img/C_2_DFS.png}
 \caption{confronto visita in profondità ed ampiezza} \label{FIG:C_2_DFSvsBFS}
-\end{figure*}\\
+\end{figure*}\\ 
 In generale è vero che la politica \textit{FIFO} permette di "buttare via" in un sol colpo un sacco di non soluzioni, ma in questo caso prima di giungere a nodi non accettabili si è obbligati a visitare gran parte dell'albero degli stati.
 Sto sì eliminando moltissimi sotto-alberi rispetto alla \textit{DFS} ma per farlo ne sto esplorando molti di più.Più l'albero è ampio rispetto alla sua profondità peggiori sono le prestazioni di una visita in \textit{ampiezza}
 
@@ -178,6 +180,88 @@ Il problema derivante dal tentare questo approccio sta proprio nel calcolare le 
 Non conoscendo le \textit{soluzioni}, e di conseguenza nemmeno la \textit{risposta}, l'unico modo di effettuare le misure descritte sopra sarebbe quello di esplorare lo spazio degli stati fino ad una \textit{risposta}.
 Questa situazione è però paradossale, se conoscessi la risposta non la starei cercando, quindi la misurazione delle due proprietà non è un criterio di ranking applicabile.
 \end{adjustwidth}
+\subsection{C.3}
+\label{SEC:C_3}
+\textbf{Punto 1}
+\begin{adjustwidth}{.8cm}{0cm}
+\begin{definition}
+	La \textit{funzione costo} $\hat c(x)$ di un \textit{live node x} è: $$\hat c(x) = f(h(x)) + \hat g(x)$$
+\end{definition}
+\begin{itemize}
+	\item$h$ è una funzione che quantifica il lavoro, quindi $h(x)$ è il lavoro noto svolto fin'ora per arrivare al nodo $x$
+	\item$f$ è la funzione \emph{peso} monotona, dato in input il lavoro ottenuto da $h$ fornisce un valore proporzionale ad esso utilizzabile come \emph{peso}
+	\item$\hat g$ è una \textit{stima} della funzione non nota $g$.Essendo impraticabile calcolare il valore effettivo $g(x)$, $\hat g(x)$ fornisce una stima di quello che sarà il costo della costruzione di un cammino dal nodo $x$ fino ad una eventuale \textit{risposta} che il sotto-albero di radice $x$ contiene.\\
+		la funzione $\hat g$ non è generalizzabile, dipende dal problema.
+\end{itemize}
+E' necessario introdurre una funzione costo in quanto non è possible calcolare accuratamente il \textit{ranking} di un nodo, bisogna quindi ripiegare su una stima che permetta scegliere in maniera intelligente il prossimo \textit{E-node}.
+E' composta principalmente da due parti, il \textit{costo noto} ed il \textit{costo stimato}\\
+\begin{figure*}[!ht]
+\centering
+\includegraphics[width=0.4\textwidth]{./img/C_3_punto1.png}
+\caption{funzione costo} \label{FIG:C_3_punto1}
+\end{figure*}\\
+Notiamo anche che dati due nodi $x,y$ se $y$ è un discendente di $x$ ci aspettiamo che la funzione $\hat g(x) > \hat g(y)$, altrimenti la funzione costo è mal formata.
+\end{adjustwidth}
+\textbf{punto 2}
+\begin{adjustwidth}{.8cm}{0cm}
+DOPO AVER RICORDATO? cioè devo riscrivere la definizione? mi sembra ridondante.\\
+Analizziamo la situazione: $f(h(x)) =0$, in questo caso il \textit{costo noto} non ha influenza sul risultato generato da $\hat c(x)$ e la \textit{funzione costo} può essere riscritta come $$\hat c(x) = \hat g(x)$$
+Questo ci riporta ad un algoritmo di \textit{Backtracking}, in quanto non vi è "penalità" nell' espandere nodi in profondità nell'albero degli stati.Considerando che dati due nodi $x,y$ se $y$ è un discendente di $x$ allora $\hat g(x) > \hat g(y)$ la scelta che minimizza la \textit{funzione costo} è sempre quella che espande un nodo di livello successivo, quindi una \textit{D-search}.
+Immaginiamo ad esempio due \textit{live node} $x,z$, l' \textit{E-node} è $x$ e genera due discendenti: $w_1, w_2$.
+		\begin{align}
+			&0 + \hat g(x) < 0 + \hat g(z) \text{ dato che $x$ è \textit{E-node}} \notag \\
+			&0 + \hat g(w_1) \leq 0 + \hat g(w_2) < 0 + \hat g(z) \text{ dato che $\hat g$ è monotona} \notag\\
+			&\hat c(w_1) \leq \hat c(w_2) < \hat c(z) \notag
+	        \end{align}
+		Di conseguenza il prossimo \textit{E-node} sarà scelto tra $w_1$ e $w_2$
+\end{adjustwidth}
+\textbf{punto 3}
+\begin{adjustwidth}{.8cm}{0cm}
+DOPO AVER RICORDATO? cioè devo riscrivere la definizione? mi sembra ridondante.\\
+Analizziamo la situazione: $f(h(x)) \neq 0$, $\hat c(x) = f(h(x)) + \hat g(x)$.\\
+Riprendendo l'idea del punto precendente abbiamo due \textit{live node} $x,z$, l'\textit{E-node} è $x$ e genera discendenti chiamati $w_1,..., w_n$.
+\begin{align}        
+	f(h(x)) + \hat g(x) &< f(h(x)) + \hat g(z) \notag \\
+	c(w_1) = (f(h(x) + &\Delta) + (\hat g(x) - \Delta') \notag \\
+	c(w_1) = (f(h(x)) + &\hat g(x)) + (\Delta - \Delta') \notag
+	\end{align}
+	\begin{equation}
+	\begin{cases}
+		se \; (\Delta - \Delta') &\leq 0 \text{ proseguiamo lungo il ramo di $w_1$} \notag \\
+		se \; (\Delta >> \Delta') &\text{ $w_1$ non è un nodo conveniente} \notag
+	\end{cases}
+	\end{equation}
+In questa situazione i valori di $\hat c(w_1), \hat c(w_2), . . . , \hat c(w_n)$ possono superare quelli relativi a live node inseriti nella lista prima di $w_1, w_2, . . . , w_n$ e, quindi, risultare sconvenienti da seguire rispetto ad altri.
+\end{adjustwidth}
+\subsection{C.4}
+Come già mostrato in sezione~\ref{SEC:C_1}, più precisamente in figura~\ref{FIG:C_1} \textit{FIFO} e \textit{LIFO} sono "i due estremi di un ventaglio di possibili criteri di scelta" ed in quanto tali possono essere ottenuti tramite una precisa formulazione della \textit{funzione costo}.
+Infatti analizzando la \textit{funzione costo} $\hat c(x) = f(h(x)) + \hat g(x)$ si nota facilmente quali sono le possibili casistiche che possono portare ad un estremo o all'altro.
+\begin{itemize}
+	\item $\hat c(x) = f(h(x)) + 0$ In questo caso la \textit{funzione costo} non subisce l'influenza del \textit{costo stimato}.
+		La \textit{funzione costo} può essere riscritta come $$\hat c(x) = f(h(x))$$
+		Intuitivamente i \textit{nodi} più vicini alla radice avranno un costo inferiore, di conseguenza verranno scelti per primi e si verificherà la classica situazione caratteristica delle \textit{Breadth-search}: tutti i nodi appartenenti ad un livello dell'albero verranno esaminati prima di procedere con l' espansione dei nodi del livello successivo.
+Immaginiamo ad esempio due \textit{live node} $x,z$, l' \textit{E-node} è $x$ e genera due discendenti: $w_1, w_2$.
+                \begin{align}
+                        &f(h(x)) + 0 < f(h(z)) + 0 \text{ dato che $x$ è \textit{E-node}} \notag \\
+                        &f(h(w_1)) + 0 = f(h(w_1)) + 0 > f(h(z)) + 0 \\
+                        &\hat c(w_1) = c(w_2) > \hat c(z) \notag
+                \end{align}
+Di conseguenza il prossimo \textit{E-node} sarà sicuramente $z$.\\
+L'equazione del punto (1) deriva dal fatto che per giungere a $w_1,w_2$ è stato fatto del lavoro in più, esattamente il lavoro necessario ad espandere $x$
+
+	\item $\hat c(x) = 0 + \hat g(x)$ Questa casistica, già affrontata nella sezione~\ref{SEC:C_3} al \textbf{Punto 2} si riconduce ad una \textit{D-search}.
+		Se $f(h(x)) =0$ il \textit{costo noto} non ha influenza sul risultato generato da $\hat c(x)$ e la \textit{funzione costo} può essere riscritta come: $$\hat c(x) = \hat g(x)$$
+Questo ci riporta ad un algoritmo di \textit{Backtracking}, in quanto non vi è "penalità" nell' espandere nodi in profondità nell'albero degli stati.
+Considerando che dati due nodi $x,y$ se $y$ è un discendente di $x$ allora $\hat g(x) > \hat g(y)$ la scelta che minimizza la \textit{funzione costo} è sempre quella che espande un nodo di livello successivo, quindi una \textit{D-search}.
+Immaginiamo ad esempio due \textit{live node} $x,z$, l' \textit{E-node} è $x$ e genera due discendenti: $w_1, w_2$.
+                \begin{align}
+                        &0 + \hat g(x) < 0 + \hat g(z) \text{ dato che $x$ è \textit{E-node}} \notag \\
+                        &0 + \hat g(w_1) \leq 0 + \hat g(w_2) < 0 + \hat g(z) \text{ poichè $\hat g$ è monotona} \notag\\
+                        &\hat c(w_1) \leq \hat c(w_2) < \hat c(z) \notag
+                \end{align}
+Di conseguenza il prossimo \textit{E-node} sarà scelto tra $w_1$ e $w_2$
+
+\end{itemize}
 \subsection{C.7}
 Guarda la scacchiera come una matrice di 1 e 0
 \subsection{C.14}
