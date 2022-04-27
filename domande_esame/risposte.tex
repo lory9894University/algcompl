@@ -21,6 +21,7 @@
 \newtheorem*{definition}{Definizione}
 \newtheorem{example}{Example}
 \newenvironment{dimostrazione}{\textit{Dimostrazione}:\begin{adjustwidth}{1cm}{}}{\end{adjustwidth}}
+\newcommand{\imp}[1]{\textbf{\textit{#1}}}
 
 \begin{document}
 
@@ -67,9 +68,22 @@ Definizione formale di una permutazione (definizione ricorsiva):
 	\textit{caso induttivo}: $l = [h::t]$ con $h \in Lists$ e $t \in ELements$.\\
 	Grazie all'ipotesi induttiva si può affermare \textit{Permutation} $t$ $t$ e quindi per perm\_skip \textit{Permutation} $[h::t]$ $[h::t]$. Dato che $l = [h::t]$ abbiamo che \textit{Permutation} $l$ $l$.
 \end{adjustwidth}
-\begin{theorem}[Simmetria] $\forall l,l' \in Lists$, Permutation $l$ $l'$ $\Rightarrow $ Permutation $l$ $l'$\end{theorem}
+\begin{theorem}[Simmetria] $\forall l,l' \in Lists$, Permutation $l$ $l'$ $\Rightarrow $ Permutation $l' \; l$\end{theorem}
 \begin{dimostrazione}
-	DA FAR
+	Assumo che $l$ sia permutazione di $l'$, ma allora devo poter applicare la definizione di \textit{Permutazione}, i 4 casi di figura~\ref{FIG:recursive_permutation1} 
+
+
+	\textit{primo caso}: $l=[] \; l'=[]$, la proprietà \emph{perm\_nil} ci garantisce sia che $P \;l \; l'$ che $P \; l'\; l$. $l'$ ed $l$ si sono "scambiate"
+
+
+	\textit{secondo caso}: $l = x::y::t$, $l'= y::x::t$. Assunta vera $P \; l \, l'$, cioè $P \; x::y::t \; y::x::t$, grazie a \emph{perm\_swap} si può affermare $P \; y::x::t \; x::y::t$, cioè $P \; l' \; l$
+
+	\textit{terzo caso}: caso induttivo, è stata applicata \textit{perm\_skip} all'ipotesi quindi $l = x::t$ e $l' = x::t'$ e per definizione $P \; t \, t'$.
+	Ma per ipotesi induttiva $P \; t \, t' \Rightarrow P \; t' \, t'$, riapplicando \textit{perm\_skip} ottengo $P \; x::t' \; x::t$ che è esattamente $P \; l' \, l$
+
+	\textit{quarto caso}: caso induttivo, è stata applicata \textit{perm\_trans} all'ipotesi e quindi deve esistere una lista intermedia $l''$ t.c. $P\; l\, l''$ e $P \; l''\, l'$ sono vere.
+	Applicando l' ipotesi induttiva alle due affermazioni precedenti otteniamo:$P\; l''\, l$ e $P \; l'\, l''$.\\
+	Applicando \textit{perm\_trans} ad entrambe si ottiene $P \; l' \, l$
 \end{dimostrazione}
 \subsection{A.3}
 Dimostrare che è algoritmo che genera permutazioni di una lista di elementi è completo significa dimostrare che genera $n!$ permutazioni, con $n$ pari al numero di elementi. Formalmente:
@@ -84,6 +98,7 @@ Dimostrare che è algoritmo che genera permutazioni di una lista di elementi è 
 	$len(h::t) = 1 + len(t)$\\
 	Quindi $len(distribute$ $a$ $[h::t]) = 2 + len(t)$ che per il Lemma distribute\_lenght diventa $len((a::t)::distribute$ $a$ $t) = 2 + len(t)$
 	INSERIRE FOTO LEMMA DISTRIBUTE
+	DA FARE
 \end{dimostrazione}
 \subsection{A.4}
 \begin{itemize}
@@ -262,8 +277,35 @@ Immaginiamo ad esempio due \textit{live node} $x,z$, l' \textit{E-node} è $x$ e
 Di conseguenza il prossimo \textit{E-node} sarà scelto tra $w_1$ e $w_2$
 
 \end{itemize}
+\subsection{C.5}
+\subsection{C.6}
+L'idea da cui partire per sviluppare una \textit{funzione costo} per \imp{SubsetSum} è quella di individuare un intervallo di valori al cui interno è compreso il valore \emph{s} del problema \imp{SubsetSum} $X =({X_0 ... X_{n-1}},S)$ 
+Per chiarezza presentiamo con $X_k$ il valore numerico di un elemento, $x_k \in {0,1}$ indica se il numero è inserito nell'insieme o no.
+Come descritto nella sezione~\ref{SEC:C_3} la \textit{funzione costo} $\hat c$ è composta da una \textit{parte nota} ed una \textit{parte stimata}.
+$$\hat c(x[0..j)) = f(h(x[0..j))) + \hat g(x[0..j))$$
+\begin{itemize}
+	\item La parte nota è facilmente individuabile come la somma dei numeri già inseriti nell'insieme.$$ f(h(x[0..j)))=\sum_{0 \leq k < j} X_kx_k$$
+	\item La parte stimata viene calcolata in modo che valga la seguente condizione:
+		$$ f(h(x[0..j))) + \hat g(x[0..j)) - V \leq S \leq f(h(x[0..j))) + \hat g(x[0..j)) $$
+	Rivmuovendo $V$ ottengo una approssimazione per difetto di $S$, se non lo rimuovo ottengo una approssimazione per eccesso.
+	Se però $V$ viene preso dall'insieme $X$ diventa l'elemento che se tolto dalla somma degli elementi che mi rimangono da inserire fornisce la migliore approssimazione per difetto/eccesso di $S$
+	$ \hat g(x[0..j))=\sum_{j \leq k < split} X_k$ in cui il valore split è t.c:
+	$$\sum_{j \leq k < split-1} X_k \leq S \leq \sum_{j \leq k < split} X_k$$
+\end{itemize}
+Lo scopo di questa funzione costo è esplorare in maniera più intelligente lo spazio delle soluzioni, la strategia \textit{LC} diventa la strategia di scelta del prossimo \textit{E-node} tra tutti i possibili \textit{live-node}.
+Ma a parità di \imp{costo} bisogna comunque affidarsi ad uno dei due criteri (\textit{LIFO/FIFO}) ma si potrebbe pensare anche di non affidarsi ad un criterio fisso e decidere randomicamente di volta in volta, per introdurre "perturbazioni" che riducano il rischio di svolgere ripetutamente scelte sbagliate.
+
+E naturalmente anche possibile migliorare l'efficenza di questa visita tramite pruning rimuovendo i rami dell'albero il cui valore $ f(h(x[0..j))) + \hat g(x[0..j)) - V > S$.Non ha infatti senso esplorare i sottoalberi che generano, in quanto non possono contenere soluzioni.
+
+%non mi convince per nulla la cosa di LIFO/FIFO
 \subsection{C.7}
 Guarda la scacchiera come una matrice di 1 e 0
+\subsection{C.8}
+\subsection{C.9}
+\subsection{C.10}
+\subsection{C.11}
+\subsection{C.12}
+\subsection{C.13}
 \subsection{C.14}
 Nella creazione di un algoritmo \textit{Branch\&Bound} per \emph{KP} la prima cosa da fare è stabilire una \textbf{funzione costo}.Questo può essere fatto basandosi sulla gerarchia dei profitti degli algoritmi greedy vista in precedenza.In particolare il costo ad un \textit{E-node} $x[0..j)$ può essere scritto come:
 $$\hat{c}(x[0..j)) = f(h(x[0..j))) + \hat{g}(x[0..j))$$
@@ -329,7 +371,6 @@ L'idea di base è quindi quella di raffinare tramite le diverse iterazioni i due
 	La cosa non specificata dall'algoritmo è il criterio di scelta del prossimo \textit{E-node} tra i vari \textit{live-nodes} disponibili.Utilizzando un criterio FIFO si ottengono buoni risultati, ma usando una tecnica \emph{least-cost} si è scoperto sperimentalmente che le prestazioni sono migliori.
 	Intuitivamente ci sono due motivi per questo: in primis se $z^{LP} = Z^*$ è possibile che venga trovata una soluzione che sappiamo con certezza essere anche \textit{risposta}, si può quindi fare pruning dei restanti rami.
 	In secondo luogo è possibile che giungendo "prima" alle \textit{soluzioni} migliori il valore di $z^*(x[0..r))$ cresca rapidamente causando il "rifiuto" di nodi che con una politica FIFO sarebbero stati espansi.(I nodi vengono rifiutati per la situazione 2)
-%si può parlare brevemente anche di come scegliere i nodi, FIFO vs LC
 \end{adjustwidth}
 \section{Problemi computazionali}
 \subsection{D.2}
