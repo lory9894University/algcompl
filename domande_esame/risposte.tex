@@ -296,8 +296,8 @@ Lo scopo di questa funzione costo è esplorare in maniera più intelligente lo s
 Ma a parità di \imp{costo} bisogna comunque affidarsi ad uno dei due criteri (\textit{LIFO/FIFO}) ma si potrebbe pensare anche di non affidarsi ad un criterio fisso e decidere randomicamente di volta in volta, per introdurre "perturbazioni" che riducano il rischio di svolgere ripetutamente scelte sbagliate.
 
 E naturalmente anche possibile migliorare l'efficenza di questa visita tramite pruning rimuovendo i rami dell'albero il cui valore $ f(h(x[0..j))) + \hat g(x[0..j)) - V > S$.Non ha infatti senso esplorare i sottoalberi che generano, in quanto non possono contenere soluzioni.
-
-%non mi convince per nulla la cosa di LIFO/FIFO
+%oltretutto nella funzione costo cerco di minimizzare il lower bound, altrimenti sarebbe un branch and bound
+%non mi convince per nulla la cosa di LIFO/FIFO sembra che il prof voglia che analiziamo il suo codice e ne traiamo delle conclusioni.
 \subsection{C.7}
 Guarda la scacchiera come una matrice di 1 e 0
 \subsection{C.8}
