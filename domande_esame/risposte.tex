@@ -453,12 +453,41 @@ for j = 0 to n do
 	
 \subsection{C.11}
 \imp{LKP} è un rilassamento lineare del problema dello zaino, non è quindi necessario trovare una soluzione intera e si può formalizzare come il seguente problema di programmazione lineare:
-\begin{align}
+\begin{align*}
 	\text{maximize} \sum_{k=1}^n p_kx_k&\\
 	\text{subject to} \sum_{k=1}^n w_kx_k&\\
 	x_1,...,x_n \in [0,1]&
+\end{align*}
+L'algoritmo di risoluzione \textbf{Greedy-LKP} ripercorre gli stessi passi dell'algoritmo \textbf{Greedy-split} ma quando incontra un elemento che causa il superamento del limite $c$ al posto di interrompersi ne inserisce la massima frazione contenibile nello spazio rimasto:\\
+\textit{Greedy-LKP}:
+\begin{lstlisting}[numbers=left,firstnumber=1,language=Matlab, stepnumber=1, xleftmargin=15pt]
+w_tot = 0
+z = 0
+j = 0
+while w_tot + w[j] <= c
+      x[j] = 1
+      w_tot = w_tot + w[j]
+      z = z + p[j]
+      j = j + 1
+z_lp = z + ((c-w_tot)/w[j])* p[j]  
+x_lp[j] = ((c-w_tot)/w[j]) 
+\end{lstlisting}
+La sostanziale differenza sta nella riga 9,nel calcolo del profitto generato della frazione di oggetto inseribile nello zaino, qui riportato per chiarezza: $$\frac{c - w_{tot}}{w_j}*p_j$$
+Volendo mantenere anche l'informazione di quale combinazione di oggetti porta alla soluzione bisognerebbe trasformare la struttura dati $x^{LP} \in [0,..,1]$ in modo da permettergli di contenere valori razionali e inserire all'indice $j$ la frazione di oggetto: $x^{LP}[j]=\frac{c - w_{tot}}{w_j}$ (riga 10)
 
-\end{align}
+\textbf{Greedy-LKP} non fornisce una soluzione per il problema dello zaino, ma può essere utilizzato per fornire una stima per eccesso della \emph{risposta} $z^*$.
+\textbf{Greedy-LKP} genera una \emph{risposta} ottimale, quindi siamo sicuri che nessun algoritmo per la soluzione di \imp{KP}troverà una \textit{soluzione} maggiore di quella ottenuta con \textbf{LKP}. %è questa la proprietà principale??
+Eseguiamo \textbf{Greedy-LKP} sull'istanza del problema: $$(\vec w = (2, 3, 6, 7, 5, 4), \vec p = (6, 5, 8, 9, 6, 3), 10)$$
+\begin{adjustwidth}{.8cm}{0cm}
+	Per prima cosa gli elementi vanno ordinati secondo $\frac{profit}{weight}$ decrescente, nel problema fornito sono già in questo ordine. 
+	$$(\vec w = (2, 3, 6, 7, 5, 4), \vec p = (6, 5, 8, 9, 6, 3), 10)$$
+	Si prosegue poi come \textbf{Greedy-split}, iterando finchè non si supera $c=10$
+	$$ z.w = 2 + 3 + 6 = 11 > 10 \qquad z.p= 6 + 5 + 8 = 19$$
+	Considerando che l'ultimo elemento supera la capacità dello zaino si rimuove l'ultimo oggetto inserito e se ne prende la massima frazione
+	$$ \frac{c - w_{tot}}{w_j} \; \rightarrow \; \frac{10 - 5}{6} = \frac{5}{6}$$
+	Ottenuta la frazione si calcola il \textit{profitto} ed il corrispondente vettore risposta
+	$$ z^{LP}= 6 + 5 + (8 * \frac{5}{6} ) = \frac{53}{3} \qquad x^{LP} = (1,1,\frac{5}{6},0,0,0) $$
+\end{adjustwidth}
 \subsection{C.12}
 \subsection{C.13}
 \subsection{C.14}
