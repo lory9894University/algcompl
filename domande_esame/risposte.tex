@@ -1,4 +1,5 @@
 \documentclass[a4paper]{article}
+\usepackage{listings}
 \usepackage{qtree}
 \usepackage{xcolor}
 \usepackage{forest}
@@ -94,7 +95,7 @@ Dimostrare che è algoritmo che genera permutazioni di una lista di elementi è 
 	Allo stesso modo $len(permutation)$ [ ] $= len($[ [ ] ]$) = 1$.\\
 	Quindi $len($\textit{permutation} $l) = len(l)!$
 	
-	\textit{Caso induttivo}: $l = h::t$, quindi l'enunciato da dimostrare è $len($\textit{permutation} $[h::t]) = len([h::t])!$\\
+	\textit{Caso induttivo}: $l = h::t$, quindi l'enunciato da dimostrare è\\ $len($\textit{permutation} $[h::t]) = len([h::t])!$\\
 	$len(h::t) = 1 + len(t)$\\
 	Quindi $len(distribute$ $a$ $[h::t]) = 2 + len(t)$ che per il Lemma distribute\_lenght diventa $len((a::t)::distribute$ $a$ $t) = 2 + len(t)$
 	INSERIRE FOTO LEMMA DISTRIBUTE
@@ -155,7 +156,7 @@ Come anticipato in figura~\ref{FIG:C_1}, tra DFS e BFS si trovano tutte le possi
 \end{figure*}
 \textbf{Punto 1}: Presupponiamo di visitare l'albero degli stati tramite le due diverse politiche, effettuando pruning quando necessario.
 \begin{itemize}
-	\item \textbf{DFS}:la DFS cerca di giungere il prima possibile ad una soluzione, quindi come mostrato in figura~\ref{FIG:C_2_DFS} si scende lungo il ramo più "a sinistra" finchè non si incontra una violazione dei vincoli che induce il pruning (nel nodo 3 ad esempio abbiamo regine in A4 e B3, sulla stessa diagonale).
+	\item \textbf{DFS}: La DFS cerca di giungere il prima possibile ad una soluzione, quindi come mostrato in figura~\ref{FIG:C_2_DFS} si scende lungo il ramo più "a sinistra" finchè non si incontra una violazione dei vincoli che induce il pruning (nel nodo 3 ad esempio abbiamo regine in A4 e B3, sulla stessa diagonale).
 		Il lato negativo è che spesso la visita in profondità si "infila" in cammini che non portano ad una soluzione, come tutto il sottoalbero generato dalla regina in posizione 2 (A4), potrebbe sembrare conveniente visitare più opzioni possibile in modo da eliminare i cammini che non producono soluzioni il prima possibile.
 \begin{figure*}[!ht]
 \centering
@@ -278,6 +279,7 @@ Di conseguenza il prossimo \textit{E-node} sarà scelto tra $w_1$ e $w_2$
 
 \end{itemize}
 \subsection{C.5}
+
 \subsection{C.6}
 L'idea da cui partire per sviluppare una \textit{funzione costo} per \imp{SubsetSum} è quella di individuare un intervallo di valori al cui interno è compreso il valore \emph{s} del problema \imp{SubsetSum} $X =({X_0 ... X_{n-1}},S)$ 
 Per chiarezza presentiamo con $X_k$ il valore numerico di un elemento, $x_k \in {0,1}$ indica se il numero è inserito nell'insieme o no.
@@ -299,10 +301,156 @@ E naturalmente anche possibile migliorare l'efficenza di questa visita tramite p
 %oltretutto nella funzione costo cerco di minimizzare il lower bound, altrimenti sarebbe un branch and bound
 %non mi convince per nulla la cosa di LIFO/FIFO sembra che il prof voglia che analiziamo il suo codice e ne traiamo delle conclusioni.
 \subsection{C.7}
-Guarda la scacchiera come una matrice di 1 e 0
+Per raffigurare matematicamente la scacchiera si può immaginare un insieme $X$ con $|X| = n*n$, essendo le regine 4 la scacchiera ha 64 caselle e quindi $|X| = 64$ in questa istanza.
+\begin{itemize}
+	\item La parte nota è data dalle caselle della scacchiera non occupabili, quindi le celle in cui è presente una regina o in cui una regina può muoversi e di conseguenza mangiare
+\end{itemize}
+
+%DISEGNO SCACCHIERA + ALBERO?
+
 \subsection{C.8}
+La qualità di tutti gli algoritmi greedy può essere migliorata ordinando gli elementi in base al rapporto $\frac{valore}{peso}$, operazione con costo $O(n\log_n)$.
+In generale le approssimazioni fornite da algoritmi greedy per la risoluzione di \imp{Knapspack} sono molto vicine alla risposta. %il prof se non sbaglio diceva 80%
+Per entrambi gli algoritmi presupponiamo tre strutture dati di dimensione $n$, "vettore" $w$ dei pesi, "vettore" $p$ dei profitti e "vettore" $x$ delle scelte. $x[j] \in {0,1}$ indica se l'elemento di indice $j$ è inserito o no nello zaino.
+%mi fa schifo il temine vettore, vorrei indicare una generica struttura dati.
+\begin{itemize}
+	\item \textbf{Greedy}: 
+		\begin{lstlisting}[language=Matlab]
+	w_tot = 0
+	z = 0
+	for j = 0 to n do
+		if w_tot + w[j] <= c then
+			x[j] = 1
+			w_tot = w_tot + w[j]
+			z = z + p[j]
+		else x[j] = 0
+		\end{lstlisting}
+		L'algoritmo può essere intuitivamente riassunto in 3 passi
+		\begin{enumerate}
+			\item prova ad inserire un elemento di peso $w[j]$ nello zaino
+			\item se l' aggiunta dell' elemento non causa il superamento del limite $c$ inseriscilo, passa al prossimo altrimenti.
+			\item analizzati tutti gli elementi concludi.
+		\end{enumerate}
+	\item \textbf{Greedy-split}:
+		\begin{lstlisting}[language=Matlab]
+	w_tot = 0
+	z = 0
+	j = 0
+	while w_tot + w[j] <= c
+			x[j] = 1
+			w_tot = w_tot + w[j]
+			z = z + p[j]
+			j = j + 1
+		\end{lstlisting}
+		Questo algoritmo è ancora meno preciso dell' algoritmo \textbf{greedy}, in quanto interrompe la ricerca appena si incontra un elemento che causa il superamento del limite $c$.
+		E' però anche più efficiente, non dovendo analizzare altri elementi che rischiano di non poter essere inseriti nello zaino.
+		\begin{enumerate}
+			\item prova ad inserire un elemento di peso $w[j]$ nello zaino
+			\item se l' aggiunta dell' elemento non causa il superamento del limite $c$ inseriscilo, altrimenti concludi la visita.
+		\end{enumerate}
+\end{itemize}
+Entrambi gli algoritmi soffrono di un problema, sono \textit{potenzialmente pessimi}, ma non è questo il caso presentato nella domanda.
+$$(\vec w = (1,M)), \vec p = (3,M), 2M$$
+Questo caso ha un particolarità, analizzando i pesi si può notare che $p_{max} = M +1$ essendoci solo due elementi, uno di peso $M$ l'altro di peso $1$.La particolarità è che $2M > M + 1 \forall M > 0$, quindi se lo zaino ha una capienza maggiore di $0$ potrà sempre contenere tutti gli elementi che siamo intenzionati ad inserire.
+\begin{figure*}[!ht]
+\centering
+\includegraphics[width=0.5\textwidth]{./img/C_8.png}
+\caption{Dimensione soluzione vs spazio al crescere di M} \label{FIG:C_8}
+\end{figure*}\\
+In questo caso \textbf{Greedy-split} si dimostra perfettamente identico in termini di soluzione a \textbf{Greedy}, in quanto non si incontra mai un elemento che causa il superamento del limite $c$, unica differenza dei due algoritmi.
 \subsection{C.9}
+La qualità di tutti gli algoritmi greedy può essere migliorata ordinando gli elementi in base al rapporto $\frac{valore}{peso}$, operazione con costo $O(n\log_n)$.
+In generale le approssimazioni fornite da algoritmi greedy per la risoluzione di \imp{Knapspack} sono molto vicine alla risposta. %il prof se non sbaglio diceva 80%
+Per entrambi gli algoritmi presupponiamo tre strutture dati di dimensione $n$, "vettore" $w$ dei pesi, "vettore" $p$ dei profitti e "vettore" $x$ delle scelte. $x[j] \in {0,1}$ indica se l'elemento di indice $j$ è inserito o no nello zaino.
+%mi fa schifo il temine vettore, vorrei indicare una generica struttura dati.
+Inoltre supponiamo non esista alcun elemento di indice $j$ tale che $p[j] > c$.
+\begin{itemize}
+\item \textbf{Greedy-split}:
+		\begin{lstlisting}[language=Matlab]
+	w_tot = 0
+	z = 0
+	j = 0
+	while w_tot + w[j] <= c
+			x[j] = 1
+			w_tot = w_tot + w[j]
+			z = z + p[j]
+			j = j + 1
+		\end{lstlisting}
+		Questo algoritmo interrompe la ricerca appena si incontra un elemento che causa il superamento del limite $c$.
+		\begin{enumerate}
+			\item prova ad inserire un elemento di peso $w[j]$ nello zaino
+			\item se l' aggiunta dell' elemento non causa il superamento del limite $c$ inseriscilo, altrimenti concludi la visita.
+		\end{enumerate}
+	Questo algoritmo, come \textbf{Greedy} soffre di un problema, è \textit{potenzialmente pessimo}.\\
+	L' istanza di \imp{KP} presentata nella domanda è un esempio di questa situazione:
+	$$(\vec w = (1,M), \vec p = (2,M), M)$$
+	Infatti ordinando gli elementi per $pw = \frac{profit}{weight}$ notiamo che 
+	\begin{align}
+		pw_1  &> pw_2 \notag \\
+		\frac{2}{1} &> \frac{M}{M} = 1 \notag
+	\end{align}
+	Seguendo l'algoritmo \textbf{Greedy-split} verrà scelto l'elemento con $pw$ maggiore, cioè l'elemento con indice 1.\\
+	Finchè $M \leq p_1$ questo ci fornisce una \textit{risposta} in quanto il scegliendo l'elemento con indice 1 abbiamo un profitto maggiore o uguale di quello che avremmo scegliendo l'elemento con indice 2 (quello con \textit{peso} e \textit{profitto} pari ad $M$.\\
+	Quando però $ M > p_1$ l'algoritmo sceglie erroneamente, infatti considerando $M =3$  il profitto ottenuto scegliendo l'elemento di indice 1 è 2, mentre il profitto ottenibile scegliendo il secondo elemento è 3.\\
+	Il rapporto $\frac{profitto \; ottenuto}{profitto \; ottimo}$ decresce al crescere di $M$ rendendo sempre più "incorretta" la soluzione offerta da \textbf{Greedy-split}. 
+\begin{figure*}[!ht]
+\centering
+\includegraphics[width=0.5\textwidth]{./img/C_9_greedy.png}
+\caption{Qualità della soluzione di \textbf{Ext-Greedy} al crescere di $M$} \label{FIG:C_9_greedy}
+\end{figure*}\\
+\item \textbf{Ext-Greedy}:
+		\begin{lstlisting}[numbers=left,firstnumber=1,language=Matlab, stepnumber=1, xleftmargin=50pt]
+w_tot = 0
+z=0
+for j = 0 to n do
+	if w_tot + w[j] <= c then
+		x[j] = 1
+		w_tot = w_tot + w[j]
+		z = z + p[j]
+	else x[j] = 0
+for j = 0 to n do
+	if p[j] > z
+		z = p[j]
+		for k = 0 to n do x[k] = 0
+		x[j] = 1
+		\end{lstlisting}
+		\begin{enumerate}
+			\item prova ad inserire un elemento di peso $w[j]$ nello zaino (riga 4)
+			\item se l' aggiunta dell' elemento non causa il superamento del limite $c$ inseriscilo, passa al prossimo altrimenti. (righe 3-8)
+			\item analizzati tutti gli elementi concludi il ciclo.
+			\item confronta il valore ottenuto dal ciclo con il valore di ogni oggetto, se esiste un elemento che fornisce un risultato migliore di quello trovato nel ciclo (righe 3-8) allora inserisco solo quell'elemento nello zaino. $Z_{risposta} = max\{z, max\{p_1 ... p_n\}\}$
+		\end{enumerate}
+		Questo algoritmo risolve il problema degli algoritmi \textbf{Greedy} e \textbf{Greedy-split} in qquanto se si verifica una situazione analoga a quella presentata nella domanda $(\vec w = (1,M), \vec p = (2,M), M)$ verrà preso l'elemento avente peso e profitto $M$ in quanto il suo profitto è superiore al profitto offerto dagli elementi inseriti in base all'incremento locale.
+\begin{figure*}[!ht]
+\centering
+\includegraphics[width=0.5\textwidth]{./img/C_9_ext.png}
+\caption{Comportamento \textbf{Ext-Greedy} rispetto a \textbf{Greedy-split}} \label{FIG:C_9_ext}
+\end{figure*}\\
+\end{itemize}
 \subsection{C.10}
+\textbf{Ext-Greedy}:
+		\begin{lstlisting}[numbers=left,firstnumber=1,language=Matlab, stepnumber=1, xleftmargin=10pt]
+w_tot = 0
+z=0
+for j = 0 to n do
+	if w_tot + w[j] <= c then
+		x[j] = 1
+		w_tot = w_tot + w[j]
+		z = z + p[j]
+	else x[j] = 0
+for j = 0 to n do
+	if p[j] > z
+		z = p[j]
+		for k = 0 to n do x[k] = 0
+		x[j] = 1
+		\end{lstlisting}
+		\begin{enumerate}
+			\item prova ad inserire un elemento di peso $w[j]$ nello zaino (riga 4)
+			\item se l' aggiunta dell' elemento non causa il superamento del limite $c$ inseriscilo, passa al prossimo altrimenti. (righe 3-8)
+			\item analizzati tutti gli elementi concludi il ciclo.
+			\item confronta il valore ottenuto dal ciclo con il valore di ogni oggetto, se esiste un elemento che fornisce un risultato migliore di quello trovato nel ciclo (righe 3-8) allora inserisco solo quell'elemento nello zaino. $Z_{risposta} = max\{z, max\{p_1 ... p_n\}\}$
+		\end{enumerate}
+	
 \subsection{C.11}
 \subsection{C.12}
 \subsection{C.13}
