@@ -118,6 +118,36 @@ Dimostrare che è algoritmo che genera permutazioni di una lista di elementi è 
 		Non tutti i sottoinsiemi così generati sono però \emph{soluzioni}, in quanto alcuni superano il vincolo del voto massimo ammesso (in questo caso 9); considerando solo le \emph{soluzioni} e scegliendo quelle aventi la migliore votazioni si ottengono una o più \emph{risposte}
 \end{itemize}
 \section{Backtrack}
+\subsection{B.1}
+Il \textbf{Backtracking} è una tecnica algoritmica atta a migliorare la visita \textbf{Bruteforce} tramite l'elimnazione di alcuni sotto-alberi dell' albero delle scelte che non vale la pena di analizzare.
+Più precisamente vengono introdotti due concetti:
+\begin{itemize}
+	\item \textit{funzione bound:} una funzione che dato un nodo dell'albero delle scelte fornisce un criterio di valutazione sulla possibilità che il sotto-albero avente come radice quel nodo possa o meno fornire una \textit{risposta}
+	\item \textit{pruning}: Rimozione di sotto-alberi dall'analisi dello spazio delle scelte per il quale la \textit{funzione bound} predice l'impossibilità di generare \textit{risposte}.Perchè violerebbero i vincoli espliciti o perchè produrrebbero una \textit{soluzione} peggiore di altre trovate in precedenza
+\end{itemize}
+Il \textbf{Backtracking} può essere visto quindi come una visita \textbf{BruteForce} con k'aggiunta di un filtro.$BT = BF + \text{ \textit{funzione criterio/bound} }+ pruning$
+Ogni algoritmo di \textbf{Backtracking} sarà quindi così composto:
+\begin{lstlisting}[numbers=left,firstnumber=1,stepnumber=1, xleftmargin=15pt, language=Matlab ]
+BT(a,soluzione)=
+    completa= completa(a,soluzione)
+    if !completa
+        rifiuta=rifiuta(a,soluzione)
+	if !rifiuta
+	    soluzioni = espande(a)
+	    foreach soluzione in soluzioni
+	        BT(a,soluzione)
+    else
+    	accetta = accetta(a,soluzione)
+        if accetta
+	    risposta = soluzione
+\end{lstlisting}
+\begin{itemize}
+	\item \imp{completa(a,soluzione)} (riga 2) è una funzione che resituisce \textit{True} se il cammino dalla radice al nodo attuale può costituire una soluzione.
+	\item \imp{rifiuta(a,soluzione)} (riga 4) è una funzione che resituisce \textit{True} se il nodo genera un sotto-albero che non porterà sicuramente ad una risposta, perchè viola un vincolo esplicito o perchè genererebbe una soluzione peggiore di una soluzione trovata in precedenza
+	\item \imp{accetta(a,soluzione)} (riga 10) è una funzione che resituisce \textit{True} se la soluzione passata come parametro è migliore dell' attuale \textit{risposta} (e quindi può prenderne il posto)
+	\item \imp{espande(a)}(riga 6) è una funzione che espande il nodo, inserendo i suoi figli tra le possibili soluzioni da visitare e da analizzare. La funzione di \textbf{Backtracking} sarà quindi chiamata ricorsivamente su tutte queste possibili soluzioni.
+	\item \imp{BT(a,soluzione)} (riga 8): lo scopo di effettuare la chiamata ricorsiva sulle soluzioni appena generate è quello di poter effettuare \textit{pruning} su più sottoalberi possibile, individuando più rapidamente i sottoalberi che contengono \textit{risposte}
+\end{itemize}
 \section{Branch\&Bound}
 \subsection{C.1}
 \label{SEC:C_1}
