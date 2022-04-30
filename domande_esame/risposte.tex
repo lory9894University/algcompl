@@ -278,7 +278,6 @@ Immaginiamo ad esempio due \textit{live node} $x,z$, l' \textit{E-node} è $x$ e
 Di conseguenza il prossimo \textit{E-node} sarà scelto tra $w_1$ e $w_2$
 
 \end{itemize}
-\subsection{C.5}
 
 \subsection{C.6}
 L'idea da cui partire per sviluppare una \textit{funzione costo} per \imp{SubsetSum} è quella di individuare un intervallo di valori al cui interno è compreso il valore \emph{s} del problema \imp{SubsetSum} $X =({X_0 ... X_{n-1}},S)$ 
@@ -450,7 +449,7 @@ for j = 0 to n do
 			\item analizzati tutti gli elementi concludi il ciclo.
 			\item confronta il valore ottenuto dal ciclo con il valore di ogni oggetto, se esiste un elemento che fornisce un risultato migliore di quello trovato nel ciclo (righe 3-8) allora inserisco solo quell'elemento nello zaino. $Z_{risposta} = max\{z, max\{p_1 ... p_n\}\}$
 		\end{enumerate}
-	
+DA FARE	
 \subsection{C.11}
 \imp{LKP} è un rilassamento lineare del problema dello zaino, non è quindi necessario trovare una soluzione intera e si può formalizzare come il seguente problema di programmazione lineare:
 \begin{align*}
@@ -488,10 +487,22 @@ Eseguiamo \textbf{Greedy-LKP} sull'istanza del problema: $$(\vec w = (2, 3, 6, 7
 	Ottenuta la frazione si calcola il \textit{profitto} ed il corrispondente vettore risposta
 	$$ z^{LP}= 6 + 5 + (8 * \frac{5}{6} ) = \frac{53}{3} \qquad x^{LP} = (1,1,\frac{5}{6},0,0,0) $$
 \end{adjustwidth}
-\subsection{C.12}
 \subsection{C.13}
+La seguente gerarchia illustra i valori di profitto offerti dai vari algoritmi:
+$$\hat p \leq z^G \leq z^* \leq \lfloor z^LP \rfloor  \leq z^LP \leq \hat p + p_split \leq z^G + p_{split}$$
+Abbiamo i valori ottenuti da \textbf{Greedy-split} ($\hat p$), \textbf{Greedy}($z^G$) e \textbf{Greedy-LKP}($z^{LP}$).\\
+Aggiungendo invece $p_{split}$ al risultato datomi da \textbf{Greedy} e da \textbf{Greedy-split} supero l'approssimazione datami da $Z^{LP}$, in quanto la parte di elemento aggiunta in \textbf{Greedy-LKP} è una frazione di $p_split$, essendo una frazione è sicuramente minore.
+
+Lo scopo di questa gerarchia di inclusioni è fornire approssimazioni per eccesso e per difetto ragionevolmente accurate del profitto ottimale $z^*$, con un basso costo computazionale, O($n\log n$).
+Queste approssimazioni servirano a fornire un \textit{upper bound} ed un \textit{lower bound} necessari alla generazione di un algoritmo \textbf{Branch\&Bound} per la risoluzione di \imp{KP}.\\
+%oltretutto sugli appunti ho scritto che servono a valutare le approssimazioni, ma non ricordo cosa intendo
+\begin{figure*}[!ht]
+\centering
+\includegraphics[width=0.6\textwidth]{./img/C_13.png}
+\caption{Grafico della gerarchia di inclusioni} \label{FIG:C_13}
+\end{figure*}\\
 \subsection{C.14}
-Nella creazione di un algoritmo \textit{Branch\&Bound} per \emph{KP} la prima cosa da fare è stabilire una \textbf{funzione costo}.Questo può essere fatto basandosi sulla gerarchia dei profitti degli algoritmi greedy vista in precedenza.In particolare il costo ad un \textit{E-node} $x[0..j)$ può essere scritto come:
+Nella creazione di un algoritmo \textit{Branch\&Bound} per \emph{KP} la prima cosa da fare è stabilire una \textbf{funzione costo}.Questo può essere fatto basandosi sulla gerarchia dei profitti degli algoritmi greedy vista in precedenza.In particolare il costo ad un \textit{E-node}$x[0..j)$ può essere scritto come:
 $$\hat{c}(x[0..j)) = f(h(x[0..j))) + \hat{g}(x[0..j))$$
 \begin{itemize}
 	\item Nella prima parte dell'equazione abbiamo il \textit{costo noto}, che non è altro che la somma di tutti i profitti dei nodi "inseriti nello zaino" fin'ora ed i loro pesi. 
@@ -556,8 +567,130 @@ L'idea di base è quindi quella di raffinare tramite le diverse iterazioni i due
 	Intuitivamente ci sono due motivi per questo: in primis se $z^{LP} = Z^*$ è possibile che venga trovata una soluzione che sappiamo con certezza essere anche \textit{risposta}, si può quindi fare pruning dei restanti rami.
 	In secondo luogo è possibile che giungendo "prima" alle \textit{soluzioni} migliori il valore di $z^*(x[0..r))$ cresca rapidamente causando il "rifiuto" di nodi che con una politica FIFO sarebbero stati espansi.(I nodi vengono rifiutati per la situazione 2)
 \end{adjustwidth}
-\section{Problemi computazionali}
+\section{Programmazione dinamica}
+\subsection{D.1}
+Il \textit{problema dello zaino} può essere suddifiso in una serie di sotto-problemi \textbf{KP} tra di loro indipendenti, prendiamo ad esempio $KP = (\vec w = (3,5,9,4), \vec p = (5, 6, 7, 3),9)$\\
+Questo problema puù essere visto secondo il seguente formalismo:$$ max \sum_{j=1}^4 p_jx_j \text{ con } \sum_{j=1}^4 w_jx_j$$
+Estraendo l'elemento di indice 4 si ottiene: $ max\; 3x_4 \sum_{j=1}^4 p_jx_j \text{ con } 4x_4\sum_{j=1}^4 w_jx_j$.
+In tal modo si può generare l'albero delle scelte seguendo il formalismo, ad esempio la scelta $x=[?,1, 0 ,1]$ (scelta incompleta, non è una \textit{soluzione}) può essere formalizzata in:
+$max\; 3 + 6 +5x_1 \sum_{j=1}^0 p_jx_j \text{ con } 4x_4\sum_{j=1}^4 w_jx_j$.\\
+Sviluppando completamente l'albero delle scelte come in figura~\ref{FIG:D1_albero} si nota come l'istanza del problema \textbf{KP} presenta dei sottoproblemi condivisi, si può quindi configurare una soluzione che faccia uso delle tecniche di \textit{programmazione dinamica}.
+\begin{figure*}[!ht]
+\centering
+\includegraphics[width=1\textwidth]{./img/D1_albero}
+\caption{Albero dei sottoproblemi} \label{FIG:D1_albero}
+\end{figure*}\\
+Volendo inserire l'elemento i-esimo abbiamo due possibili situazioni:
+\begin{itemize}
+	\item$W_i >$ spazio disponibile.Quindi $w_i$ non ci sta, la soluzione è identica alla soluzione del problema avente stesso spazio disponibile ma senza $w_i$.
+	\item$W_i <$ spazio disponibile.In questo caso posso inserire $w_i$, ed il profitto generato sarà il massimo tra: la soluzione del problema senza $w_i$ e con spazio residuo "spazio disponibile - $w_i$ + il profitto generato da $i$ e la soluzione del problema senza $w_i$ con spazio residuo "spazio disponibile"
+		Scritto in maniera più chiara e più formale: $$Z_i(W_i + sd)= \text{ max } \{ Z_{i-1}(sd - w_i) + P_i , Z_{i-1}(sd) \}$$ dove $sd$ è lo spazio disponibile.
+		Intuitivamente nel primo caso abbiamo inserito nello zaino $i$ quindi il profitto è aumentato di $p_i$ e la dimensione diminuita di $w_i$, nel secondo caso non lo abbiamo aggiunto, quindi la soluzione ha lo stesso profitto della soluzione precedente.
+\end{itemize}
+Le due situazioni possono essere riassunte e formalizzate in questa formula ricorsiva:
+\begin{equation*}
+	z_j(sd)= \begin{cases} z_{j-1}(sd)\\ 
+	\text{ max } \{ Z_{i-1}(sd - w_j) + P_j , Z_{j-1}(sd) \}
+\end{cases}
+\end{equation*}
+Seguendo questa definizione ricorsiva si può ricavare un algoritmo che genera una "tabella dei profitti" completa.
+
+Verrebbe da dire che la complessità di questo algoritmo è $O(n*c)$, ma la complessità va rapportata alla rappresentazione più efficiente dell'input.
+Rispetto alla dimensione dell'input composto dai pesi $w_1, ..., w_n$ e dei profitti $w_1, ... , w_n$ ($| \vec w | = | \vec p | = n)$ la complessità è polinomiale.Il singolo peso (o profitto) è rappresentato tramite una notazione posizionale (probabilmente binario) e ci vogliono $n$ istanze di quella notazione per rappresentare tutti i pesi (o profitti).\\
+Per $c$ la complessità non è polinomiale però. $c$ è un numero, ed in quanto numero è rappresentato da $2^b$ bit (presuppongo rappresentazione binaria).
+Quindi al crescere di $c$ la sua rappresentazione cresce seguendo l'equazione $bits = 2^{1 + \lfloor \log_2c \rfloor}$ e ciò fa si che la complessità sia esponenziale rispetto a $c$.
+
+La complessità dell'algoritmo di \textit{programmazione dinamica} per la risoluzione di \textbf{KP} è \imp{Pseudo polinomiale} in quanto è polinomiale per almeno uno dei valori dell'input ($c$).
+
 \subsection{D.2}
+L'algoritmo ricorsivo sviluppato tramite \textit{programmazione dinamica}permette di costruire una soluzione generando una tabella la cui ispirazione può essere ricondotta alla figura~\ref{FIG:D1_albero}.\\
+\begin{center}
+	\begin{tabular}{| c | c | c | c |}
+  \hline
+  $Z_n(0)$ & $Z_n(1)$ & ... &  $Z_n(c)$ \\
+  \hline
+  $ \vdots$ & $\vdots$ & $\vdots$ &  $\vdots $ \\
+  \hline
+  $Z_1(0)$ & $Z_1(1)$ & ... &  $Z_0(c)$ \\
+  \hline
+  $Z_0(0)$ & $Z_0(1)$ & ... &  $Z_0(c)$ \\
+  \hline
+	\end{tabular}
+\end{center}
+Dall'idea di questa tabella il più semplice algoritmo iterativo che ne deriva è:
+\begin{lstlisting}[numbers=left,firstnumber=1,stepnumber=1, xleftmargin=15pt, language=Matlab ]
+for d = 0 to c
+    z[0][d] = 0
+for j = 1 to n do
+    for d = 0 to w[j] -1 do
+    	z[j][d] = z[j-1][d]
+    for d = w[j] to c do
+	if z[j-1][d-w[j]] + p[j] > z[j-1][d] 
+	    z[j][d]=z[j-1][d-w[j]] + p[j]
+	    A[j][d]=1
+	else
+	    z[j][d] = z[j-1][d]
+	    A[j][d]=0
+z_sol=z[n][c]
+\end{lstlisting}
+\begin{itemize}
+	\item nelle righe 1-2 vi è l'inizializzazione, la prima colonna $z_0(0),...,z_n(0)$ è impostata a 0 dato che non c'è spazio nello zaino per inserire nessun elemento.\\
+	\item Le righe 4-5 illustrano la situazione "$j$ è troppo grande per essere inserito", quindi viene copiato il valore del passo precedente
+	\item Dalla riga 6 alla riga 12 abbiamo l'implementazione dell'eq ricorsiva
+	\begin{equation*}
+        	z_j(sd)= \begin{cases} z_{j-1}(sd)\\
+        	\text{ max } \{ Z_{j-1}(sd - w_j) + P_i , Z_{j-1}(sd) \}
+	\end{cases}
+	\end{equation*}
+	Nelle righe 7-9 abbiamo il caso in cui $j$ migliora la soluzione, quindi la soluzione viene aggiornata aggiungendo $j$, nelle righe 11-12 invece abbiamo la situazione in cui è meglio mantere la vecchia soluzione dato che questa fornisce un profito migliore.
+\end{itemize}
+IMMAGINE TABELLA SU CUI FARE L'ESEMPIO QUANDO IL PROF LA CARICA
+Questo algoritmo si porta dietro una struttura dati aggiuntiva, la tabella $A$ che mantiene l'informazione di quale sia la tupla che risolve il problema (la \textit{risposta}).
+
+Una prima ottimizzazione sullo spazio si può fare liberandosi di questa matrice e ricavando la tupla \textit{risposta} dalla tabella $z$.\\
+\begin{figure*}[!ht]
+\centering
+\includegraphics[width=1\textwidth]{./img/D2_ricavo}
+\caption{Ricostruzione della tupla risolvente} \label{FIG:D2_ricavo}
+\end{figure*}\\
+Partendo dal valore $z_n(c)$ si ripercorre "all'indietro" l'algoritmo, se non vi è una variazione di valore è perchè si è preso il secondo ramo dell'if (riga 10), se vi è una variazione è perchè e stato aggiunto un elemento allo zaino.Bisogna quindi individuare la colonna in cui tale variazione è avvenuta e segnarsi l'indice della stessa (dato che gli indici delle colonne corrispondono agli indice del vettore di elementi $x$).\\
+Ma come ricavare $z_{j-1}(d)$ in modo da sapere con quale "riga proseguire"? Basta rimuovere il profitto dell'elemento $j$ dalla cella $z_{j}(d)$ per individuare quale fosse il valore prima dell'aggiunta, cercare il valore corrispondente sulla $j-1$.
+% il disegno andrebbe cambiato. si parte da z_n(c)
+
+Si può ottimizzare ancora andando a "ridurre" la tabella a due soli array, uno contenente i valori della $i-1$-esima colonna e l'altro contenente i valori della colonna con indice $i$, attualmente in costruzione.\\
+Una volta completato il calcolo della colonna $i$ questa diventerà la colonna $i-1$ e verrà usata per generare la colonna successiva, fino alla colonna $c$.\\
+Ma si può ancora proseguire accorpando i due vettori, infatti non è necessario mantenere l'informazione delle celle che non cambiano valore.Basta calcolare i nuovi valori usando i valori scritti nel resto del vettore avendo cura di aggiornare il vettore partendo "dal fondo".\\
+Le due ottimizzazioni sono rappresentate in figura~\ref{FIG:D2_ottimizzazioni}, e notiamo che effettuandole si perde però la possibilità di ricavarsi la tupla soluzione $x$ partendo dalla tabella.
+Notiamo anche che tutte queste ottimizzazioni sono relative alla memoria, non al tempo, che resta sempre $O(n*c)$
+\begin{figure*}[!ht]
+\centering
+\includegraphics[width=0.4\textwidth]{./img/D2_2vettori}
+\includegraphics[width=0.4\textwidth,height=0.32\textheight]{./img/D2_1vettore}
+\caption{Ottimizzazioni della tabella} \label{FIG:D2_ottimizzazioni}
+\end{figure*}\\
+
+\section{Problemi computazionali}
+\subsection{E.1}
+\begin{definition}[SubsetSum]
+	Siano dati un insieme numerico finito $X$ ed un numero $S$. Determinare l’esistenza di un sottoinsieme $Y \subset X$, tale che la somma di tutti gli elementi di $Y$ sia pari ad $S$.
+\end{definition}
+	Vedendolo come problema decisionale può essere riscritto come:
+	$$((w_1,...,w_n),S) \in SubsetSum \; se \; \exists x_1, ... , x_n \in \{0,1\}^n \: t.c. \sum_{1 \leq k \leq n} x_kw_k = S$$
+	SubsetSum è un caso specifico di \imp{KP}, in particolare è un problema \textbf{Knapsack} in cui i profitti sono uguali ai pesi.
+	$$((w_1,...,w_n),S) \in SubsetSum \Rightarrow ((w_1,...,w_n),(w_1,...,w_n),S) \in KP$$
+\begin{dimostrazione}
+	Per ipotesi $\exists x_1^., ..., x_n^. \: tc \sum_{j=1}^n w_jx_j = S$ cioè esiste una scelta di valori $x_1,...,x_n$ che risolve il problema. ($x_1^., ..., x_n^.$ è un istanza di $x_1, ..., x_n$)
+
+	Dobbiamo dimostrare che esiste una soluzione del rispettivo problema \imp{KP} cioè che esista una istanza di scelte la cui somma dei pesi è minore di $S$ ma allo stesso tempo è la massima scelta possibile (è più grande del peso di ogni altra possibile istanza di scelte):
+	$$ \exists z_1^., ..., z_n^. \: tc \forall y_1,...,y_n \sum_{j=1}^n w_jz_j \geq \sum_{j=1}^n w_jy_j \text{ e } \sum_{j=1}^n w_jz_j \leq S$$
+	Prendendo come istanza $z^.$ l' istanza $z^.$ definita in precedenza abbiamo la sicurezza che, per ipotesi, $\sum_{j=1}^n w_jz_j \leq S$
+
+	La tesi diventa quindi $$ \forall y_1,...,y_n \sum_{j=1}^n w_jx_j^. \geq \sum_{j=1}^n w_jy_j$$
+Supponiamo per assurdo che esista una scelta che fornisce un peso maggiore di quello generato dall'istanza $x^.$:$$\exists y_1^.,...,y_n^. \sum_{j=1}^n w_jy_j^. > \sum_{j=1}^n w_jx_j^.$$
+Allora $sum_{1 \leq j \leq n} w_jy_j^. > \sum_{j=1}^n w_jx_j^. = S $, ed essendo necessario identificare una sequenza di scelte $z_1,...,z_n$ t.c. $\sum_{j=1}^n w_jz_j \leq S$ non possiamo accettare $y^.$ come istanza risolutiva del problema dal momento che:
+$$\sum_{j=1}^n w_jy_j^. > S $$
+\end{dimostrazione}
+\subsection{E.2}
 Dimostrare che i problemi \emph{KP} e \emph{Bounded-KP} sono equivalenti.\\Cioè $KP \Leftrightarrow BKP$.\\
 \begin{dimostrazione}
 	$KP \Rightarrow BKP$: ogni problema \emph{KP} è un problema \emph{BKP}.\\
