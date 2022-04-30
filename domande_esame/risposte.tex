@@ -123,7 +123,7 @@ Il \textbf{Backtracking} è una tecnica algoritmica atta a migliorare la visita 
 Più precisamente vengono introdotti due concetti:
 \begin{itemize}
 	\item \textit{funzione bound:} una funzione che dato un nodo dell'albero delle scelte fornisce un criterio di valutazione sulla possibilità che il sotto-albero avente come radice quel nodo possa o meno fornire una \textit{risposta}
-	\item \textit{pruning}: Rimozione di sotto-alberi dall'analisi dello spazio delle scelte per il quale la \textit{funzione bound} predice l'impossibilità di generare \textit{risposte}.Perchè violerebbero i vincoli espliciti o perchè produrrebbero una \textit{soluzione} peggiore di altre trovate in precedenza
+	\item \textit{pruning}: Rimozione di sotto-alberi dall'analisi dell'albero delle scelte per il quale la \textit{funzione bound} predice l'impossibilità di generare \textit{risposte}.Perchè violerebbero i vincoli espliciti o perchè produrrebbero una \textit{soluzione} peggiore di altre trovate in precedenza
 \end{itemize}
 Il \textbf{Backtracking} può essere visto quindi come una visita \textbf{BruteForce} con k'aggiunta di un filtro.$BT = BF + \text{ \textit{funzione criterio/bound} }+ pruning$
 Ogni algoritmo di \textbf{Backtracking} sarà quindi così composto:
@@ -148,6 +148,35 @@ BT(a,soluzione)=
 	\item \imp{espande(a)}(riga 6) è una funzione che espande il nodo, inserendo i suoi figli tra le possibili soluzioni da visitare e da analizzare. La funzione di \textbf{Backtracking} sarà quindi chiamata ricorsivamente su tutte queste possibili soluzioni.
 	\item \imp{BT(a,soluzione)} (riga 8): lo scopo di effettuare la chiamata ricorsiva sulle soluzioni appena generate è quello di poter effettuare \textit{pruning} su più sottoalberi possibile, individuando più rapidamente i sottoalberi che contengono \textit{risposte}
 \end{itemize}
+\subsection{B.2}
+\begin{itemize}
+	\item \textbf{ordinamento}: una possibile funzione di bound è $a[j-2] > a[j-1]$, presupponendo un vettore $a_0, ... , a_n$ l'algoritmo si basa sul mantenere un indice $j$ t.c. $a_0 \leq ... \leq a_{j-2}$ mentre gli elementi $a_{j}, ..., a_{n}$ non sono ancora stati analizzati.
+	Notiamo però che non ha molto senso utilizzare tecniche \textbf{BruteForce} o derivate, perchè l'operazione di confronto fra due numeri può essere sempre effettuata con consto minimo.Potendo confrontare ogni elemento con tutti gli altri elementi posso cancellare una grossa parte dello spazio delle soluzioni.
+	L'esempio più sciocco di questa cosa è il \textbf{Boublesort} che , pur confrontando ogni elemento dell'insieme con tutti gli altri, è più efficiente di un approccio \textbf{BruteForce}
+	QUESTA COSA HA VERAMENTE SENSO? CONFRONTARSI	
+	\item \textbf{Cammino Hamiltoniano}: formalmente possiamo definire un cammino Hamiltoniano di un grafo $G$ come una sequenza di archi $SE \subset E, G= (V,E)$ che permette di visitare ogni nodo $V$ esattamente una volta.
+	La prima cosa che si può notare è che in questo caso una soluzione equivale ad una risposta, una volta trovato il primo cammino si può effettuare \textit{pruning} di tutto il restante spazio degli stati.\\
+	Una buona \textit{funzione bound} è una funzione che interrompe l'esplorazione quando si cerca di inserire un arco non esistente.partendo da un nodo qualsiasi e scegliendo di visitare un altro nodo possiamo sicuramente escludere tutti i nodi che non sono collegati al nodo di partenza da alcun arco, stessa cosa iterando sul prossimo nodo.Bisogna prestare attenzione al fatto che per come è costruito lo spazio degli stati non è possibile visitare un nodo "già visitato".
+	\item \textbf{Colorazione di un grafo}: Lo scopo del problema è assegnare un colore $c \in C$ ad ogni nodo $v \in V$ di un grafo $G=(V,E)$. in modo che vertici adiacenti abbiano colore diverso.\\
+	Supponiamo di aver colorato fino al nodo $j$ e di avergli dato il colore $c_a$.
+	Guardando il corrispettivo stato nella raffigurazione ad albero dello spazio degli stati (Figura~\ref{FIG:B2_colorazione}) i suoi figli saranno tutti i possibili colori di un altro nodo $x$.Se scelgo di scendere lungo il ramo contrassegnato dal colore $c_a$ mi devo assicurare che tra il nodo $j$ ed il nodo $x$ non vi sia alcun arco.\\
+Se scelgo di scendere verso uno stato contrassegnato da un colore diverso da $c_a$ posso non fare questo controllo.\\
+In entrambi i casi però devo controllare che tutti i nodi connessi da un arco a $x$ abbiano un colore diverso dal colore assegnatogli.\\
+\begin{figure*}[!ht]
+\centering
+\includegraphics[width=0.7\textwidth]{./img/B2_colorazione.png}
+\caption{Albero delle scelte per colorazione} \label{FIG:B2_colorazione}
+\end{figure*}\\
+
+	\item \textbf{Subsetsum}: Siano dati un insieme numerico finito $X$ ed un numero $S$. Determinare l’esistenza di un sottoinsieme $Y$ di $X$, tale che la somma di tutti gli elementi di $Y$ sia pari ad $S$.
+		In questo caso la \textit{funzione bound} si basa su tre concetti:
+	\begin{enumerate}
+		\item se ho trovato una \textit{soluzione} smetto di cercare, sto cercando un generico sottoinsieme, non ho altri vincoli
+		\item se la somma degli elementi inseriti nella \textit{potenziale soluzione} $Z$ (la soluzione in fase di costruzione) è maggiore di S non proseguo.
+		\item se i primi due punti non sono veri sommo agli elementi presenti nella mia \textit{potenziale soluzione} $Z$ tutti gli altri elementi dell'insieme $X$, se il risultato è comunque minore di $S$ non ha senso proseguire.Anche inserendo tutti gli elementi rimasti non otterrei comunque $S$
+	\end{enumerate}
+\end{itemize}
+ESPANDERE CON ESEMPI???
 \section{Branch\&Bound}
 \subsection{C.1}
 \label{SEC:C_1}
@@ -700,7 +729,7 @@ Notiamo anche che tutte queste ottimizzazioni sono relative alla memoria, non al
 \end{figure*}\\
 
 \section{Problemi computazionali}
-\subsection{E.1}
+\subsection{F.1}
 \begin{definition}[SubsetSum]
 	Siano dati un insieme numerico finito $X$ ed un numero $S$. Determinare l’esistenza di un sottoinsieme $Y \subset X$, tale che la somma di tutti gli elementi di $Y$ sia pari ad $S$.
 \end{definition}
@@ -720,7 +749,7 @@ Supponiamo per assurdo che esista una scelta che fornisce un peso maggiore di qu
 Allora $sum_{1 \leq j \leq n} w_jy_j^. > \sum_{j=1}^n w_jx_j^. = S $, ed essendo necessario identificare una sequenza di scelte $z_1,...,z_n$ t.c. $\sum_{j=1}^n w_jz_j \leq S$ non possiamo accettare $y^.$ come istanza risolutiva del problema dal momento che:
 $$\sum_{j=1}^n w_jy_j^. > S $$
 \end{dimostrazione}
-\subsection{E.2}
+\subsection{F.2}
 Dimostrare che i problemi \emph{KP} e \emph{Bounded-KP} sono equivalenti.\\Cioè $KP \Leftrightarrow BKP$.\\
 \begin{dimostrazione}
 	$KP \Rightarrow BKP$: ogni problema \emph{KP} è un problema \emph{BKP}.\\
