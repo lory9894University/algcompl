@@ -514,7 +514,7 @@ for j = 0 to n do
 			$$\exists T, \frac{z^G(T)}{z^*_p(T)}=k$$
 \end{definition}
 \begin{theorem} Ext-greedy $\in \frac{1}{2}-approximation$ del \textbf{Knapsack problem}
-$$\forall I_{kp}, \frac{z^{EXT-GREEDY}(I_{kp})}{z^*_p(I_{kp})} \geq \frac{1}{2}$$
+$$\forall I_{kp}, \frac{z^{EG}(I_{kp})}{z^*_p(I_{kp})} \geq \frac{1}{2}$$
 \end{theorem}
 \begin{dimostrazione}
 	La dimostrazione si basa sulla gerarchia dei profitti presentata in sezione~\ref{SEC:C.13}.\\
@@ -532,7 +532,23 @@ $$\triangleq z^{EXT_GREEDY}(I_{kp}) + z^{EXT_GREEDY}(I_{kp}) = 2z^{EXT_GREEDY}(I
 nel caso peggiore il \textit{profitto ottimale} è il doppio del profitto fornito da \textbf{Extended-Greedy}.
 %il prof sfasa e dice l'opposto https://unito.webex.com/recordingservice/sites/unito/recording/f80a23c69d61103a9dca005056810dc5/playback (minuto 9:40 circa)
 \end{dimostrazione}
-
+\begin{theorem} $\frac{1}{2}$ è una k-approssimazione tight per \textbf{Ext-Greedy}
+	$$\nexists K', K' > \frac{1}{2} \; t.c. \; \forall I, \frac{z^{EG}(I)}{z^*_p(I)} \geq K'$$
+\end{theorem}
+\begin{dimostrazione}
+	Per dimostrarlo basta trovare un'istanza $I$ che fornisca un rapporto $K=\frac{1}{2}$.In realtà possiamo identificare un'intera classe.
+	$$I= ((\vec w = (1,M,M), \vec p = (Q,M,M),2M) \text{ con } 1<Q<2 \leq M$$
+	%io qui ho inserito il \leq M, infatti questa istanza non può esistere con M=1. con M=1 troviamo esattamente Z^*, una 1-approx. il prof ha fatto un errore scrivendo 1<Q<M e si è poi corretto scrivendo 1<Q<2, ma così decadrebbe la seconda uguaglianza della prox equazione.
+	$$ Z^{EG}= max\{Z^G(I),\: max\{Q,M\}\} = max\{Z^G(I),M\} = Q+M$$
+	la prima uguaglianza deriva dal fatto che $Q < M$, la seconda dal fatto che dato il rapporto $\frac{profit}{weight}$ \textbf{Greedy} seglierà sicuramente il primo elemento.Analizziamo gli estremi:
+	\begin{itemize}
+		\item $Q= 1 + \epsilon$
+			$$\lim_{M \to \infty} \frac{Z^{EG}(I)}{Z^*(I)} =  \lim_{M \to \infty}\frac{1+\epsilon + M}{2M} =\lim_{M \to \infty}\frac{1+\epsilon}{2M} + frac{1}{2} = \frac{1}{2}$$
+		\item $Q= 2 - \epsilon$
+			$$\lim_{M \to \infty} \frac{Z^{EG}(I)}{Z^*(I)} =  \lim_{M \to \infty}\frac{2-\epsilon + M}{2M} =\lim_{M \to \infty}\frac{2-\epsilon}{2M} + frac{1}{2} = \frac{1}{2}$$
+	\end{itemize}
+	Dato che entrambi i limiti tendono a $\frac{1}{2}$ si può affermare che $ \forall Q 1+\epsilon \leq Q \leq 2- \epsilon \Rightarrow Z^{EG} \in \frac{1}{2}-approx$
+\end{dimostrazione}
 \subsection{C.11}
 \imp{LKP} è un rilassamento lineare del problema dello zaino, non è quindi necessario trovare una soluzione intera e si può formalizzare come il seguente problema di programmazione lineare:
 \begin{align*}
