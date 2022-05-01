@@ -508,7 +508,31 @@ for j = 0 to n do
 			\item analizzati tutti gli elementi concludi il ciclo.
 			\item confronta il valore ottenuto dal ciclo con il valore di ogni oggetto, se esiste un elemento che fornisce un risultato migliore di quello trovato nel ciclo (righe 3-8) allora inserisco solo quell'elemento nello zaino. $Z_{risposta} = max\{z, max\{p_1 ... p_n\}\}$
 		\end{enumerate}
-DA FARE	
+		\begin{definition}[K-approssimazione]:Un algoritmo $G$ fonisce una \textit{k-approssimazione} con $0 \leq k \leq 1$ se per ogni istanza $I$ del problema $P$ che $G$ risolve , il rapporto tra il profitto calcolato con $G, z^G(I)$ ed il profitto ottimale $z^*_p(I)$ è almeno pari a $k$:
+			$$\forall I, \frac{z^G(I)}{z^*_p(I)} \geq k$$
+		La k-approximation è tight, stretta, se non è possibile migliorarla.
+			$$\exists T, \frac{z^G(T)}{z^*_p(T)}=k$$
+\end{definition}
+\begin{theorem} Ext-greedy $\in \frac{1}{2}-approximation$ del \textbf{Knapsack problem}
+$$\forall I_{kp}, \frac{z^{EXT-GREEDY}(I_{kp})}{z^*_p(I_{kp})} \geq \frac{1}{2}$$
+\end{theorem}
+\begin{dimostrazione}
+	La dimostrazione si basa sulla gerarchia dei profitti presentata in sezione~\ref{SEC:C.13}.\\
+$$\hat p \leq z^G \leq z^* \leq \lfloor z^LP \rfloor  \leq z^LP \leq \hat p + p_split \leq z^G + p_{split}$$
+
+
+$\forall I_{kp} \; z^*(I_{kp}) \leq z^G(I_{kp}) + p_{max}$ ove $p_{max}$ è il massimo profitto offerto da un elemento (non è p-split).\\
+possiamo maggiorare entrambi i membri dell'equazione:
+$$z^G(I_{kp}) \leq max\{z^G(I_{kp}), p_{max}\}$$
+$$p_{max} \leq max\{z^G(I_{kp}), p_{max}\}$$
+$$ \textit{allora } z^G(I_{kp}) + p_{max} \leq max\{z^G(I_{kp}), p_{max}\} + max\{z^G(I_{kp}), p_{max}\}$$
+Notiamo che l'espressione $max\{z^G(I_{kp}), p_{max}\}$ coincide con la definizione di \textbf{Extended-Greedy}, quindi posso sostituirlo nell'equazione.
+$$\triangleq z^{EXT_GREEDY}(I_{kp}) + z^{EXT_GREEDY}(I_{kp}) = 2z^{EXT_GREEDY}(I_{kp}) $$
+
+nel caso peggiore il \textit{profitto ottimale} è il doppio del profitto fornito da \textbf{Extended-Greedy}.
+%il prof sfasa e dice l'opposto https://unito.webex.com/recordingservice/sites/unito/recording/f80a23c69d61103a9dca005056810dc5/playback (minuto 9:40 circa)
+\end{dimostrazione}
+
 \subsection{C.11}
 \imp{LKP} è un rilassamento lineare del problema dello zaino, non è quindi necessario trovare una soluzione intera e si può formalizzare come il seguente problema di programmazione lineare:
 \begin{align*}
@@ -547,6 +571,7 @@ Eseguiamo \textbf{Greedy-LKP} sull'istanza del problema: $$(\vec w = (2, 3, 6, 7
 	$$ z^{LP}= 6 + 5 + (8 * \frac{5}{6} ) = \frac{53}{3} \qquad x^{LP} = (1,1,\frac{5}{6},0,0,0) $$
 \end{adjustwidth}
 \subsection{C.13}
+\label{SEC:C.13}
 La seguente gerarchia illustra i valori di profitto offerti dai vari algoritmi:
 $$\hat p \leq z^G \leq z^* \leq \lfloor z^LP \rfloor  \leq z^LP \leq \hat p + p_split \leq z^G + p_{split}$$
 Abbiamo i valori ottenuti da \textbf{Greedy-split} ($\hat p$), \textbf{Greedy}($z^G$) e \textbf{Greedy-LKP}($z^{LP}$).\\
