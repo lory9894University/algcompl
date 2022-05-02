@@ -95,12 +95,27 @@ Dimostrare che è algoritmo che genera permutazioni di una lista di elementi è 
 	Allo stesso modo $len(permutation)$ [ ] $= len($[ [ ] ]$) = 1$.\\
 	Quindi $len($\textit{permutation} $l) = len(l)!$
 	
-	\textit{Caso induttivo}: $l = h::t$, quindi l'enunciato da dimostrare è\\ $len($\textit{permutation} $[h::t]) = len([h::t])!$\\
-	$len(h::t) = 1 + len(t)$\\
-	Quindi $len(distribute$ $a$ $[h::t]) = 2 + len(t)$ che per il Lemma distribute\_lenght diventa $len((a::t)::distribute$ $a$ $t) = 2 + len(t)$
-	INSERIRE FOTO LEMMA DISTRIBUTE
-	DA FARE
+	\textit{Caso induttivo}: riprendiamo l'ipotesi induttiva: $len(permutation \; t) = len(t)!$
+	$l = h::t$, l'enunciato da dimostrare è $$len(permutation \; [h::t]) = len([h::t])!$$
+	Risulta ovvio che $len(h::t) = 1 + len(t)$.
+	Per ipotesi induttiva il numero di liste generate da $permutation \; t$ sarà $len(t)!$.\\
+	Per definizione \textbf{permutation h::t} calcola tutte le permutazioni di $t$ e poi applica ad ogni lista $l' \in permutation \;t$ l'operazione distribute incrementandole di un elemento.
+	$$len(h::t) = len(concat\_map \; (distribute \; h) (permutation \; t))$$
+\begin{figure*}[!ht]
+\centering
+\includegraphics[width=0.7\textwidth]{./img/A3_distribute.png}
+\caption{Lemma distribute lenght} \label{FIG:A3_distribute}
+\end{figure*}\\
+	Intuitivamente stiamo ripetendo l'operazione $distribute \; h \; l'$ per $len(t) ! $ volte ogni volta producendo una lista di $1 + len(l')$ elementi, quindi otterremo una lista di liste con $(1 + len(l')) * len(t)! $ elementi.\\
+	Essendo le liste $l'$ permutazioni di $t$ dovrà valere la sequente equivalenza $len(l') = len(t) $, dato che sto solo eseguendo scambi, non sto aggiungendo ne togliendo elementi.\\
+	Sostituendo $len(t)$ a $len(l')$ nell'equazione che specificava il numero di elementi delle liste otteniamo che $permutation  \; h::t$ genera una lista di liste di $(1+len(t)) * len(t)!$ elementi.\\
+	Dato che $(1+len(t)) * len(t)! = len([h::t])!$ possiamo affermare che: %perchè è vera l'equivalenza?
+	$$len(permutation \; [h::t]) = len([h::t])!$$
 \end{dimostrazione}
+Notiamo due cose:
+Ho affermato che intuitivamente $distribute \; h \; l'$ ripetuto $len(t)$ volte produce una lista di $ 1 + len(l')$ elementi, questo andrebbe dimostrato.
+L'altra affermazione che andrebbe dimostrata è "essendo le liste $l'$ permutazioni di $t$".Infatti tale affermazione si basa sull'assunto che \textbf{permutation t} produca permutazioni di $t$, che non è nient'altro che il teorema di corretteza delle permutazioni.
+Quindi la completezza si basa sulla correttezza
 \subsection{A.4}
 \begin{itemize}
 	\item \textbf{Permutazioni}:Si può individuare una \emph{risposta} al problema \textbf{Valutazione} generando l'albero di tutte le possibili permutazioni:
@@ -177,6 +192,21 @@ In entrambi i casi però devo controllare che tutti i nodi connessi da un arco a
 	\end{enumerate}
 \end{itemize}
 ESPANDERE CON ESEMPI???
+\subsection{B.3}
+\begin{figure*}[!ht]
+\centering
+\scalebox{1.8}{
+\includegraphics[width=0.4\textwidth]{./img/B3_recursive.png}
+\includegraphics[width=0.4\textwidth]{./img/B3_iterative.png}
+}
+\caption{Backtracking ricorsivo ed iterativo} \label{FIG:B3_algorithms}
+\end{figure*}
+La sostanziale differenza tra i due algoritmi sta in come viene generato lo \textit{spazio degli stati}, in un caso ricorsivamente, nell'altro tramite un algoritmo iterativo.\\
+Questa distinzione è importante in quanto la versione ricorsiva fornisce uno stack implicito, assente nella versione iterativa.Bisogna quindi implementare una struttura dati che permetta di effettuare le operazioni che nel libro (riga 9-10) vengono definite in maniera informale.
+
+La scelta più ovvia ricade su una coda \textit{FIFO}
+%cosa minchia vuole????
+
 \section{Branch\&Bound}
 \subsection{C.1}
 \label{SEC:C_1}
