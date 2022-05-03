@@ -799,6 +799,72 @@ Notiamo anche che tutte queste ottimizzazioni sono relative alla memoria, non al
 \caption{Ottimizzazioni della tabella} \label{FIG:D2_ottimizzazioni}
 \end{figure*}\\
 
+\section{Complessità computazionale}
+\subsection{E.1}
+Una volta accordatici su una ragionevole rappresentazione dell'input si può parlare dei modelli di computazione, riconducendoci alla capacità degli automi (Macchine di Turing) di riconoscere un linguaggio.\\
+Le Macchine di Turing deterministiche (\textbf{DTM}) sono composte da un nastro infinito ed una testina in grado di leggere e scrivere, in particolare hanno 3 caratteristiche:
+\begin{enumerate}
+	\item un set finito di simboli scrivibili sul nastro (alfabeto).
+	\item un set di stati in cui sono presenti alcuni stati particolari: uno \textit{stato iniziale} ed uno o più \textit{stati finali}.
+	\item una fuzione di transizione che deterministicamente spiega come si muove la testina.Deterministicamente poichè dato uno stato ed un simbolo in input segue una sola possibile configurazione futura.
+\end{enumerate}
+Posta una \textbf{DTM} si può informalmente definite la complessità come \textit{il numero di "passi" necessari alla computazione prima di giungere in uno stato finale}, naturalmente in realazione alla lunghezza dell'input.\\
+La classe \textbf{PTime} contiene tutti i problemi che possono essere risolti tramite una \textbf{DTM} in un numero di "passi" polinomiale.Formalmente: $$\exists p \; t.c. \; \forall x \in \{0,1\}^* \; costo(DTM(x)) \leq p(\lvert x \rvert)$$
+Cioè esiste un polinomio $p$ tale che per ogni possibile sequenza di 0 ed 1 in input ha un costo computazionale minore o uguale del calcolo del polinomio sulla dimensione della sequenza di input.
+\begin{figure*}[!ht]
+\centering
+\includegraphics[scale = 0.5]{./img/E1_DTM.png}
+\caption{costo di DTM(x)} \label{FIG:E1_DTM}
+\end{figure*}
+
+
+La classe \textbf{NPTime} si basa invece sul concetto di Macchina di Turing \textbf{non} deterministica (\textbf{NDTM}).\\
+A differenza delle \textbf{DTM} non vi è una sola "testina", bensì due: un \textit{controllo a stati finiti} che può leggere o scrivere (è la testina della \textbf{DTM}), limitato a lavorare sulle celle$[0 + \infty)$, ed un \textit{guessing module} che lavora invece sulle celle $[-1,- \infty)$.\\
+Questo "oracolo" scrive a caso nelle celle, generando una sequenza casuale di simboli dell'alfabeto (\textit{guessing stage}.
+Anche la lunghezza della stringa generata è casuale, potenzialmente infinita.\\
+Una volta concluso il lavoro del \textit{guessing module} il \textit{controllo a stati finiti} inizia a computare non solo basandosi sull'input e sullo stato, ma anche sulla stringa generata dall' \textit{oracolo} in maniera non predicibile \textit{checking stage}.
+Una stringa è accettata se il \textit{controllo a stati finiti} si ferma su uno stato di accettazione, per una qualche stringa generata dal \textit{guessing module}, se non vi è alcuna stringa "oracolare" che permette di arrivare ad uno stato di accettazione la stringa è rifiutata.
+%vedila come una computazione parallela. il guessing module rappresenta tutto il possibile spazio degli stati
+
+
+La classe \textbf{NPTime} contiene tutti i problemi che possono essere risolti tramite una \textbf{NDTM} in un numero di "passi" polinomiale.Formalmente: $$\exists p \; t.c. \; \forall x \in \{0,1\}^* \; costo(NDTM(x)) \leq p(\lvert x \rvert)$$
+È possibile vedere questa classe di algoritmi anche sfruttando il formalismo delle \textbf{DTM}
+$$\exists p \; t.c. \; \forall x \in \{0,1\}^* \; costo(DTM(x,y)) \leq p(\lvert x \rvert)$$
+	Cioè la sequenza in input viene verificata in tempo polinomiale rispetto alla dimensione dell'input da una \textbf{DTM} a cui viene fornita non solo l'input ma anche la stringa generata dall'oracolo che si sà condurre ad una soluzione (comunenmente detta certificato).
+\begin{figure*}[!ht]
+\centering
+\includegraphics[scale = 0.5]{./img/E1_NDTM.png}
+\caption{costo di NDTM(x)} \label{FIG:E1_NDTM}
+\end{figure*} 
+\subsection{E.4}
+La teoria della \imp{NP-completeness} si è sviluppata in relazione alla complessità di problemi decisionali, non di ottimizzazione, a causa di come si è evoluta la teoria degli automi.\\
+Infatti utilizzando il formalismo degli automi (Macchine di Turing) risulta molto più naturale guardare al problema come se fosse un linguaggio da decidere. Se l'input fornito appartiene al linguaggio l'automa risponderà \textit{True}, \textit{False} altrimenti.\\
+Nasce quindi la necessità di passare da problemi di ottimizzazione a problemi decisionali, per poterne valutare la complessità, e viceversa.
+
+Analizziamo il caso del problema \textbf{KP} per spiegare informalmente che questa trasformazione è sempre possibile.
+\begin{itemize}
+	\item Ottimizzazione $\rightarrow$ Decisione, risolvere il problema decisionale vuol dire risolvere anche il corrispettivo problema di ottimizzazione.\\
+	Dato un algoritmo che risolve \textbf{KP(l,c)} possiamo costruire un algoritmo per risolvere \textbf{KP(c)}, l'intuizione è sollevare il \textit{lower bound l} finchè non trovo più alcuna soluzione.
+Segue l'algoritmo in pseudocodice in cui l'operazione $sum(p\_i)$ indica la somma di tutti i pesi degli elementi del vettore soluzione trovato.
+\begin{lstlisting}[xleftmargin=15pt, language=Java ]
+l=0
+z*=0
+for (l=0 ; l <= sum(p_i), l++)
+    if(KP(l,c) != true)
+        z* = l-1
+return z*
+\end{lstlisting}
+\item Decisione $\rightarrow$ Ottimizzazione, risolvere il problema di ottimizzazione vuol dire risolvere anche il corrispettivo problema decisionale.\\
+	Nel caso del problema \textbf{Knapsack} è molto semplice da dimostrare.Avendo un algoritmo che risolve \textbf{KP(c)} possiamo ottenere una soluzione $z^*$, se tale soluzione è $\leq l$ rispondiamo $True$ al problema decisionale, $False$ altrimenti:
+
+\begin{lstlisting}[xleftmargin=15pt, language=Java ]
+z* = KP(c)
+if (z >= l)
+    return true
+else
+    return false
+\end{lstlisting}
+\end{itemize}
 \section{Problemi computazionali}
 \subsection{F.1}
 \begin{definition}[SubsetSum]
