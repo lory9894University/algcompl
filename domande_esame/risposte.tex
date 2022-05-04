@@ -616,6 +616,38 @@ Eseguiamo \textbf{Greedy-LKP} sull'istanza del problema: $$(\vec w = (2, 3, 6, 7
 	Ottenuta la frazione si calcola il \textit{profitto} ed il corrispondente vettore risposta
 	$$ z^{LP}= 6 + 5 + (8 * \frac{5}{6} ) = \frac{53}{3} \qquad x^{LP} = (1,1,\frac{5}{6},0,0,0) $$
 \end{adjustwidth}
+\subsection{C.12}
+Dire che un algoritmo gode della cosiddetta \textit{greedy-choice property} vuol dire che "scelte ottime locali forniscono un ottimo locale".\textbf{Greedy-LKP} è un esempio di tale situazione.
+\begin{theorem}
+	Se $\frac{p_1}{w_1} \leq \frac{p_2}{w_2} \leq ...$ allora il vettore soluzione 
+	$x^{LP}= (1, ... ,1,\frac{c- \sum_{1 \leq k \leq s}w_k}{w_s} ,0, ... ,0)$ che produce
+	$z^{LP} = (\sum_{1 \leq k \leq s} p_k)+\frac{p_s}{w_s}(c- \sum_{1 \leq k \leq s}w_k)$ è ottimale 
+\end{theorem}
+Per semplicità chiamiamo $c- \sum_{1 \leq k \leq s}w_k \; w_s^{LP}$
+\begin{dimostrazione}
+	Supponiamo per assurdo che esista un vettore soluzione migliore.
+	$$ \exists y =(y_1, ..., y_n) \; t.c. \; \sum_{1 \leq k \leq n}y_nw_k > \sum_{1 \leq k \leq s} p_k+\frac{p_s}{w_s}w_s^{LP} \text{ e }\sum_{1 \leq k \leq n}y_nw_k = (\sum_{1 \leq k \leq s}w_k)+ w_s^{LP}  $$
+	Cioè un vettore $y$ che fonisce un profitto migliore di $x^{LP}$ saturando lo spazio.\\
+	Per proseguire la dimostrazione bisogna analizzare caso per caso in cosa è differente il vettore $y$ dal vettore $x^{LP}$.\\
+	Analizziamo ad esempio il seguente caso, in cui il vettore $y$ (sopra) è presentato a confronto con il vettore $x^{LP}$ (sotto)
+	\begin{table}[!ht]
+		\centering
+\begin{tabular}{lllllll}
+\hline
+\multicolumn{1}{|l|}{1} & \multicolumn{1}{l|}{$y_a$} & \multicolumn{1}{l|}{1} & \multicolumn{1}{l|}{$x_s^{LP}$} & \multicolumn{1}{l|}{0} & \multicolumn{1}{l|}{$y_b$} & \multicolumn{1}{l|}{0} \\ \hline
+\multicolumn{1}{|l|}{1} & \multicolumn{1}{l|}{1}    & \multicolumn{1}{l|}{1} & \multicolumn{1}{l|}{$x_s^{LP}$} & \multicolumn{1}{l|}{0} & \multicolumn{1}{l|}{0}    & \multicolumn{1}{l|}{0} \\ \hline
+                        & a                         &                        & s                                                 &                        & b                         &                       
+\end{tabular}
+\end{table}
+$y_aw_a +  y_bw_b = w_a$ dato che lo spazio disponibile deve essere riempito qualsiasi frazione di peso dell'elemento con indice $a$ (che potrebbe anche essere 1, toglo tutte l'elemento) che io tolgo deve essere "riaggiunta" con l'inserimento di parte dell'elemento b.
+$$y_bw_b=w_a(1-y_a)$$
+$$\frac{w_b}{w_a}=\frac{1-y_a}{y_b}$$
+Invece per ipotesi il profitto generato deve essere maggiore, quindi $y_ap_a +  y_bp_b = p_a$
+$$y_bp_b=p_a(1-y_a)$$
+$$\frac{p_b}{p_a}=\frac{1-p_a}{p_b}$$
+Ciò vuol dire che $\frac{p_b}{p_a} > \frac{w_b}{w_a}$ che può essere riscritto come $\frac{p_b}{w_b} > \frac{p_a}{w_a}$% nota che sto semplicemente moltiplicando per p_a e dividendo per w_b
+È ciò va contro l'ipotesi, in quando il vettore è ordinato in base al rapporto $\frac{price}{weight}$.
+\end{dimostrazione}
 \subsection{C.13}
 \label{SEC:C.13}
 La seguente gerarchia illustra i valori di profitto offerti dai vari algoritmi:
@@ -836,6 +868,33 @@ $$\exists p \; t.c. \; \forall x \in \{0,1\}^* \; costo(DTM(x,y)) \leq p(\lvert 
 \includegraphics[scale = 0.5]{./img/E1_NDTM.png}
 \caption{costo di NDTM(x)} \label{FIG:E1_NDTM}
 \end{figure*} 
+\subsection{E.2}
+Utlizzare il formalismo delle macchine di Turing è scomodo e complesso per essere usato direttamente per il calcolo del costo computazionale.
+Abbiamo bisogno di lavorare su strutture dati complesse con strumenti più "di alto livello" senza doverci per forza ricondurre al binario, ma mantenendo la possibilità di definire la complessità.\\
+La soluzione è definire dei linguaggi in cui poter scrivere i programmi che corrispondano ad una macchina di Turing, semplificandone l'utilizzo, come se fosse una API per interagire con una macchina di Turing.
+\begin{itemize}
+	\item LID (\textit{Linguaggio Imperativo Deterministico}) corrispondente alle \textbf{DTM}\\
+		Possiamo quindi dire che la classe \textbf{PTime} è l' insieme dei problemi risolvibili da programmi scritti in un linguaggio imperativo, deterministico .\\
+		%(in un numero di passi polinomiale?)
+		Questo linguaggio è la base di ogni linguaggio di programmazione, dato che fornisce le operazioni di:
+		\begin{itemize}
+			\item assegnazione: la possibilità di assegnare a variabili valori calcolati con espressioni aritmetiche.
+			\item sequenza: possibilità di decidere in che ordine verranno eseguite le assegnazioni
+			\item selezione: decidere in funzione del valore di una variabile quale operazione eseguire
+			\item iterazione: ripetere più volte una operazione.
+		\end{itemize}
+	\item LNID (\textit{Linguaggio Non Imperativo Deterministico}) corrispondente alle \textbf{NDTM}\\
+		Questo linguaggio estende il LID aggiungendo una operazione \textit{scelta(n)}.
+		Questa primitiva genera $n$ "branch" paralleli che proseguono l'esecuzione.\\
+		Ad esempio l'istruzione \texttt{x <- scelta(3)} produce 3 "thread" che eseguono la prossima istruzione uno usando $x=0$, un altro usando $x=1$ e l'ultimo usando $x=2$.\\
+		\begin{figure*}[!ht]
+		\centering
+		\includegraphics[scale = 0.5]{./img/E2.png}
+		\caption{Istruzione scelta} \label{FIG:E2}
+		\end{figure*}\\
+		In tal modo è possibile generare una programma che contemporaneamente computa tutti it possibili stati dell'albero delle scelte, come mostrato in figura~\ref{FIG:E1_NDTM}
+		\end{itemize}
+
 \subsection{E.4}
 La teoria della \imp{NP-completeness} si è sviluppata in relazione alla complessità di problemi decisionali, non di ottimizzazione, a causa di come si è evoluta la teoria degli automi.\\
 Infatti utilizzando il formalismo degli automi (Macchine di Turing) risulta molto più naturale guardare al problema come se fosse un linguaggio da decidere. Se l'input fornito appartiene al linguaggio l'automa risponderà \textit{True}, \textit{False} altrimenti.\\
