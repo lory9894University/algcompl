@@ -894,6 +894,20 @@ La soluzione è definire dei linguaggi in cui poter scrivere i programmi che cor
 		\end{figure*}\\
 		In tal modo è possibile generare una programma che contemporaneamente computa tutti it possibili stati dell'albero delle scelte, come mostrato in figura~\ref{FIG:E1_NDTM}
 		\end{itemize}
+\subsection{E.3}
+Utlizzare il formalismo delle macchine di Turing è scomodo e complesso per essere usato direttamente per il calcolo del costo computazionale.
+Abbiamo bisogno di lavorare su strutture dati complesse con strumenti più "di alto livello" senza doverci per forza ricondurre al binario, ma mantenendo la possibilità di definire la complessità.\\
+La soluzione è definire dei linguaggi in cui poter scrivere i programmi che corrispondano ad una macchina di Turing, semplificandone l'utilizzo, come se fosse una API per interagire con una macchina di Turing.
+
+È possibile basare la definizione di classe \textbf{PTime} su un linguaggio \textbf{LID} (e quella di \textbf{NPTime} su un linguaggio \textbf{LIND}) perchè esiste una codifica tra il linguaggio e la macchina che non introduce complessità computazionale maggiore di un polinomio.
+Cioè è possibile "simulare" il funzionamento dell'algoritmo tramite una macchina di Turing e il costo di questa \textit{simulazione} è polinomiale.\\
+La figura~\ref{FIG:E3} mostra che è possibile simulare un passo di un algoritmo, scritto in un linguaggio, facendo compiere una serie di passi ad una macchina di Turing.Posto di voler simulare $c$ passi dell'algoritmo la corrispondente macchina necessiterà di $s(c)$ passi, ove la funzione $s$ è polinomiale.
+Perciò possiamo affermare che un algoritmo scritto in linguaggio \textbf{LID} ha una data complessità perchè è possibile simulare il suo funzionamento tramite una macchina di Turing inserendo un overhead al massimo polinomiale, quindi senza modificare la sua complessità.
+\begin{figure*}[!ht]
+\centering
+\includegraphics[width = 1\textwidth]{./img/E3.png}
+\caption{Overhead polinomiale} \label{FIG:E3}
+\end{figure*}\\
 
 \subsection{E.4}
 La teoria della \imp{NP-completeness} si è sviluppata in relazione alla complessità di problemi decisionali, non di ottimizzazione, a causa di come si è evoluta la teoria degli automi.\\
