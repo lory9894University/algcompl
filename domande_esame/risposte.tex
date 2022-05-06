@@ -103,13 +103,13 @@ Dimostrare che è algoritmo che genera permutazioni di una lista di elementi è 
 	$$len(h::t) = len(concat\_map \; (distribute \; h) (permutation \; t))$$
 \begin{figure*}[!ht]
 \centering
-\includegraphics[width=0.7\textwidth]{./img/A3_distribute.png}
+\includegraphics[width=1\textwidth]{./img/A3_distribute.png}
 \caption{Lemma distribute lenght} \label{FIG:A3_distribute}
 \end{figure*}\\
 	Intuitivamente stiamo ripetendo l'operazione $distribute \; h \; l'$ per $len(t) ! $ volte ogni volta producendo una lista di $1 + len(l')$ elementi, quindi otterremo una lista di liste con $(1 + len(l')) * len(t)! $ elementi.\\
 	Essendo le liste $l'$ permutazioni di $t$ dovrà valere la sequente equivalenza $len(l') = len(t) $, dato che sto solo eseguendo scambi, non sto aggiungendo ne togliendo elementi.\\
 	Sostituendo $len(t)$ a $len(l')$ nell'equazione che specificava il numero di elementi delle liste otteniamo che $permutation  \; h::t$ genera una lista di liste di $(1+len(t)) * len(t)!$ elementi.\\
-	Dato che $(1+len(t)) * len(t)! = len([h::t])!$ possiamo affermare che: %perchè è vera l'equivalenza?
+	Dato che $(1+len(t)) * len(t)! = len([h::t])!$ possiamo affermare che: %perchè è vera l'equivalenza? scemo, è un fattoriale (1 +n)* n! = (1 + n)! per definizione.
 	$$len(permutation \; [h::t]) = len([h::t])!$$
 \end{dimostrazione}
 Notiamo due cose:
@@ -168,7 +168,6 @@ BT(a,soluzione)=
 	\item \textbf{ordinamento}: una possibile funzione di bound è $a[j-2] > a[j-1]$, presupponendo un vettore $a_0, ... , a_n$ l'algoritmo si basa sul mantenere un indice $j$ t.c. $a_0 \leq ... \leq a_{j-2}$ mentre gli elementi $a_{j}, ..., a_{n}$ non sono ancora stati analizzati.
 	Notiamo però che non ha molto senso utilizzare tecniche \textbf{BruteForce} o derivate, perchè l'operazione di confronto fra due numeri può essere sempre effettuata con consto minimo.Potendo confrontare ogni elemento con tutti gli altri elementi posso cancellare una grossa parte dello spazio delle soluzioni.
 	L'esempio più sciocco di questa cosa è il \textbf{Boublesort} che , pur confrontando ogni elemento dell'insieme con tutti gli altri, è più efficiente di un approccio \textbf{BruteForce}
-	QUESTA COSA HA VERAMENTE SENSO? CONFRONTARSI	
 	\item \textbf{Cammino Hamiltoniano}: formalmente possiamo definire un cammino Hamiltoniano di un grafo $G$ come una sequenza di archi $SE \subset E, G= (V,E)$ che permette di visitare ogni nodo $V$ esattamente una volta.
 	La prima cosa che si può notare è che in questo caso una soluzione equivale ad una risposta, una volta trovato il primo cammino si può effettuare \textit{pruning} di tutto il restante spazio degli stati.\\
 	Una buona \textit{funzione bound} è una funzione che interrompe l'esplorazione quando si cerca di inserire un arco non esistente.partendo da un nodo qualsiasi e scegliendo di visitare un altro nodo possiamo sicuramente escludere tutti i nodi che non sono collegati al nodo di partenza da alcun arco, stessa cosa iterando sul prossimo nodo.Bisogna prestare attenzione al fatto che per come è costruito lo spazio degli stati non è possibile visitare un nodo "già visitato".
@@ -179,7 +178,7 @@ Se scelgo di scendere verso uno stato contrassegnato da un colore diverso da $c_
 In entrambi i casi però devo controllare che tutti i nodi connessi da un arco a $x$ abbiano un colore diverso dal colore assegnatogli.\\
 \begin{figure*}[!ht]
 \centering
-\includegraphics[width=0.7\textwidth]{./img/B2_colorazione.png}
+\includegraphics[width=1\textwidth]{./img/B2_colorazione.png}
 \caption{Albero delle scelte per colorazione} \label{FIG:B2_colorazione}
 \end{figure*}\\
 
@@ -192,13 +191,13 @@ In entrambi i casi però devo controllare che tutti i nodi connessi da un arco a
 	\end{enumerate}
 \end{itemize}
 ESPANDERE CON ESEMPI???
+%pensarci in futuro
 \subsection{B.3}
 \begin{figure*}[!ht]
 \centering
-\scalebox{1.8}{
-\includegraphics[width=0.4\textwidth]{./img/B3_recursive.png}
-\includegraphics[width=0.4\textwidth]{./img/B3_iterative.png}
-}
+\makebox[\textwidth][c]{
+\includegraphics[width=0.85\textwidth]{./img/B3_recursive.png}
+\includegraphics[width=0.85\textwidth]{./img/B3_iterative.png}}
 \caption{Backtracking ricorsivo ed iterativo} \label{FIG:B3_algorithms}
 \end{figure*}
 La sostanziale differenza tra i due algoritmi sta in come viene generato lo \textit{spazio degli stati}, in un caso ricorsivamente, nell'altro tramite un algoritmo iterativo.\\
@@ -207,6 +206,14 @@ Questa distinzione è importante in quanto la versione ricorsiva fornisce uno st
 La scelta più ovvia ricade su una coda \textit{FIFO}
 %cosa minchia vuole????
 
+entrambe gli algoritmi prendono come riferimento una struttura ad albero.
+
+La differenza sta in come la usano. Entrambi fanno una visita in profondità
+%rappresentare graficamente la struttura dati?
+Bk è la funzione di bound. T restituisce un ramo data una sequenza di x da 1 a k
+parto da k=1 e
+
+%https://drive.google.com/file/d/1QRzbhvOApvdxzxp6NivopsDgRI3gBpzG/view pagina 10 e 11
 \section{Branch\&Bound}
 \subsection{C.1}
 \label{SEC:C_1}
@@ -310,6 +317,7 @@ Notiamo anche che dati due nodi $x,y$ se $y$ è un discendente di $x$ ci aspetti
 \textbf{punto 2}
 \begin{adjustwidth}{.8cm}{0cm}
 DOPO AVER RICORDATO? cioè devo riscrivere la definizione? mi sembra ridondante.\\
+%copia ed incolla magari abbreviando la definizione
 Analizziamo la situazione: $f(h(x)) =0$, in questo caso il \textit{costo noto} non ha influenza sul risultato generato da $\hat c(x)$ e la \textit{funzione costo} può essere riscritta come $$\hat c(x) = \hat g(x)$$
 Questo ci riporta ad un algoritmo di \textit{Backtracking}, in quanto non vi è "penalità" nell' espandere nodi in profondità nell'albero degli stati.Considerando che dati due nodi $x,y$ se $y$ è un discendente di $x$ allora $\hat g(x) > \hat g(y)$ la scelta che minimizza la \textit{funzione costo} è sempre quella che espande un nodo di livello successivo, quindi una \textit{D-search}.
 Immaginiamo ad esempio due \textit{live node} $x,z$, l' \textit{E-node} è $x$ e genera due discendenti: $w_1, w_2$.
@@ -323,6 +331,7 @@ Immaginiamo ad esempio due \textit{live node} $x,z$, l' \textit{E-node} è $x$ e
 \textbf{punto 3}
 \begin{adjustwidth}{.8cm}{0cm}
 DOPO AVER RICORDATO? cioè devo riscrivere la definizione? mi sembra ridondante.\\
+%copia ed incolla magari abbreviando la definizione
 Analizziamo la situazione: $f(h(x)) \neq 0$, $\hat c(x) = f(h(x)) + \hat g(x)$.\\
 Riprendendo l'idea del punto precendente abbiamo due \textit{live node} $x,z$, l'\textit{E-node} è $x$ e genera discendenti chiamati $w_1,..., w_n$.
 \begin{align}        
@@ -367,7 +376,12 @@ Immaginiamo ad esempio due \textit{live node} $x,z$, l' \textit{E-node} è $x$ e
 Di conseguenza il prossimo \textit{E-node} sarà scelto tra $w_1$ e $w_2$
 
 \end{itemize}
+\subsection{C.5}
+recordo è un nodo
+listnode è una lista di record.
 
+%listnode definisce una struttura dati che rappresenta uno spazio degli stati ad albero.
+% volendo si piò aggiungere che a seconda di come è implementata listnode () abbiamo un differente comportamento nel caso in cui abbiamo due nodi con lo stesso costo.
 \subsection{C.6}
 L'idea da cui partire per sviluppare una \textit{funzione costo} per \imp{SubsetSum} è quella di individuare un intervallo di valori al cui interno è compreso il valore \emph{s} del problema \imp{SubsetSum} $X =({X_0 ... X_{n-1}},S)$ 
 Per chiarezza presentiamo con $X_k$ il valore numerico di un elemento, $x_k \in {0,1}$ indica se il numero è inserito nell'insieme o no.
@@ -387,13 +401,13 @@ Ma a parità di \imp{costo} bisogna comunque affidarsi ad uno dei due criteri (\
 
 E naturalmente anche possibile migliorare l'efficenza di questa visita tramite pruning rimuovendo i rami dell'albero il cui valore $ f(h(x[0..j))) + \hat g(x[0..j)) - V > S$.Non ha infatti senso esplorare i sottoalberi che generano, in quanto non possono contenere soluzioni.
 %oltretutto nella funzione costo cerco di minimizzare il lower bound, altrimenti sarebbe un branch and bound
-%non mi convince per nulla la cosa di LIFO/FIFO sembra che il prof voglia che analiziamo il suo codice e ne traiamo delle conclusioni.
 \subsection{C.7}
 Per raffigurare matematicamente la scacchiera si può immaginare un insieme $X$ con $|X| = n*n$, essendo le regine 4 la scacchiera ha 64 caselle e quindi $|X| = 64$ in questa istanza.
 \begin{itemize}
 	\item La parte nota è data dalle caselle della scacchiera non occupabili, quindi le celle in cui è presente una regina o in cui una regina può muoversi e di conseguenza mangiare
+%la funzione di costo
 \end{itemize}
-
+%la stima 
 %DISEGNO SCACCHIERA + ALBERO?
 
 \subsection{C.8}
