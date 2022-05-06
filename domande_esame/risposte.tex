@@ -397,6 +397,7 @@ Analisi dell'algoritmo:
 	\item Quando tutti i figli di un nodo sono stati aggiunti alla \textit{listnode} il nodo è sostanzialmente diventato un \textit{Dead node} ed il nodo che fornisce il minimo valore della \textit{funzione costo} viene scelto come prossimo \imp{E-node}.
 \end{itemize}
 \subsection{C.6}
+\label{SEC:C6}
 L'idea da cui partire per sviluppare una \textit{funzione costo} per \imp{SubsetSum} è quella di individuare un intervallo di valori al cui interno è compreso il valore \emph{s} del problema \imp{SubsetSum} $X =({X_0 ... X_{n-1}},S)$ 
 Per chiarezza presentiamo con $X_k$ il valore numerico di un elemento, $x_k \in {0,1}$ indica se il numero è inserito nell'insieme o no.
 Come descritto nella sezione~\ref{SEC:C3} la \textit{funzione costo} $\hat c$ è composta da una \textit{parte nota} ed una \textit{parte stimata}.
@@ -417,13 +418,25 @@ E naturalmente anche possibile migliorare l'efficenza di questa visita tramite p
 %oltretutto nella funzione costo cerco di minimizzare il lower bound, altrimenti sarebbe un branch and bound
 \subsection{C.7}
 Per raffigurare matematicamente la scacchiera si può immaginare un insieme $X$ con $|X| = n*n$, essendo le regine 4 la scacchiera ha 64 caselle e quindi $|X| = 64$ in questa istanza.
-\begin{itemize}
-	\item La parte nota è data dalle caselle della scacchiera non occupabili, quindi le celle in cui è presente una regina o in cui una regina può muoversi e di conseguenza mangiare
-%la funzione di costo
-\end{itemize}
-%la stima 
-%DISEGNO SCACCHIERA + ALBERO?
+Per semplicità di comprensione individuiamo la n-esima casella con le sue indicazioni di riga e colonna $n = i*4 + j$, quindi la vediamo come una matrice.
 
+L'algoritmo quando posiziona una regina su una cella incrementa di 1 il valore di tutte le caselle che la regina può "mangiare" quindi tutte le caselle sulla stessa riga, tutte le caselle sulla stessa colonna e le righe sulle due diagonali.
+\begin{itemize}
+	\item La parte nota è data dal numero di caselle della scacchiera occupabili, quindi le celle in nessuna regina è presente o può muoversi e di conseguenza mangiare.
+	\item la stima $\hat g$ è data dalla somma del valore di tutte le caselle adiacenti alla casella che si sta analizzano cambiata di segno.
+\end{itemize}
+Si può facilmente effettuare pruning, andando a rimuovere i sotto-alberi generati dai nodi che rappresentano l'inserimento di regine su caselle $x \in X$ aventi $x_{ij} \neq 0$.\\
+\begin{figure*}[!ht]
+\centering
+\includegraphics[width=0.8\textwidth]{./img/C7.png}
+\caption{Algoritmo Least Cost 4-regine} \label{FIG:C7}
+\end{figure*}\\
+
+Formalmente %la vuoi davvero fare la definizione formale?
+
+Come in sezione \ref{SEC:C6} a parità di \imp{costo} bisogna comunque affidarsi ad uno dei due criteri (\textit{LIFO/FIFO}).
+Ad esempio al secondo passo è stato scelto di posizionare la regina nella cella $x_{0 \, 1}$ ma la si sarebbe potuta inserire anche in $x_{1 \, 2}$ o $x_{2 \, 3}$.
+Notiamo che se la regina fosse stati inserita in $x_{1 \, 2}$ non avremmo potuto ottenere una soluzione. 
 \subsection{C.8}
 La qualità di tutti gli algoritmi greedy può essere migliorata ordinando gli elementi in base al rapporto $\frac{valore}{peso}$, operazione con costo $O(n\log_n)$.
 In generale le approssimazioni fornite da algoritmi greedy per la risoluzione di \imp{Knapspack} sono molto vicine alla risposta. %il prof se non sbaglio diceva 80%
