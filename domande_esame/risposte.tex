@@ -293,7 +293,7 @@ Non conoscendo le \textit{soluzioni}, e di conseguenza nemmeno la \textit{rispos
 Questa situazione è però paradossale, se conoscessi la risposta non la starei cercando, quindi la misurazione delle due proprietà non è un criterio di ranking applicabile.
 \end{adjustwidth}
 \subsection{C.3}
-\label{SEC:C_3}
+\label{SEC:C3}
 \textbf{Punto 1}
 \begin{adjustwidth}{.8cm}{0cm}
 \begin{definition}
@@ -348,6 +348,7 @@ Riprendendo l'idea del punto precendente abbiamo due \textit{live node} $x,z$, l
 In questa situazione i valori di $\hat c(w_1), \hat c(w_2), . . . , \hat c(w_n)$ possono superare quelli relativi a live node inseriti nella lista prima di $w_1, w_2, . . . , w_n$ e, quindi, risultare sconvenienti da seguire rispetto ad altri.
 \end{adjustwidth}
 \subsection{C.4}
+\label{SEC:C4}
 Come già mostrato in sezione~\ref{SEC:C_1}, più precisamente in figura~\ref{FIG:C_1} \textit{FIFO} e \textit{LIFO} sono "i due estremi di un ventaglio di possibili criteri di scelta" ed in quanto tali possono essere ottenuti tramite una precisa formulazione della \textit{funzione costo}.
 Infatti analizzando la \textit{funzione costo} $\hat c(x) = f(h(x)) + \hat g(x)$ si nota facilmente quali sono le possibili casistiche che possono portare ad un estremo o all'altro.
 \begin{itemize}
@@ -363,7 +364,7 @@ Immaginiamo ad esempio due \textit{live node} $x,z$, l' \textit{E-node} è $x$ e
 Di conseguenza il prossimo \textit{E-node} sarà sicuramente $z$.\\
 L'equazione del punto (1) deriva dal fatto che per giungere a $w_1,w_2$ è stato fatto del lavoro in più, esattamente il lavoro necessario ad espandere $x$
 
-	\item $\hat c(x) = 0 + \hat g(x)$ Questa casistica, già affrontata nella sezione~\ref{SEC:C_3} al \textbf{Punto 2} si riconduce ad una \textit{D-search}.
+	\item $\hat c(x) = 0 + \hat g(x)$ Questa casistica, già affrontata nella sezione~\ref{SEC:C3} al \textbf{Punto 2} si riconduce ad una \textit{D-search}.
 		Se $f(h(x)) =0$ il \textit{costo noto} non ha influenza sul risultato generato da $\hat c(x)$ e la \textit{funzione costo} può essere riscritta come: $$\hat c(x) = \hat g(x)$$
 Questo ci riporta ad un algoritmo di \textit{Backtracking}, in quanto non vi è "penalità" nell' espandere nodi in profondità nell'albero degli stati.
 Considerando che dati due nodi $x,y$ se $y$ è un discendente di $x$ allora $\hat g(x) > \hat g(y)$ la scelta che minimizza la \textit{funzione costo} è sempre quella che espande un nodo di livello successivo, quindi una \textit{D-search}.
@@ -377,15 +378,28 @@ Di conseguenza il prossimo \textit{E-node} sarà scelto tra $w_1$ e $w_2$
 
 \end{itemize}
 \subsection{C.5}
-recordo è un nodo
-listnode è una lista di record.
+L'algoritmo in figura~\ref{FIG:C5} rappresenta un generico algoritmo per una visita \textit{Least Cost}.\\
+\begin{figure*}[!ht]
+\centering
+\includegraphics[width=0.8\textwidth]{./img/C5.png}
+\caption{Algoritmo Least Cost} \label{FIG:C5}
+\end{figure*}\\
+La struttura dati su cui si appoggia è una lista di \textit{record}, in cui ogni record può essere visto come un "nodo" dell'albero che rappresenta lo spazio degli stati.\\
+La struttura dati \textit{listnode} fornisce due operazioni \texttt{Add(\textit{x})} e \texttt{Least()} che forniscono la possibilità di inserire o estrarre record.
+Possiamo assumere che l'operazione \texttt{Least()} estrae dalla struttura dati il nodo che restituisce il minor valore quando inserito come imput nella funzione costo $ \hat c(\cdot)$.
+A seconda di come sono è implementata l'operazione \texttt{Add(\textit{x})} avremo differenti comportamenti nel caso si incontrassero nodi aventi lo stesso \textit{costo}, allo stesso modo di quanto discuso in sezione \ref{SEC:C3} e sezione \ref{SEC:C4}.
 
-%listnode definisce una struttura dati che rappresenta uno spazio degli stati ad albero.
-% volendo si piò aggiungere che a seconda di come è implementata listnode () abbiamo un differente comportamento nel caso in cui abbiamo due nodi con lo stesso costo.
+Analisi dell'algoritmo:
+\begin{itemize}
+	\item Le righe 4-6 inizializzano la struttura dati ed impostano la radice dell'albero come \imp{E-node}.
+	\item In riga 7 viene iniziato un ciclo che si concluderà quando tutto lo spazio degli stati sarà stato completamente esplorato oppure sarà stata individuata una \textit{risposta}, non vi è alcun criterio di \textit{pruning}
+	\item Le righe 9-15 sono il cuore della ricerca, vengono generati tutti i figli dell' \imp{E-node}, se nessuno di loro è \textit{risposta} vengono aggiunti alla lista dei \textit{live node} tramite l'operazione \texttt{Add(\textit{x})}. %in realtà viene pure impostato il loro padre ma ciò è irrilevante, dillo a voce
+	\item Quando tutti i figli di un nodo sono stati aggiunti alla \textit{listnode} il nodo è sostanzialmente diventato un \textit{Dead node} ed il nodo che fornisce il minimo valore della \textit{funzione costo} viene scelto come prossimo \imp{E-node}.
+\end{itemize}
 \subsection{C.6}
 L'idea da cui partire per sviluppare una \textit{funzione costo} per \imp{SubsetSum} è quella di individuare un intervallo di valori al cui interno è compreso il valore \emph{s} del problema \imp{SubsetSum} $X =({X_0 ... X_{n-1}},S)$ 
 Per chiarezza presentiamo con $X_k$ il valore numerico di un elemento, $x_k \in {0,1}$ indica se il numero è inserito nell'insieme o no.
-Come descritto nella sezione~\ref{SEC:C_3} la \textit{funzione costo} $\hat c$ è composta da una \textit{parte nota} ed una \textit{parte stimata}.
+Come descritto nella sezione~\ref{SEC:C3} la \textit{funzione costo} $\hat c$ è composta da una \textit{parte nota} ed una \textit{parte stimata}.
 $$\hat c(x[0..j)) = f(h(x[0..j))) + \hat g(x[0..j))$$
 \begin{itemize}
 	\item La parte nota è facilmente individuabile come la somma dei numeri già inseriti nell'insieme.$$ f(h(x[0..j)))=\sum_{0 \leq k < j} X_kx_k$$
