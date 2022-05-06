@@ -203,17 +203,19 @@ ESPANDERE CON ESEMPI???
 La sostanziale differenza tra i due algoritmi sta in come viene generato lo \textit{spazio degli stati}, in un caso ricorsivamente, nell'altro tramite un algoritmo iterativo.\\
 Questa distinzione è importante in quanto la versione ricorsiva fornisce uno stack implicito, assente nella versione iterativa.Bisogna quindi implementare una struttura dati che permetta di effettuare le operazioni che nel libro (riga 9-10) vengono definite in maniera informale.
 
-La scelta più ovvia ricade su una coda \textit{FIFO}
-%cosa minchia vuole????
-
-entrambe gli algoritmi prendono come riferimento una struttura ad albero.
-
-La differenza sta in come la usano. Entrambi fanno una visita in profondità
-%rappresentare graficamente la struttura dati?
-Bk è la funzione di bound. T restituisce un ramo data una sequenza di x da 1 a k
-parto da k=1 e
-
-%https://drive.google.com/file/d/1QRzbhvOApvdxzxp6NivopsDgRI3gBpzG/view pagina 10 e 11
+Preso $(x_1,x_2,....x_i)$ path dalla radice ad un nodo dell'albero rappresentante lo spazio degli stati definiamo la \textit{funzine bound} $B_k$ come la funzione che restituisce falso quando il path anche se esteso non raggiungerà mai una \textit{soluzione}.\\
+$T(x_1,...x_i)$ è il set di tutti i possibili valori di $x_{i+1}$ tali che $(x_1,...x_{i+1})$ è ancora uno stato da analizzare (non è una soluzione).Quindi $T(x-1,...,x_n) = \empty$
+\begin{itemize}
+	\item \textbf{Algoritmo ricorsivo}:
+		Il vettore delle soluzioni $(x_1, ... , x_n)$ è gestito come un array globale $x[1:n]$, $x[1:k]$ contiene tutti gli elementi "accettati", corrisponde alla vettore in corso d'opera che potrebbe portarci ad una \textit{soluzione}.\\
+		L'algoritmo prova ad inserire gli elementi rimanenti in k-esima posizione, se il vettore soluzione $(x_1,...,x_k)$ soddisfa $B_k$ si controllo se è una soluzione (riga 11) e la si "stampa", se non lo viene invocata la funzione \textit{Backtrack} ricorsivamente sul nuovo vettore "in costruzione".\\
+		Se sono stati inseriti tutti gli elementi e non si è arrivati ad una soluzione (riga 13 $k=n$) bisogna cambiare l'ultimo elemento (figurativamente è come essere al penultimo livello dell'albero e sceglire una foglia sbagliata).
+	\item \textbf{Algoritmo iterativo}:\\
+		Non avendo uno stack implicito bisogna mantenere un vettore $T$ che contenga tutti i possibili valori che possono essere componenti della soluzione.
+		All'inizializzazione $T()$ contiene tutti i possibili valori che è possibile posizionare come primo elemento.\\
+		Si tiene conto di quali valori sono stati tentati e quali no, se un valore che non è stato ancora provato soddisfa $B_k$ viene inserito in $T$ (riga 9-10), se il nuovo vettore $T$ è una soluzione viene "stampato" altrimenti si procede nella ricerca come nel caso precedente.\\
+		Si noti che questa non è una visita in ampiezza, si sta comunque scendendo su un solo ramo, quiando tutti i valori che potrebbero stare in $x_k$ sono stati tentati e nessuno di loro ha portato a soluzioni k viene decrementato "tornando indietro" e modificando il valore dell'elemento precedente.
+\end{itemize}
 \section{Branch\&Bound}
 \subsection{C.1}
 \label{SEC:C_1}
