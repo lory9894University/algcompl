@@ -419,7 +419,6 @@ Ma a parità di \imp{costo} bisogna comunque affidarsi ad uno dei due criteri (\
 E naturalmente anche possibile migliorare l'efficenza di questa visita tramite pruning rimuovendo i rami dell'albero il cui valore $ f(h(x[0..j))) + \hat g(x[0..j)) - V > S$.Non ha infatti senso esplorare i sottoalberi che generano, in quanto non possono contenere soluzioni.
 %oltretutto nella funzione costo cerco di minimizzare il lower bound, altrimenti sarebbe un branch and bound
 \subsection{C.7}
-Per raffigurare matematicamente la scacchiera si può immaginare un insieme $X$ con $|X| = n*n$, essendo le regine 4 la scacchiera ha 64 caselle e quindi $|X| = 64$ in questa istanza.
 Per semplicità di comprensione individuiamo la n-esima casella con le sue indicazioni di riga e colonna $n = i*4 + j$, quindi la vediamo come una matrice.
 
 L'algoritmo quando posiziona una regina su una cella incrementa di 1 il valore di tutte le caselle che la regina può "mangiare" quindi tutte le caselle sulla stessa riga, tutte le caselle sulla stessa colonna e le righe sulle due diagonali.
@@ -434,7 +433,15 @@ Si può facilmente effettuare pruning, andando a rimuovere i sotto-alberi genera
 \caption{Algoritmo Least Cost 4-regine} \label{FIG:C7}
 \end{figure*}\\
 
-Formalmente %la vuoi davvero fare la definizione formale?
+Formalmente, identifichiamo la cella sulla i-esima riga e j-esima colonna con $x_{i\,j}$ ed chiamiamo $x_{i\,j}^c$ la variabile che indica se la cella è occupata o no.
+\begin{equation*}
+	x_{i\,j}^c\begin{cases}
+		1 \; se \; x_{i\,j} = 0\\
+		0 \; se \; x_{i\,j} > 0
+	\end{cases}
+\end{equation*}
+Allora
+$$ \hat c(x_{ij})= \sum^n_{i=0} \sum^n_{j=0} x_{i\,j}^c + \sum_{i=i-1}^{i+1} \sum_{j=j-1}^{i+1} x_{i\,j}$$  
 
 Come in sezione \ref{SEC:C6} a parità di \imp{costo} bisogna comunque affidarsi ad uno dei due criteri (\textit{LIFO/FIFO}).
 Ad esempio al secondo passo è stato scelto di posizionare la regina nella cella $x_{0 \, 1}$ ma la si sarebbe potuta inserire anche in $x_{1 \, 2}$ o $x_{2 \, 3}$.
