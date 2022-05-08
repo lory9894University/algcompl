@@ -23,6 +23,7 @@
 \newtheorem{example}{Example}
 \newenvironment{dimostrazione}{\textit{Dimostrazione}:\begin{adjustwidth}{1cm}{}}{\end{adjustwidth}}
 \newcommand{\imp}[1]{\textbf{\textit{#1}}}
+\newcommand{\red}{\leq_p}
 
 \begin{document}
 
@@ -960,6 +961,7 @@ Perciò possiamo affermare che un algoritmo scritto in linguaggio \textbf{LID} h
 \end{figure*}\\
 
 \subsection{E.4}
+n
 La teoria della \imp{NP-completeness} si è sviluppata in relazione alla complessità di problemi decisionali, non di ottimizzazione, a causa di come si è evoluta la teoria degli automi.\\
 Infatti utilizzando il formalismo degli automi (Macchine di Turing) risulta molto più naturale guardare al problema come se fosse un linguaggio da decidere. Se l'input fornito appartiene al linguaggio l'automa risponderà \textit{True}, \textit{False} altrimenti.\\
 Nasce quindi la necessità di passare da problemi di ottimizzazione a problemi decisionali, per poterne valutare la complessità, e viceversa.
@@ -988,6 +990,39 @@ else
     return false
 \end{lstlisting}
 \end{itemize}
+\subsection{E.5}
+La \textit{riduzione} tra problemi decisionali è un'operazione che permette di confrontare due problemi computazionali e la complessità delle loro soluzioni.\\
+Si indica con "$\leq_p$", quindi $P_1 \leq_p P_2$ significa affermare che se $P_2$ si può risolvere "velocemente" allora anche $P_1$ può essere risolto velocemente.
+Negando l'implicazione se non è noto alcun algoritmo polinomiale per risolvere $P_2$ nemmeno $P_1$ può essere risolto in tempo polinomiale.
+Formalmente:
+\begin{definition}[Riduzione]
+	Dati $P_1$ e $P_2$ problemi computazionali. $P_1 \red P_2$ se $\exists F: Dom(P_1) \rightarrow Dom(P_2)$ con le seguenti proprietà:
+	\begin{itemize}
+		\item se $x \in Dom(P_3) \text{ ed } x \; istanza \; di \; P_1 \Rightarrow F(x) \; istanza \; di \; P_2$, cioè se l'algoritmo che risolve il problema decisionale $P_1$ ritorna \textit{vero} quando viene data in input l'istanza $x$ allora ritornerà \textit{vero} l'algoritmo che risolve $P_2$ data in input l'istanza $F(x)$.
+		\item se $x \in Dom(P_1) \text{ ed } x \text{ non è istanza di }P_1 \Rightarrow F(x) \; istanza \; di \; P_2$, cioè se l'algoritmo che risolve il problema decisionale $P_1$ ritorna \textit{falso} quando viene data in input l'istanza $x$ allora ritornerà \textit{falso} l'algoritmo che risolve $P_2$ data in input l'istanza $F(x)$.
+		\item $\exists p, \forall x \; t.c. \; costo(Alg_F(x))\leq p(\lvert x \rvert)$, cioè il costo di applicare la trasformazione $F$ all'istanza $x$ è inferiore ad un polinomio calcolato sulla dimensione di $x$.
+	\end{itemize}
+\end{definition}
+Posto \textbf{SAT} intrattabile si può affermare che \textbf{KP} è intrattabile perchè $SAT \red KP$, dalla seguente catena di riduzioni:
+$$ SAT \red NNF \red CNF \red 3CNF \red 3COL \red EXCO \red Subsetsum KP$$
+\begin{itemize}
+	\item \textbf{SAT}: data una formula proposizionale $f$, dice se questa è soddisfacibile. $\exists \varphi \Phi _ {\varphi}(f) = true $
+	\item \textbf{NNF}: data una formula Negation Normal Form $f$, dice se esiste una assegnazione delle variabili $FV(f)$ che soddisfa $f$.\\$\exists \varphi:FV(f) \in \{true,false\}^* \; t.c. \; \Phi _ {\varphi}(f) = true $
+	\item \textbf{CNF}: data una formula $f$ scritta in Conjunctive Normal Form, dice se questa è soddisfacibile. $\exists \varphi \Phi _ {\varphi}(f) = true $.\\
+$\exists \varphi:FV(f) \in \{true,false\}^* \; t.c. \; \Phi _ {\varphi}(f) = true $
+
+\end{itemize}
+PROSEGUIRE CON LE ALTRE
+%PROSEGUIRE CON LE ALTRE
+\subsection{E.6}
+Le formule \textbf{NNF}(Negation Normal Form) sono tutte quelle formule in cui la negazione è presente solo sullevariabili, non sulle sotto-formule.
+La sintassi diventa quindi:
+$$ N ::= true|false|var|\overline{var}|N \land N|N \lor N$$
+La \textit{funzione di riduzione} che permette di passare da formule proposozionali a NNF è ben conosciuta, solo le leggi di De Morgan:
+$$ \overline{f \lor h} = \overline{f} \land \overline{h} \qquad \qquad \overline{f \land h} = \overline{f} \lor \overline{h}$$
+L'intuizione è quella di "spingere" le negazioni presenti nella \textit{formula proposizionale} $f$ verso le variabili.
+%cos'è "un qualche aspetto fondamentale"? tutta la dimostrazione?
+DA FARE
 \section{Problemi computazionali}
 \subsection{F.1}
 \begin{definition}[SubsetSum]
