@@ -1023,6 +1023,88 @@ $$ \overline{f \lor h} = \overline{f} \land \overline{h} \qquad \qquad \overline
 L'intuizione è quella di "spingere" le negazioni presenti nella \textit{formula proposizionale} $f$ verso le variabili.
 %cos'è "un qualche aspetto fondamentale"? tutta la dimostrazione?
 DA FARE
+\subsection{E.7}
+Le formule in \textbf{CNF} (Conjunctive Normal Form) sono formule composte da una congiunzione di clausole a loro volta composte da una disgiunzione di letterali.
+\begin{definition}[Sintassi]
+	$$F::= [C]|[C],F \; congiunzione \: (\land)$$
+	$$C::=true|false|l,C \; disgiunzione \: (\lor)$$
+\end{definition}
+Si può passare dalla forma in \textbf{NNF} alla forma in \textbf{CNF} grazie alla \textit{trasformazione di Tseytin}.\\
+Intuitivamente l'idea è quella di somporre l'equazione in tutte le sue sottoparti, collegate tra loro da "collegamenti" che corrispondono alle equivalenze logiche.
+Assegnando un nome ad ogni canale è possibile ricostruire la formula logica sotto forma di \textbf{NNF}, il modo più efficace di vedere questa equivalenza è un "circuito".
+Analizzando ad esempio $[(\overline s \land p) \lor ((q \land \overline r) \land p)]$
+\begin{figure*}[!ht]
+\centering
+\begin{forest}
+	[$(\overline s \land p) \lor ((q \land \overline r) \land p)$[$\overline s \land p$, , edge label = {node[midway,left,red] {b}} [$\overline s$, , edge label = {node[midway,left,red] {d}}][$p$,, edge label = {node[midway,right,red] {e}}]][$((q \land \overline r) \land p)$, edge label = {node[midway,right,red] {c}} [$(q \land \overline r)$, edge label = {node[midway,left,red] {g}} [$q$, edge label = {node[midway,left,red] {f}}][$\overline r$, edge label = {node[midway,right,red] {h}}]] [$p$, edge label = {node[midway,right,red] {i}}]]]
+\end{forest}
+\includegraphics[width=0.4\textwidth]{./img/E7_circuit}
+\caption{Trasformazione di Tseytin} \label{FIG:E7_circuit}
+\end{figure*}\\
+Ricomponendo si ottiene:
+$$ a,(a \Leftrightarrow b \lor c), (b \Leftrightarrow d \land e), (c \Leftrightarrow g \land i), (g \Leftrightarrow f \land h)$$.
+Eliminando le implicazioni si può ridurre la formula ad una formula avente solo congiunzioni (\textit{and}) fuori dalle parentesi e disgiunzioni (\textit{or}) dentro.
+La trasformazione di \textit{Tseitin} può essere formalmente definita come:
+\begin{definition}(Trasformazione di Tseitin)
+ 	Data $f$ funzione in Negation Normal Form, la trasformazione di Tseitin $T$ è:
+	$$ T(f) = [a],C[a,f]$$
+	Ove a è una nuova variabile, $C$ è una operazione del tipo $C: variabili \times NNF$
+	$$C[a,l] = a \Leftrightarrow l$$
+	$$C[a,f \circ g] = a \Leftrightarrow b \circ c, C[b,f],C[c,g]\; con \; \circ \in \{\land,\lor, \Rightarrow, \Leftrightarrow\}$$
+	$b$ e $c$ nuove variabili.
+\end{definition}
+La \textit{Trasformazione di Tseitin} genera delle \textbf{CNF}, ma ciò va dimostrato:
+\begin{theorem}[Correttezza trasformazione di Tseitin]
+	$\forall f $ formula in \textbf{NNF} e $\forall a$ variabile $C(a,f) = c_1,...,c_n$ sono tutte clausole.
+\end{theorem}
+\begin{dimostrazione}
+	Dimostrato per induzione su $f$, ci sono due possibilità:
+	\begin{itemize}
+		\item $f$ è un letterale $l$:
+			\begin{equation*}
+			C(a,l) = (a \Leftrightarrow l) = (a \Rightarrow l) \land (l \Rightarrow a)= 
+			\text{ sostituendo l'implicazione } = [ \overline a, l],[ \overline l, a]
+			\end{equation*}
+			Cioè due clausole.
+		\item $f = g \circ h$, cioè $f$ composizione di due operatori.
+			\begin{align*}
+				&C(a,l) = a \Leftrightarrow (b \circ c),C(b,g), C(c,h) \text{ per definizione della trasformazione} \\
+				&a \Leftrightarrow (b \circ c), (C_1,...,C_n), (C_1',..., C_n') \text{ per ipotesi induttiva le due parentesi sono clausole}\\
+				&= \text{ sostituendo le implicazioni } = \overline a \lor  (b \circ c), \overline{(b \circ c)} \lor a, (C_1,...,C_n), (C_1',..., C_n')
+                        \end{align*}
+			Tutte e quattro sono clausole.
+	\end{itemize}
+\end{dimostrazione}
+\subsection{E:8}
+La dimostrazione di $NNF \red CNF$ si basa su un lemma derivante dalla costruzione della \textit{funzione di Tseitin}
+\begin{equation*}
+	\text{Lemma T}\begin{cases}
+		(\exists \varphi \Phi_\varphi(f) = true) \Leftrightarrow (\exists \varphi' \Phi_{\varphi'}(C[a,f]) = true \land \varphi'(a) = true)\\
+		(\exists \varphi \Phi_\varphi(f) = false) \Leftrightarrow (\exists \varphi' \Phi_{\varphi'}(C[a,f]) = true \land \varphi'(a) = false)
+	\end{cases}
+\end{equation*}
+\begin{theorem}
+	$f \in NNF \Leftrightarrow T(f) \in CNF$ 
+\end{theorem}
+\begin{dimostrazione}
+	Per definizione $T(f) = [a],C[a,f]$.
+	\begin{itemize}
+		\item se $f$ è soddisfacibile la sua trasformazione $T(f)$ è soddisfacibile, cioè $f \in NNF \Rightarrow \exists \varphi \Phi_\varphi(f) = true$\\
+			Ci appoggiamo al Lemma T.1: 
+			$$(\exists \varphi \Phi_\varphi(f) = true) \Leftrightarrow (\exists \varphi' \Phi_{\varphi'}(C[a,f]) = true \land \varphi'(a) = true)$$
+			Cioè esiste se esiste una funzione $\varphi$ che assegna dei valori alle variabili di $f$ tali che rendono vera $\Phi(f)$ allora esiste un'altra funzione $\varphi'$ che applicata a $C[a,f]$ rende vera $\Phi(C[a,f]$ ed assegna il valore \textit{vero} alla nuova variabile $a$.$\varphi'$ è una "estensione" di $\varphi$ sulle nuove variabili generate da $C$ che comunque "rispetta" il comportamento di $\varphi$.\\
+			Posto vero per ipotesi $\exists \varphi \Phi_\varphi(f)= true$ ho che $(\varphi'(a) \land \varphi' \Phi_{\varphi'}(C[a,f])i)=true$.\\
+			Inserendo $\varphi'(a)$ come congiunzione all'interno della funzione di valutazione $\Phi_{\varphi'}$ si ottiene $\Phi_{\varphi'}([a],C[a,f])$ che riprendendo la definizione di $T$ è $\Phi_{\varphi'}(T(f))$.Quindi$\Phi_{\varphi'}(T(f))=true$, come volevasi dimostrare.
+		\item se invece $f$ non è soddisfacibili la sua trasformazione $T(f)$ non deve essere soddisfacibile, cioè $f \notin NNF \Rightarrow \forall \varphi \Phi_\varphi(f) = false$\\
+			Appoggiandosi al lemma T.2 abbiamo che
+			$$(\exists \varphi \Phi_\varphi(f) = false) \Leftrightarrow (\exists \varphi' \Phi_{\varphi'}(C[a,f]) = true \land \varphi'(a) = false)$$
+			Dato che abbiamo supposto per ipotesi $\forall \varphi \Phi_\varphi(f) = false$ allora $(\varphi'(a) \land \varphi' \Phi_{\varphi'}(C[a,f])i)=false$.\\
+			Il Lemma T.2 ci suggerisce che il valore falso deriva dalla congiunzione $true \land false = false$.\\
+			Come nel primo caso inserendo $\varphi'(a)$ come congiunzione all'interno della funzione di valutazione $\Phi_{\varphi'}$ si ottiene $\Phi_{\varphi'}([a],C[a,f])$.Cioè $\Phi_{\varphi'}(T(f)) = \Phi_{\varphi'}(T(f))=false$.\\
+			La trasformazione genera una nuova variabile $a$ tale per cui $\varphi'(a) = false$ e tale variabile rende false tutta la valutazione $\Phi_{\varphi'}(\cdot)$.
+	\end{itemize}
+\end{dimostrazione}
+
 \section{Problemi computazionali}
 \subsection{F.1}
 \begin{definition}[SubsetSum]
