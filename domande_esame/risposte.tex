@@ -1010,6 +1010,10 @@ $$ SAT \red NNF \red CNF \red 3CNF \red 3COL \red EXCO \red Subsetsum KP$$
 	\item \textbf{NNF}: data una formula Negation Normal Form $f$, dice se esiste una assegnazione delle variabili $FV(f)$ che soddisfa $f$.\\$\exists \varphi:FV(f) \in \{true,false\}^* \; t.c. \; \Phi _ {\varphi}(f) = true $
 	\item \textbf{CNF}: data una formula $f$ scritta in Conjunctive Normal Form, dice se questa è soddisfacibile. $\exists \varphi \Phi _ {\varphi}(f) = true $.\\
 $\exists \varphi:FV(f) \in \{true,false\}^* \; t.c. \; \Phi _ {\varphi}(f) = true $
+	\item \textbf{3CNF}: data una formula $f$ scritta in Conjunctive Normal Form a 3 letterali, dice se questa è soddisfacibile. $\exists \varphi \Phi _ {\varphi}(f) = true $.\\
+$\exists \varphi:FV(f) \in \{true,false\}^* \; t.c. \; \Phi _ {\varphi}(f) = true $
+	\item \textbf{3COL}: Sia $G = (V,E)$, grafo non orientato $\exists c : Vertex \rightarrow {col1,col2,col3}$ t.c. $\forall u,v \in V \; e \; (u,v) \in E c(v) \neq c(u)$.
+		Cioè data una funzione di etichettatura $c$ che assegna un "colore" ad ogni nodo esiste modo di colorare il grafo senza che nodi adiacenti abbiano lo stesso colore.
 
 \end{itemize}
 PROSEGUIRE CON LE ALTRE
@@ -1104,7 +1108,43 @@ La dimostrazione di $NNF \red CNF$ si basa su un lemma derivante dalla costruzio
 			La trasformazione genera una nuova variabile $a$ tale per cui $\varphi'(a) = false$ e tale variabile rende false tutta la valutazione $\Phi_{\varphi'}(\cdot)$.
 	\end{itemize}
 \end{dimostrazione}
-
+\subsection{E.10}
+Lo scopo della funzione di riduzione $L : 3CNF \rightarrow 3COL$ è quello di generare un grafo partendo da una formula \textbf{3CNF}, tale grafico può essere colorato con 3 colori senza che due nodi adiacenti abbiano lo stesso colore se la formula di partenza è soddisfacibile, è incolorabile in caso contrario.
+\begin{definition}Sia $G = (V,E)$, grafo non orientato $\exists c : Vertex \rightarrow \{col1,col2,col3\}$ t.c. $\forall u,v \in V \; e \; (u,v) \in E c(v) \neq c(u)$.
+\end{definition}
+La funzione di riduzione $L$ può essere introdotta e definita grazie a tre intuizioni da cui derivano altrettante restrizioni sul grafo.
+\begin{enumerate}
+	\item Il primo passo consiste nel creare un grafo con una precisa struttura.
+		A parte il nodo $N$ ed i nodi $F,T$ (perlaltro omissimibili) tutti gli altri nodi sono i letterali $l_1,...,l_n$ così come compaiono nella formula \textbf{3CNF}, tutti collegati solamente al nodo $N$.
+		\begin{figure*}[!ht]
+		\centering
+		\includegraphics[width = 0.5\textwidth]{./img/E10_passo1.png}
+		\caption{Grafo al passo 1} \label{FIG:E10_passo1}
+		\end{figure*}\\
+		Si nota che il grafo non risolve il problema da cui siamo partiti, contiene anzi una contraddizione, in quanto se nella formula dovessero ad esempio apparire due letterali ${x,\hat x}$ sarebbe possibile assegnargli lo stesso colore.
+	\item Quindi il secondo passo risolve il problema solevato dal primo, inserendo tra letterali"complementari" un arco.
+		\begin{figure*}[!ht]
+		\centering
+		\includegraphics[width = 0.5\textwidth]{./img/E10_passo2.png}
+		\caption{Grafo al passo 2} \label{FIG:E10_passo2}
+		\end{figure*}\\
+		Anche questo grafo no risolve completamente il problema, in quanto è possibile comunque colorare grafi derivanti da formule non soddisfacibili.
+	\item La rielaborazione finale del grafo prevende di aggiungere tante copie della rete in figura~\ref{FIG:E10_passo3} quante sono le clausole della formula da cui si è partiti, collegando coerentemente i nodi a secondo di come i letterali compaiono nella formula
+		\begin{figure*}[!ht]
+		\centering
+		\includegraphics[width = 0.5\textwidth]{./img/E10_passo3.png}
+		\caption{Grafo al passo 3} \label{FIG:E10_passo3}
+		\end{figure*}\\
+\end{enumerate}
+Ad esempio un grafo derivante dalla formula: $[x,a,b][x,\hat a, b][x,a,\hat b][x, \hat a, \hat b]$ può essere il seguente (il grafo e la colorazione non sono univoci).
+		\begin{figure*}[!ht]
+		\centering
+		\includegraphics[width = 1\textwidth]{./img/E10_finale.png}
+		\caption{Esempio di grafo} \label{FIG:E10_finale}
+		\end{figure*}\\
+Intuitivamente si può dire che questo metodo di costruzione del grafo è una funzione di riduzione in quanto se una singola clausola è soddisfcibile sicuramente uno dei 3 nodi che stanno di fianco al "nodo centrale $y$" hanno colore uguale, dato che almeno un letterale è vero (verde).\\
+Se invece una clausola non è soddisfacibile tutti i letterali del sottografo generato al passo 3 hanno lo stesso colore (viola) ed è quindio impossibile assegnare un colore distinto ai 3 nodi $y$.
+Essendoci una clausola insoddisfacibile tutta la formula lo è.
 \section{Problemi computazionali}
 \subsection{F.1}
 \begin{definition}[SubsetSum]
