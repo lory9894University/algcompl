@@ -1104,6 +1104,43 @@ La dimostrazione di $NNF \red CNF$ si basa su un lemma derivante dalla costruzio
 			La trasformazione genera una nuova variabile $a$ tale per cui $\varphi'(a) = false$ e tale variabile rende false tutta la valutazione $\Phi_{\varphi'}(\cdot)$.
 	\end{itemize}
 \end{dimostrazione}
+\subsection{E.9}
+Le formule \textbf{3CNF} sono formule in \textit{conjunctive normal form} le cui clausole sono composte esattamente da 3 letterali.
+Ad esempio $[x][\overline x] \notin C$ mentre $[x,y,z],[k,\overline z, y] \in C$.
+La funzione di riduzione da \textbf{CNF} a \textbf{3CNF} si basa sull'idea di aggiungere variabili che però non intruducano vincolo alla soddifacibilità.
+Ci possono quindi essere 4 casi ed altrettante strategie di riduzione.Di seguito le varie strategie ed una intuizione della dimostrazione della funzione di riduzione.
+\begin{enumerate}
+	\item (caso base).$F([l_1,l_2,l_3]) = [l_1, l_2, l_3]$.
+		Se una clausola è già composta di soli letterali non serve effettuare alcuna trasformazione.
+	\item (caso base).$F([l_1])=[l_1,y,z],[l_1,y,\overline z],[l_1,\overline y,z],[l_1,\overline y,\overline z]$.
+		Essendoci un solo letterale vengono aggiunte 2 variabili e 4 clausole.Ogni clausola contiene una possibile combinazione dei valori delle due variabili.\\
+		Risulta quindi completamente irrilevante ai fini della soddisfacibilità il valore assunto da $x$ e $y$.$Se \varphi(l_1)=true$ qualsiasi combinazione di valori assunti da $x$ e $y$ (diciamo ad esempio $\varphi(x)=v_x$ e $\varphi(y)=v_y)$ genererà clausole di tale forma:$[true,v_1,v_2]$, cioè clausole il cui valore di verità è $true$.
+	\item (caso base).$F([l_1,l_2])=[l_1,l_2,y],[l_1,l_2,\overline y]$. Segue lo stesso discorso di prima, viene introdotta una variabile $x$ che non ha alcun impatto sulla soddisfacibilità.
+	\item (caso induttivo, ci sono più di 3 letterali in una clausola).
+		$$F([l_1,l_2, l_3, ... ,l_{k-2}, l_{k-1}, l_k]=[l_1,l_2,y], F([\overline y, l_3, ... ,l_{k-2},z]) , [\overline z,l_{k-1},l_k]$$
+		In questo caso si divide la clausola in 3 sottogruppi. La clausola iniziale contiene i primi due letterali ed una nuova variabile, la clausola finale gli ultimi 2 letterali ed una nuova variabile.\\
+		Le due nuove varibili sono poi aggiunte negate alla clausola "centrale" su cui (avendo essa lunghezza $>2$ e $< \inf$) viene applicata ricorsivamente la funzione di riduzione, avvalendosi della strategia 2 o della strategia 3 stessa.
+		Le due variabili nuove non hanno impatto sulla soddisaficibilità della formula in quanto possiamo sfruttare la "libertà" che abbiamo di scegliere un valore di verità conveniente per $y$ e $z$.\\
+		Prendiamo il caso peggiore: tutte i letterali tranne 1 sono falsi, solo uno è vero, chiamiamolo $l_x$.
+		\begin{itemize}
+			\item $l_x \in \{l_1,l_2\}$.Si possono scegliere $y$ e $z$ t.c.$ \varphi'(\overline y)=\varphi'(\overline z)=true$.In tal modo la prima clausola è vera grazie a $l_x$ e le altre due sono vere grazie a $y$ e $z$
+			\item $l_x \in \{l_3, ... ,l_{k-2}\}$.Si possono scegliere $y$ e $z$ t.c.$ \varphi'(y)=\varphi'(\overline z)=true$.In tal modo la prima clausola è vera grazie a $y$, la seconda grazie a $l_x$ e la terza grazie a $z$
+			\item $l_x \in \{l_{k-1},l_k\}$.Si possono scegliere $y$ e $z$ t.c.$ \varphi'(y)=\varphi'(z)=true$.In tal modo la prima clausola è vera grazie a $y$, la seconda grazie a $z$ e la terza grazie ad $l_x$
+		\end{itemize}
+	\item (caso induttivo).$F(C_1,  ... , C_n)= F(C_1), ... ,F(C_n)$.Cioè la funzione di riduzione può essere apllicata a tutte le clausole di una formula senza modificarne la soddisfacibilità.\\
+		\begin{figure*}[!ht]
+                \centering
+                \includegraphics[width = 0.5\textwidth]{./img/E9_induzione.png}
+                \end{figure*}\\
+		%inserire dimostrazione? pag finale di https://drive.google.com/file/d/17fDSsf6thUYHAyAvx8MWbGY4A-7xsXJM/view. sarebbe bello riscriverla in latex al posto che usare le foto:
+		Dato che la formula $(A \Leftrightarrow B \land C \Leftrightarrow D)\Leftrightarrow((A \land C)\Leftrightarrow (B \land D)$ è una tautologia, si può scrivere:\\
+		\begin{figure*}[!ht]
+                \centering
+                \includegraphics[width = 0.8\textwidth]{./img/E9_tautologia.png}
+                \end{figure*}\\
+
+
+\end{enumerate}
 \subsection{E.10}
 Lo scopo della funzione di riduzione $L : 3CNF \rightarrow 3COL$ è quello di generare un grafo partendo da una formula \textbf{3CNF}, tale grafico può essere colorato con 3 colori senza che due nodi adiacenti abbiano lo stesso colore se la formula di partenza è soddisfacibile, è incolorabile in caso contrario.
 \begin{definition}Sia $G = (V,E)$, grafo non orientato $\exists c : Vertex \rightarrow \{col1,col2,col3\}$ t.c. $\forall u,v \in V \; e \; (u,v) \in E c(v) \neq c(u)$.
