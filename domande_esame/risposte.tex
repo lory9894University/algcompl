@@ -1010,19 +1010,21 @@ $\exists \varphi:FV(f) \in \{true,false\}^* \; t.c. \; \Phi _ {\varphi}(f) = tru
 $\exists \varphi:FV(f) \in \{true,false\}^* \; t.c. \; \Phi _ {\varphi}(f) = true $
 	\item \textbf{3COL}: Sia $G = (V,E)$, grafo non orientato $\exists c : Vertex \rightarrow {col1,col2,col3}$ t.c. $\forall u,v \in V \; e \; (u,v) \in E c(v) \neq c(u)$.
 		Cioè data una funzione di etichettatura $c$ che assegna un "colore" ad ogni nodo esiste modo di colorare il grafo senza che nodi adiacenti abbiano lo stesso colore.
-
+	\item \textbf{EXCO}: Dati $U$ ed $S=\mathcal{P}(U)$ esiste un sottoinsieme $S' \subseteq S$ che è una copertura esatta di $U$ cioè tra gli insiemi elementi di $S$ compaiono tutti ed una sola volta gli elementi di $U$:
+		$$\forall z,y \in S'\, x \neq y \quad x \cap y = \emptyset \quad \bigcup_{x \in S'}X $$
+	\item \textbf{SUBSETSUM}:Siano dati un insieme numerico finito $X$ ed un numero $S$. Determinare l’esistenza di un sottoinsieme $Y$ di $X$, tale che la somma di tutti gli elementi di $Y$ sia pari ad $S$. 
 \end{itemize}
-PROSEGUIRE CON LE ALTRE
-%PROSEGUIRE CON LE ALTRE
 \subsection{E.6}
 Le formule \textbf{NNF}(Negation Normal Form) sono tutte quelle formule in cui la negazione è presente solo sullevariabili, non sulle sotto-formule.
 La sintassi diventa quindi:
 $$ N ::= true|false|var|\overline{var}|N \land N|N \lor N$$
 La \textit{funzione di riduzione} che permette di passare da formule proposozionali a NNF è ben conosciuta, solo le leggi di De Morgan:
 $$ \overline{f \lor h} = \overline{f} \land \overline{h} \qquad \qquad \overline{f \land h} = \overline{f} \lor \overline{h}$$
-L'intuizione è quella di "spingere" le negazioni presenti nella \textit{formula proposizionale} $f$ verso le variabili.
-%todo:cos'è "un qualche aspetto fondamentale"? tutta la dimostrazione? Luca suggerisce un esempio. mostrare che le leggi di de morgan spingono le negazioni sulle variabili
-DA FARE
+L'intuizione è quella di "spingere" le negazioni presenti nella \textit{formula proposizionale} $f$ verso le variabili.\\
+\begin{figure*}[!ht]
+                \centering
+                \includegraphics[width = 1\textwidth]{./img/E6.png}
+\end{figure*}\\
 \subsection{E.7}
 Le formule in \textbf{CNF} (Conjunctive Normal Form) sono formule composte da una congiunzione di clausole a loro volta composte da una disgiunzione di letterali.
 \begin{definition}[Sintassi]
@@ -1178,6 +1180,69 @@ Ad esempio un grafo derivante dalla formula: $[x,a,b][x,\hat a, b][x,a,\hat b][x
 Intuitivamente si può dire che questo metodo di costruzione del grafo è una funzione di riduzione in quanto se una singola clausola è soddisfcibile sicuramente uno dei 3 nodi che stanno di fianco al "nodo centrale $y$" hanno colore uguale, dato che almeno un letterale è vero (verde).\\
 Se invece una clausola non è soddisfacibile tutti i letterali del sottografo generato al passo 3 hanno lo stesso colore (viola) ed è quindio impossibile assegnare un colore distinto ai 3 nodi $y$.
 Essendoci una clausola insoddisfacibile tutta la formula lo è.
+\subsection{E.11}
+Dati $U$ ed $S \subseteq \mathcal{P}(U)$ esiste un sottoinsieme $S' \subseteq S$ che è una copertura esatta di $U$ cioè tra gli insiemi elementi di $S$ compaiono tutti ed una sola volta gli elementi di $U$:
+$$\forall z,y \in S'\, x \neq y \quad x \cap y = \emptyset \quad \bigcup_{x \in S'}X $$
+La funzione di riduzione $E_x$ da \textbf{3COL} a \textbf{EXCO} si basa sulla seguente intuzione:\\
+Partendo dal grafo non colorato andiamo ad elencare tutte le possibili colorazioni di un nodo, aggiungendo una "sbavatura" in corrispondenza degli archi:
+\begin{figure*}[!ht]
+                \centering
+                \includegraphics[width = 0.5\textwidth]{./img/E11_sbavatura.png}
+                \caption{colorazioni di ogni nodo con sbavatura} \label{FIG:E11_sbavatura}
+\end{figure*}\\
+Per definizine di \textbf{3COL} bisogna evitare che le \textit{sbavature} di due nodi con lo stesso colore si incontrino, sono invece accettabili incontri tra colori diversi.\\
+A questi "incontri" di differenti colori è possibile assegnare dei nomi, il punto in cui il nodo $x$ colorato verde si espande verso $y$ ( di colore non verde) può essere chiamato $v_{xy}$ e viceversa in punto in cui il nodo $y$ colorato ad esempio di rosso (ma andrebbe bene anche un altro colore che non sia verde, nell'esempio blu) si espande verso il nodo $x$ si può chiamare $r_{yx}$.
+Da questo possiamo ricavare un insieme di "punti" che corrispondono a relazioni tra nodi o "incontri" e colore ($r_x$ rosso $x$, $b_y$ blu $y$, $r_{yx}$ incorcio da y verso x colorato in rosso, etc ...).
+Questo insieme non è altro che l'insieme universo $U$, mentre una colorazione corrisponde ad $S'$.
+
+Per generare un modello equivalente al grafico \textbf{3COL} bisogna fare attenzione ad inserire nello stesso sottoinsieme gli archi di "incontro" ($\{v_{xy},r_{yx}\}$) in modo da avere in un altro sottoinsieme i singoletti che identificano il colore del nodo ($\{v_x\}$,$\{r_y\}$) ed in tal modo impedire a questi singoletti di entrare in altri sottoinsiemi. (se $y$ è rosso voglio evitare che entri nel sottoinsieme $\{b_yx,b_y,b_yz\}$)
+\begin{figure*}[!ht]
+                \centering
+                \includegraphics[width = 0.5\textwidth]{./img/E11_colorazione.png}
+		\begin{align*} 
+			S'=\{\{v_x\},\{v_{xy}, r_{yx}\},\{r_y\}, \{ r_{yz}, b_{zy} \}, \{b_z\}, \{b_x, b_{xy} \}, \\
+			\{b_{yx}, b_y, b_{yz} \}, \{v_{yx}, v_y, v_{yz} \}, \{v_{zy},v_z \},\{r_x, r_{xy} \}  \{v_{zy},v_z \}\}
+		\end{align*}
+\end{figure*}\\
+Questa intuizione comporta però un problema, in quanto l'insieme $S \subseteq \mathcal{P}(U)$ fornisce delle coperture di $U$ che non corrispondono ad un grafo colorabile.
+(attenzione, fin'ora ci siamo concentrati su una specifica colorazione corrispondente ad $S'$, ma l'insieme $S$ ne può anche fornire altre).\\
+La più notevole di queste coperture è la copertura in cui i singoletti $v_x,b_y,r_z$, etc..) non sono presenti, che sarebbe equivalente ad un grafo "non colorato" dal momento che i singoletti indicano il colore di un vertice.\\
+\begin{figure*}[!ht]
+                \centering
+                \includegraphics[width = 0.8\textwidth]{./img/E11_degenere.png}
+                \caption{S' non è una colorazione} \label{FIG:E11_degenere}
+\end{figure*}\\
+Possiamo quindi raffinare l'intuizione aggiungendo ad $U$ tanti nodi quanti sono i vertici del grafo (nel nostro esempio aggiungiamo $\{x,y,z\}$) e utilizzandoli per decidere il colore di ogni nodo.
+Quindi da $S$ rimuoviamo tutti i singoletti e aggiungiamo tutte le coppie variabile-singoletto (ad esempio $\{x,v_x\},\{x, b_x\},...,\{y,r_y\},...$).
+
+Formalmente otterremo, $U^*$ e $S^*$ "correzzioni" di $U$ ed $S$:
+\begin{align*}
+&	U^* = \{x, y, z\} \cup U \\
+& 	S^* = (S \ \{\{v_x\}, \{b_x\}, \{r_x\}, \{v_y\}, \{b_y\}, \{r_y\}, \{v_z\}, \{b_z\}, \{r_z\}\}) \\
+&	\cup \{\{x, v_x\}, \{x, b_x\}, \{x, r_x\}, \{y, v_y\}, \{y, b_y\}, \{y, r_y\}, \{z, v_z\}, \{z, b_z\}, \{z, r_z\}\}
+\end{align*}
+In tal modo è impossibile assegnare due colori allo stesso nodo (avremmo una ripetizione della variabile) ed è anche impossibile assegnare a due nodi adiacenti lo stesso colore (avremmo una intersezione di due insiemi o una non copertura).Ad esempio inserendo sia $\{x,v_x\}$ che $\{x,b_x\}$ avremmo $x$ nell'intersezione ed avendo rimosso i singoletti è impossibile scegliere $x_{colore}$ senza scegliere anche $x$.
+\subsection{E.12}
+Questa \textit{funzione di riduzione} si basa sull'idea di "codificare" in binario la presenza o l'assenza degli elementi di $S$ in $S'$.Quindi dato l'insieme degli elementi $U={s_1, s_2,...,s_n}$ andremo a trasformare $S$ in un insieme composto da numeri binari di lunghezza $n$ (equivalente a $|U|$).\\
+Posto ad esempio $U = \{1,2,3\}$ un possibile $S$ sarebbe $S= \{\{1,2,3\},\{1,3\},\{\emptyset\}\}$ quindi $E_x(S) = \{\{1,1,1\},\{1,0,1\},\{0,0,0\}\}$.\\
+La prima intuizione prosegue proponendo di sommare i tutti i numeri codificati in binario di $S'$ e di confrontare il valore con $2^{|U|}-1$, dato che la configurazione binaria di tale numero è $111...11$ ripetuto $|U|$ volte la somma di tutti i numeri in $S$ dovrebbe fornire $2^{|U|}-1$ se e solo se sono presenti tutti gli elementi di $U$ al massimo una volta.\\
+tale intuizione risulta però errata in quanto non tiene conto del riporto, infatti:
+\begin{center}$\begin{array}{llll}
+  & 0 & 1  & 0  \\ %carry digits
+  & 1 & 1  & 0  \\	%1st number
++ &  0 & 1  & 0  \\ %2nd number
+\hline
+  &  1 & 1  & 1  \\ %result
+\end{array}$
+\end{center}
+Come si può notare il riporto ha "simulato" la presenza del valore in terza posizione.
+La soluzione è utilizzare una base che non permetta il verificarsi di tale situazione, quindi prima di effettuare la riduzione basta contare la massima occorrenza di ogni elemento in $S$, aggiungere una unità (così non si verificherà mai \textit{carry}) ed utilizzare quella come base.
+\\Formalmente:
+\begin{definition}
+	Dati $((U,S)S') \; t.c. \; S \subseteq \mathcal{P}(U), S' \subseteq S$:
+	$$ E_s: Set \times Set \times Set \rightarrow \mathcal{P}(\mathbb{N}) \times \mathbb{N}$$
+	$$(U,S,S') \rightarrow (\{\sum_{i=o}^{\rvert u \lvert -1} p^tx[i] | z \in S'\}, \frac{p^{\rvert u \lvert} -1}{p -1})$$
+\end{definition}
 \section{Problemi computazionali}
 \subsection{F.1}
 \begin{definition}[SubsetSum]
