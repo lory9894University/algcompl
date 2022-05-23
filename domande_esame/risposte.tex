@@ -35,13 +35,23 @@
 
 \section{Brute-force e certificazione}
 \subsection{A.1}
+\includegraphics[width=\textwidth]{./img/A1}
+\emph{La figura riassume graficamente la configurazione generica di un algoritmo che genera le permutazioni di una lista di elementi.}
+
+
 Posto un array $V$ di $n$ elementi individuo due indici, $i$ e $j$.\\L'idea è di mantenere gli elementi $[0 ... j-1]$ fissi ed andare a generare tutte le permutazioni dei restanti elementi $[j ... n-1]$grazie all'indice $i$.
 
 Ad ogni incremento dell'indice $i$ segue una sequenza di chiamate ricorsive che hanno lo scopo di effettuare uno swap fra l'elemto di indice $i$ e l'elemento di indice $j$ e poi incrementare $j$ scendendo nell'albero della ricorsione fino alla condizione $j=i$, quando $i$ viene di nuovo incrementato.Intuitivamente $j$ indica la profondità della ricorsione, $i$ indica l'ampiezza.
 \begin{itemize}
-	\item \textbf{Punto 1}:L'algoritmo è completo in quanto genera $n!$ permutazioni, ed è corretto in quanto sono tutte distinte.\\Le permutazioni generate sono esattamente $n!$ in quanto alla "radice" dell'albero avrò $n$ chiamate ricorsive (con $i = 0, i=1, ... i= n-2, i=n-1$ ).Invece al livello di profondità $j$ i primi $j$ elementi del vettore risulteranno fissi ed avrò solo $n-1-j$ chiamate ricorsive.\\Considerando che il valore di $j$ viene incrementato di una unità ad ogni "livello" di ricorsione fino all' $n-(n-1)$esimo livello ottengo questa semplice equazione: \begin{center}$calls = n * (n-1) * ...(j-1$volte$)... * 1$\end{center}Che non è altro che $n!$\\
-		Le permutazioni sono tutte distinte perchè $i$ e $j$ non assumono mai due volte lo stesso valore, posto che ogni elemento del vettore sia distinto.Di conseguenza lo "swap" avverrà sempre tra due elementi differenti ad ogni chiamata ricorsiva, generando sottoalberi uno diverso dall'altro e di conseguenza sequenze differenti.
-	\item \textbf{Punto 2}:Un algoritmo che generi \textit{tutti i sottoinsiemi di elementi} può essere realizzato organizzando lo spazio degli stati in sottoinsiemi.
+	\item \textbf{Punto 1}:\emph{Argomentare a livello intuitivo sul perché la configurazione generica data in figura può essere usata per sintetizzare un algoritmo completo e corretto per la generazione delle permutazioni di una lista di elementi.}
+
+
+L'algoritmo è completo in quanto genera $n!$ permutazioni, ed è corretto in quanto sono tutte distinte.\\Le permutazioni generate sono esattamente $n!$ in quanto alla "radice" dell'albero avrò $n$ chiamate ricorsive (con $i = 0, i=1, ... i= n-2, i=n-1$ ).Invece al livello di profondità $j$ i primi $j$ elementi del vettore risulteranno fissi ed avrò solo $n-1-j$ chiamate ricorsive.\\Considerando che il valore di $j$ viene incrementato di una unità ad ogni "livello" di ricorsione fino all' $n-(n-1)$esimo livello ottengo questa semplice equazione: \begin{center}$calls = n * (n-1) * ...(j-1$volte$)... * 1$\end{center}Che non è altro che $n!$\\
+		Le permutazioni sono tutte distinte perchè $i$ e $j$ non puntano mai due volte alla stessa cella, posto che ogni elemento del vettore sia distinto.Di conseguenza lo "swap" avverrà sempre tra due elementi differenti ad ogni chiamata ricorsiva, generando sottoalberi uno diverso dall'altro e di conseguenza sequenze differenti.
+	\item \textbf{Punto 2}:\emph{Modificare la figura precedente in modo da ottenere la configurazione generica di un algoritmo che genera tutti i sottoinsiemi di elementi di un array, giustificando correttezza e completezza a livello intuitivo.}
+
+
+		Un algoritmo che generi \textit{tutti i sottoinsiemi di elementi} può essere realizzato organizzando lo spazio degli stati in sottoinsiemi.
 		Al posto che intendere una permutazione come sequenza di elementi la si può vedere come una serie di \textit{scelte}, ovvero booleani.Essenzialmente si va a generare un vettore $B$ di booleani i cui elementi indicano se il corrispondente elemento di $V$ va considerato o meno.\\
 		Se $B[i] == True$ allora $V[i]$ fa parte del sottoinsieme che si sta generando.\\
 		In tal modo otteniamo il \textbf{PowerSet} di $V$, che è completo (cioè le permutazioni sono $2^n$) in quanto ogni cella del vettore $B$ può avere solamente valore binario e le celle sono $n$.
@@ -53,6 +63,9 @@ Ad ogni incremento dell'indice $i$ segue una sequenza di chiamate ricorsive che 
 \caption{PowerSet di [a,b,c]} \label{FIG:PowerSet}
 \end{figure*}
 \subsection{A.2}
+\emph{Fissare una nozione formale di permutazione e dimostrare formalmente che essa è riflessiva e simmetrica.}
+
+
 Definizione formale di una permutazione (definizione ricorsiva):
 \begin{figure*}[!ht]
 \centering
@@ -90,6 +103,10 @@ Definizione formale di una permutazione (definizione ricorsiva):
 	Applicando \textit{perm\_trans} ad entrambe si ottiene $P \; l' \, l$
 \end{dimostrazione}
 \subsection{A.3}
+\emph{Dimostrare formalmente la completezza di un algoritmo di generazione di permutazioni di una lista di elementi.}
+
+
+%TODO: premettere cosa fa distribute e concat_map (e anche permutation, ma è esplicativo). 
 Dimostrare che è algoritmo che genera permutazioni di una lista di elementi è completo significa dimostrare che genera $n!$ permutazioni, con $n$ pari al numero di elementi. Formalmente:
 \begin{theorem}[Completezza] $\forall l \in Lists$, $len($\textit{permutation} $l) = len(l)!$\end{theorem}
 \begin{dimostrazione}
@@ -111,8 +128,8 @@ Dimostrare che è algoritmo che genera permutazioni di una lista di elementi è 
 \end{figure*}\\
 	Intuitivamente stiamo ripetendo l'operazione $distribute \; h \; l'$ per $len(t) ! $ volte ogni volta producendo una lista di $1 + len(l')$ elementi, quindi otterremo una lista di liste con $(1 + len(l')) * len(t)! $ elementi.\\
 	Essendo le liste $l'$ permutazioni di $t$ dovrà valere la sequente equivalenza $len(l') = len(t) $, dato che sto solo eseguendo scambi, non sto aggiungendo ne togliendo elementi.\\
-	Sostituendo $len(t)$ a $len(l')$ nell'equazione che specificava il numero di elementi delle liste otteniamo che $permutation  \; h::t$ genera una lista di liste di $(1+len(t)) * len(t)!$ elementi.\\
-	Dato che $(1+len(t)) * len(t)! = len([h::t])!$ possiamo affermare che: %perchè è vera l'equivalenza? scemo, è un fattoriale (1 +n)* n! = (1 + n)! per definizione.
+	Sostituendo $len(t)$ a $len(l')$ nell'equazione che specificava il numero di elementi (TODO: fare un ref all'equazione) delle liste otteniamo che $permutation  \; h::t$ genera una lista di liste di $(1+len(t)) * len(t)!$ elementi.\\ %Todo: leggi
+	Dato che $(1+len(t)) * len(t)! = len([h::t])!$ (poichè un fattoriale (1 +n)* n! = (1 + n)! per definizione) possiamo affermare che: 
 	$$len(permutation \; [h::t]) = len([h::t])!$$
 \end{dimostrazione}
 Notiamo due cose:
@@ -120,13 +137,24 @@ Ho affermato che intuitivamente $distribute \; h \; l'$ ripetuto $len(t)$ volte 
 L'altra affermazione che andrebbe dimostrata è "essendo le liste $l'$ permutazioni di $t$".Infatti tale affermazione si basa sull'assunto che \textbf{permutation t} produca permutazioni di $t$, che non è nient'altro che il teorema di corretteza delle permutazioni.
 Quindi la completezza si basa sulla correttezza
 \subsection{A.4}
+\includegraphics[width=\textwidth]{./img/A4}
+\emph{La figura riassume un’istanza del problema Valutazione.}
+
+
+Una \emph{visita esaustiva} anche detta \imp{Brute-force} è una strategia di visite che consiste nel verificare tutte le soluzioni teoricamente possibili fino a che si trova quella effettivamente corretta.
 \begin{itemize}
-	\item \textbf{Permutazioni}:Si può individuare una \emph{risposta} al problema \textbf{Valutazione} generando l'albero di tutte le possibili permutazioni:
+	\item \textbf{Permutazioni}:\emph{Descrivere una ricerca Brute-Force di una risposta in uno spazio degli stati organizzato come permutazioni.}
+
+		Si può individuare una \emph{risposta} al problema \textbf{Valutazione} generando l'albero di tutte le possibili permutazioni:
 		\begin{center}	\scalebox{0.8}{\Tree [  [ [ .1 [  [ .2 [.3 4 ] [.4 3 ] ] [ .3 [.2 4 ] [ .4 2 ] ] [ .4 [ .2 3 ] [ .3 2 ] ] ] ] [ .2 [ [ .1 [ .3 4 ] [ .4 3 ] ] [ .3 [ .1 4 ] [ .4 1 ] ] [ .4 [ .1 3 ] [ .3 1 ] ] ] ] [ .3 [ [ .1 [ .2 4 ] [ .4 2 ] ] [ .2 [ .1 4 ] [ .4 1 ] ] [ .4 [ .1 2 ] [ .2 1 ] ] ] ] [ .4 [ [ .1 [ .3 2 ] [ .2 3 ] ] [ .3 [ .1 2 ] [ .2 1 ] ] [ .2 [ .1 3 ] [ .3 1 ] ] ] ] ] ]}
 		\end{center}
-		In questo albero un ramo individua una permutazione dell'insieme di partenza, di conseguenza basta percorrerlo calcolando di volta in volta il voto massimo finchè questi non supera il valore fissato (in questa istanza 9).Si ottiene quindi una soluzione, data dalla sequenza di "voti" ottenuta partendo dalla radice e percorrendo il ramo corrispondente fino al padre del nodo che causa il superamento del voto massimo.
+		In questo albero un ramo individua una permutazione dell'insieme di partenza, di conseguenza basta percorrerlo calcolando di volta in volta il voto massimo finchè questi non supera il valore fissato (in questa istanza 9).Si ottiene quindi una soluzione, data dalla sequenza di "voti" ottenuta partendo dalla radice e percorrendo il ramo corrispondente fino al padre del nodo che causa il superamento del voto massimo.\\
+		Attenzione, vengono calcolate tutte le permutazioni, durante la fase di valutazione si va a calcolare il voto e ci si ferma quando il valore viene superato.
+		Se facessimo questo distinguo in fase di generazione delle permutazioni staremmo già facendo pruning.\\
 		Eseguendo questa operazione su tutti i rami dell'albero si ottengono tutte le \emph{soluzioni}, scegliendo le soluzioni con votazione migliore si ottengono una o più \emph{risposte}.
-	\item \textbf{Sottoinsiemi}:Si può individuare una \emph{risposta} al problema \textbf{Valutazione} generando l'albero di tutte le possibili scelte:
+	\item \textbf{Sottoinsiemi}:\emph{Descrivere una ricerca Brute-Force della risposta in uno spazio degli stati organizzato a sottoinsiemi.}
+
+		Si può individuare una \emph{risposta} al problema \textbf{Valutazione} generando l'albero di tutte le possibili scelte:
 		\begin{center}
 			\begin{forest}
 				for tree={ l sep=20pt, s sep=20pt}
@@ -135,8 +163,11 @@ Quindi la completezza si basa sulla correttezza
 		A seconda che si scelga un ramo o l'altro la domanda sarà inclusa nella possibile \emph{soluzione} quindi percorrendo un ramo fino alla foglia si giunge sempre ad una sequenza di voti.
 		Non tutti i sottoinsiemi così generati sono però \emph{soluzioni}, in quanto alcuni superano il vincolo del voto massimo ammesso (in questo caso 9); considerando solo le \emph{soluzioni} e scegliendo quelle aventi la migliore votazioni si ottengono una o più \emph{risposte}
 \end{itemize}
+%TODO: per entrambi mostrare il cammino che porta alla risposta
 \section{Backtrack}
 \subsection{B.1}
+\emph{Illustrare uno pseudo-algoritmo a piacere che implementa la tecnica Backtrack, giustificando le varie parti.}
+
 Il \textbf{Backtracking} è una tecnica algoritmica atta a migliorare la visita \textbf{Bruteforce} tramite l'elimnazione di alcuni sotto-alberi dell' albero delle scelte che non vale la pena di analizzare.
 Più precisamente vengono introdotti due concetti:
 \begin{itemize}
@@ -160,13 +191,15 @@ BT(a,soluzione)=
 	    risposta = soluzione
 \end{lstlisting}
 \begin{itemize}
-	\item \imp{completa(a,soluzione)} (riga 2) è una funzione che resituisce \textit{True} se il cammino dalla radice al nodo attuale può costituire una soluzione.
+	\item \imp{completa(a,soluzione)} (riga 2) è una funzione che resituisce \textit{True} se il cammino dalla radice al nodo attuale può costituire una soluzione. (se fossi nella situazione "sottoinsiemi" la completezza sarebbe data dal superamento dei vincoli espliciti all' iterazione successiva, se fossi nella situazione )
 	\item \imp{rifiuta(a,soluzione)} (riga 4) è una funzione che resituisce \textit{True} se il nodo genera un sotto-albero che non porterà sicuramente ad una risposta, perchè viola un vincolo esplicito o perchè genererebbe una soluzione peggiore di una soluzione trovata in precedenza
 	\item \imp{accetta(a,soluzione)} (riga 10) è una funzione che resituisce \textit{True} se la soluzione passata come parametro è migliore dell' attuale \textit{risposta} (e quindi può prenderne il posto)
 	\item \imp{espande(a)}(riga 6) è una funzione che espande il nodo, inserendo i suoi figli tra le possibili soluzioni da visitare e da analizzare. La funzione di \textbf{Backtracking} sarà quindi chiamata ricorsivamente su tutte queste possibili soluzioni.
 	\item \imp{BT(a,soluzione)} (riga 8): lo scopo di effettuare la chiamata ricorsiva sulle soluzioni appena generate è quello di poter effettuare \textit{pruning} su più sottoalberi possibile, individuando più rapidamente i sottoalberi che contengono \textit{risposte}
 \end{itemize}
 \subsection{B.2}
+\emph{Illustrare la tecnica algoritmica Backtrack usando i seguenti problemi. Per ciascuno argomentare una funzione bound, prestando attenzione alla terminologia usata per descrivere le parti dello spazio degli stati. Inoltre, relativamente al problema dell’ordinamento, argomentare sul perché è possibile evitare soluzioni basate su Backtrack.}
+
 \begin{itemize}
 	\item \textbf{ordinamento}: una possibile funzione di bound è $a[j-2] > a[j-1]$, presupponendo un vettore $a_0, ... , a_n$ l'algoritmo si basa sul mantenere un indice $j$ t.c. $a_0 \leq ... \leq a_{j-2}$ mentre gli elementi $a_{j}, ..., a_{n}$ non sono ancora stati analizzati.
 	Notiamo però che non ha molto senso utilizzare tecniche \textbf{BruteForce} o derivate, perchè l'operazione di confronto fra due numeri può essere sempre effettuata con consto minimo.Potendo confrontare ogni elemento con tutti gli altri elementi posso cancellare una grossa parte dello spazio delle soluzioni.
@@ -193,9 +226,9 @@ In entrambi i casi però devo controllare che tutti i nodi connessi da un arco a
 		\item se i primi due punti non sono veri sommo agli elementi presenti nella mia \textit{potenziale soluzione} $Z$ tutti gli altri elementi dell'insieme $X$, se il risultato è comunque minore di $S$ non ha senso proseguire.Anche inserendo tutti gli elementi rimasti non otterrei comunque $S$
 	\end{enumerate}
 \end{itemize}
-ESPANDERE CON ESEMPI???
-%pensarci in futuro
+%TODO:  ISERIRE UN ESEMPIO PER OGNUNA (grafo, matrice e albero di esplorazione). si possono prendere quelli del prof
 \subsection{B.3}
+\emph{Le figure riportano proposte in [HSR07] di pseudo-algoritmi di Backtrack. Commentare la funzionalità delle loro parti in base ad una qualche struttura dati fissata per la rappresentazione dello spazio degli stati su cui opera.}
 \begin{figure*}[!ht]
 \centering
 \makebox[\textwidth][c]{
@@ -207,11 +240,11 @@ La sostanziale differenza tra i due algoritmi sta in come viene generato lo \tex
 Questa distinzione è importante in quanto la versione ricorsiva fornisce uno stack implicito, assente nella versione iterativa.Bisogna quindi implementare una struttura dati che permetta di effettuare le operazioni che nel libro (riga 9-10) vengono definite in maniera informale.
 
 Preso $(x_1,x_2,....x_i)$ path dalla radice ad un nodo dell'albero rappresentante lo spazio degli stati definiamo la \textit{funzine bound} $B_k$ come la funzione che restituisce falso quando il path anche se esteso non raggiungerà mai una \textit{soluzione}.\\
-$T(x_1,...x_i)$ è il set di tutti i possibili valori di $x_{i+1}$ tali che $(x_1,...x_{i+1})$ è ancora uno stato da analizzare (non è una soluzione).Quindi $T(x-1,...,x_n) = \empty$
+$T(x_1,...x_i)$ è il set di tutti i possibili valori di $x_{i+1}$ tali che $(x_1,...x_{i+1})$ è ancora uno stato da analizzare (non è una soluzione).Quindi $T(x-1,...,x_n) = \emptyset$
 \begin{itemize}
 	\item \textbf{Algoritmo ricorsivo}:
 		Il vettore delle soluzioni $(x_1, ... , x_n)$ è gestito come un array globale $x[1:n]$, $x[1:k]$ contiene tutti gli elementi "accettati", corrisponde alla vettore in corso d'opera che potrebbe portarci ad una \textit{soluzione}.\\
-		L'algoritmo prova ad inserire gli elementi rimanenti in k-esima posizione, se il vettore soluzione $(x_1,...,x_k)$ soddisfa $B_k$ si controllo se è una soluzione (riga 11) e la si "stampa", se non lo viene invocata la funzione \textit{Backtrack} ricorsivamente sul nuovo vettore "in costruzione".\\
+		L'algoritmo prova ad inserire gli elementi rimanenti in k-esima posizione, se il vettore soluzione $(x_1,...,x_k)$ soddisfa $B_k$ (sappiamo che il vettore è soluzione poichè altrimenti sarebbe stato rifiutato a riga 9) si controlla se tale se è una \textit{risposta temporanea} (riga 11) e la si "stampa", se non lo viene invocata la funzione \textit{Backtrack} ricorsivamente sul nuovo vettore "in costruzione".\\
 		Se sono stati inseriti tutti gli elementi e non si è arrivati ad una soluzione (riga 13 $k=n$) bisogna cambiare l'ultimo elemento (figurativamente è come essere al penultimo livello dell'albero e sceglire una foglia sbagliata).
 	\item \textbf{Algoritmo iterativo}:\\
 		Non avendo uno stack implicito bisogna mantenere un vettore $T$ che contenga tutti i possibili valori che possono essere componenti della soluzione.
@@ -222,6 +255,9 @@ $T(x_1,...x_i)$ è il set di tutti i possibili valori di $x_{i+1}$ tali che $(x_
 \section{Branch\&Bound}
 \subsection{C.1}
 \label{SEC:C_1}
+\emph{Ad esempio, anche sfruttando almeno una delle seguenti immagini, definire le nozioni dead node, live node, E-node, descrivere l’impatto delle politiche di generazione di live node e di assegnazione dello stato di E-node sulla visita dello spazio degli stati.}
+
+
 \begin{itemize}
 	\item \textcolor{gray}{\textit{dead node}}: radice di sotto-alberi che non sono più espandibili, perchè completi o a causa del pruning
 		\item \textcolor{red}{\textit{live node}}: nodo "vivo", cioè alcuni dei suoi figli sono ancora da espandere
@@ -235,7 +271,7 @@ A seconda di come si gestisce la visita dei nodi e l'assegnamento dell' \textit{
 \end{figure*}\\
 Come mostrato in figura~\ref{FIG:C_1} FIFO e LIFO sono "i due estremi di un ventaglio di possibili criteri di scelta".
 Gestendo i live node com uno \emph{stack} e quindi andando ad estrarre l'ultimo nodo inserito si ottiene una visita \textit{depth-first} in cui si trasferisce la condizione di essere \textit{E-node} dal padre al figlio appena generato.
-In tal modo un nodo non diventa "\emph{dead} finchè tutti i suoi figli non sono stati visitati, di conseguenza si tende ad arrivare al fondo dell'albero degli stati il più in fretta possibile.
+In tal modo un nodo non diventa "\emph{dead}" finchè tutti i suoi figli non sono stati visitati, di conseguenza si tende ad arrivare al fondo dell'albero degli stati il più in fretta possibile.
 \begin{figure*}[!ht]
 \centering
 \includegraphics[width=1\textwidth]{./img/C_1_DFS.png}
@@ -250,12 +286,16 @@ Ciò porta a visite dello spazio degli stati che prima di giungere alle foglie d
 \end{figure*}\\
 Come anticipato in figura~\ref{FIG:C_1}, tra DFS e BFS si trovano tutte le possibili politiche intermedie, tra cui le \textit{least cost}. Naturalmente l'individuazione di una politica \textit{least cost} è fortemente dipendente dal problema.
 \subsection{C.2}
+\emph{L’albero degli stati del problema 4Regine è riportato, che è la Figura 7.2 de [HSR07].}\\
+
 \begin{figure*}[!ht]
 \centering
 \includegraphics[width=1\textwidth]{./img/C_2.png}
 \caption{spazio degli stati 4 regine} \label{FIG:C_2}
 \end{figure*}
-\textbf{Punto 1}: Presupponiamo di visitare l'albero degli stati tramite le due diverse politiche, effettuando pruning quando necessario.
+\textbf{Punto 1}:\emph{Illustrare a grandi linee come si sviluppa la visita dello spazio degli stati qui sopra illustrato, che possiamo definire in profondità ed in ampiezza.}
+
+Presupponiamo di visitare l'albero degli stati tramite le due diverse politiche, effettuando pruning quando necessario.
 \begin{itemize}
 	\item \textbf{DFS}: La DFS cerca di giungere il prima possibile ad una soluzione, quindi come mostrato in figura~\ref{FIG:C_2_DFS} si scende lungo il ramo più "a sinistra" finchè non si incontra una violazione dei vincoli che induce il pruning (nel nodo 3 ad esempio abbiamo regine in A4 e B3, sulla stessa diagonale).
 		Il lato negativo è che spesso la visita in profondità si "infila" in cammini che non portano ad una soluzione, come tutto il sottoalbero generato dalla regina in posizione 2 (A4), potrebbe sembrare conveniente visitare più opzioni possibile in modo da eliminare i cammini che non producono soluzioni il prima possibile.
@@ -266,14 +306,16 @@ Come anticipato in figura~\ref{FIG:C_1}, tra DFS e BFS si trovano tutte le possi
 \end{figure*}\\
 	\item \textbf{BFS}:Tramite la visita in ampiezza invece si va ad espandere ogni nodo di un livello dell'albero prima di passare al livello successivo.
 		In generale la politica \textit{FIFO} butta via in un sol colpo un sacco di non soluzioni, ma in questo caso prima di incontrare una violazione di qualche vincolo bisogna scendere fino al secondo livello dell'albero, analizzando 16 nodi (che è esattamente il numero di nodi necessari a trovare la \textbf{risposta} con la visita in profondità).
-		La politica \textit{LIFO} si dimostra quindi molto meno vantaggiosa, oltretutto si porta dietro un altro svantaggio: se infatti la \textit{FIFO} approfittava dello stack generato dalla ricorsione per mantenere i suoi progressi in memoria nella \textit{LIFO} bisogna costruire una struttura dati atta a mantenere i nodi della "frontiera" in memoria, dato che ogni soluzione viene costruita in parallelo.
+		La politica \textit{LIFO} si dimostra quindi molto meno vantaggiosa, oltretutto si porta dietro un altro svantaggio: se infatti la \textit{FIFO} approfittava dello stack generato dalla ricorsione per mantenere i suoi progressi in memoria nella \textit{LIFO} bisogna costruire tante strutture dati quanti sono i live node atte a mantenere i nodi della "frontiera" in memoria, dato che ogni soluzione viene costruita in parallelo.
 		\begin{figure*}[!ht]
 \centering
 \includegraphics[width=1\textwidth]{./img/C_2_BFS.png}
 \caption{Soluzione con BFS} \label{FIG:C_2_BFS}
 \end{figure*}
 \end{itemize}
-\textbf{Punto 2}:
+\textbf{Punto 2}:\emph{fornire un riscontro del fatto che visite in ampiezza non sono necessariamente più efficaci di quelle in profondità per individuare una risposta ed argomentare sulla inapplicabilità di criteri “ovvi” di ranking dei live node, per realizzare strategie di visita di uno spazio degli stati, né in ampiezza, né in profondità.}.
+
+
 \begin{adjustwidth}{.8cm}{0cm}
 	Confrontando le due immagini presenti in figura~\ref{FIG:C_2_DFSvsBFS} notiamo chiaramente che la visita \textit{DFS} è più vantaggiosa in questo caso, giungendo alla soluzione in 16 passi rispetto ai 29 della visita \textit{BFS}.\\
 \begin{figure*}[!ht]
@@ -285,8 +327,8 @@ Come anticipato in figura~\ref{FIG:C_1}, tra DFS e BFS si trovano tutte le possi
 In generale è vero che la politica \textit{FIFO} permette di "buttare via" in un sol colpo un sacco di non soluzioni, ma in questo caso prima di giungere a nodi non accettabili si è obbligati a visitare gran parte dell'albero degli stati.
 Sto sì eliminando moltissimi sotto-alberi rispetto alla \textit{DFS} ma per farlo ne sto esplorando molti di più.Più l'albero è ampio rispetto alla sua profondità peggiori sono le prestazioni di una visita in \textit{ampiezza}
 
+%TODO: ruben ha aggiunto "mancanza di una euristica per sapere quando andare in profondità" (ad esempio nella foto a sinistra di figura 12, quando siamo al nodo 30 basterebbe scendere di un nodo)
 %non mi piace proprio questa risposta.
-
 
 L'ideale sarebbe visitare in ampiezza ma scendere in profondità quando un ramo sembra promettente, per individuare i rami più promettenti si potrebbe ad esempio ordinare i live node minimizzando una delle seguenti proprietà:
 \begin{enumerate}
@@ -299,13 +341,20 @@ Questa situazione è però paradossale, se conoscessi la risposta non la starei 
 \end{adjustwidth}
 \subsection{C.3}
 \label{SEC:C3}
+\includegraphics[width=\textwidth]{./img/C3.png}
+\emph{Considerare, ad esempio, il seguente schema riassuntivo}
+
+
 \textbf{Punto 1}
+\emph{Argomentare sul significato di una funzione costo per individuare una risposta, e ricostruire la struttura di una funzione costo approssimata.}
 \begin{adjustwidth}{.8cm}{0cm}
+\phantomsection
+\label{SEC:C3.1}
 \begin{definition}
 	La \textit{funzione costo} $\hat c(x)$ di un \textit{live node x} è: $$\hat c(x) = f(h(x)) + \hat g(x)$$
 \end{definition}
 \begin{itemize}
-	\item$h$ è una funzione che quantifica il lavoro, quindi $h(x)$ è il lavoro noto svolto fin'ora per arrivare al nodo $x$
+	\item$h$ è una funzione che quantifica il lavoro, quindi $h(x)$ è il lavoro noto svolto fin'ora per arrivare al nodo $x$ (quindi proporzionale alla distanza dalla radice al nodo)
 	\item$f$ è la funzione \emph{peso} monotona, dato in input il lavoro ottenuto da $h$ fornisce un valore proporzionale ad esso utilizzabile come \emph{peso}
 	\item$\hat g$ è una \textit{stima} della funzione non nota $g$.Essendo impraticabile calcolare il valore effettivo $g(x)$, $\hat g(x)$ fornisce una stima di quello che sarà il costo della costruzione di un cammino dal nodo $x$ fino ad una eventuale \textit{risposta} che il sotto-albero di radice $x$ contiene.\\
 		la funzione $\hat g$ non è generalizzabile, dipende dal problema.
@@ -320,12 +369,13 @@ E' composta principalmente da due parti, il \textit{costo noto} ed il \textit{co
 Notiamo anche che dati due nodi $x,y$ se $y$ è un discendente di $x$ ci aspettiamo che la funzione $\hat g(x) > \hat g(y)$, altrimenti la funzione costo è mal formata.
 \end{adjustwidth}
 \textbf{punto 2}
+\emph{Dopo aver ricordato la struttura di una funzione costo approssimata che quantifichi sia il costo del lavoro di ricerca della risposta già effettuato, e che stimi quello ancora da fare, argomentare le conseguenze di considerare nullo il costo del lavoro già svolto.}
 \begin{adjustwidth}{.8cm}{0cm}
-DOPO AVER RICORDATO? cioè devo riscrivere la definizione? mi sembra ridondante.\\
-%copia ed incolla magari abbreviando la definizione
+	La \textit{funzione costo} $\hat c(x)$ di un \textit{live node x} è una funzione atta a individuare il nodo più conveniente da far diventare \textit{E-node} $\hat c(x) = f(h(x)) + \hat g(x)$ \ref{SEC:C3.1}\\
 Analizziamo la situazione: $f(h(x)) =0$, in questo caso il \textit{costo noto} non ha influenza sul risultato generato da $\hat c(x)$ e la \textit{funzione costo} può essere riscritta come $$\hat c(x) = \hat g(x)$$
-Questo ci riporta ad un algoritmo di \textit{Backtracking}, in quanto non vi è "penalità" nell' espandere nodi in profondità nell'albero degli stati.Considerando che dati due nodi $x,y$ se $y$ è un discendente di $x$ allora $\hat g(x) > \hat g(y)$ la scelta che minimizza la \textit{funzione costo} è sempre quella che espande un nodo di livello successivo, quindi una \textit{D-search}.
+Questo ci riporta ad un algoritmo \textit{DFS}, in quanto non vi è "penalità" nell' espandere nodi in profondità nell'albero degli stati.Considerando che dati due nodi $x,y$ se $y$ è un discendente di $x$ allora $\hat g(x) > \hat g(y)$ la scelta che minimizza la \textit{funzione costo} è sempre quella che espande un nodo di livello successivo, quindi una \textit{D-search}.
 Immaginiamo ad esempio due \textit{live node} $x,z$, l' \textit{E-node} è $x$ e genera due discendenti: $w_1, w_2$.
+%todo: volendo aggiungere immagine triangolo con w1, w2 etc
 		\begin{align}
 			&0 + \hat g(x) < 0 + \hat g(z) \text{ dato che $x$ è \textit{E-node}} \notag \\
 			&0 + \hat g(w_1) \leq 0 + \hat g(w_2) < 0 + \hat g(z) \text{ dato che $\hat g$ è monotona} \notag\\
@@ -334,9 +384,9 @@ Immaginiamo ad esempio due \textit{live node} $x,z$, l' \textit{E-node} è $x$ e
 		Di conseguenza il prossimo \textit{E-node} sarà scelto tra $w_1$ e $w_2$
 \end{adjustwidth}
 \textbf{punto 3}
+\emph{Dopo aver ricordato la struttura di una funzione costo approssimata che quantifichi sia il costo del lavoro di ricerca della risposta già effettuato, e che stimi quello ancora da fare, argomentare le conseguenze di considerare non nullo il costo del lavoro già svolto.}
 \begin{adjustwidth}{.8cm}{0cm}
-DOPO AVER RICORDATO? cioè devo riscrivere la definizione? mi sembra ridondante.\\
-%copia ed incolla magari abbreviando la definizione
+	La \textit{funzione costo} $\hat c(x)$ di un \textit{live node x} è una funzione atta a individuare il nodo più conveniente da far diventare \textit{E-node} $\hat c(x) = f(h(x)) + \hat g(x)$ \ref{SEC:C3.1}\\
 Analizziamo la situazione: $f(h(x)) \neq 0$, $\hat c(x) = f(h(x)) + \hat g(x)$.\\
 Riprendendo l'idea del punto precendente abbiamo due \textit{live node} $x,z$, l'\textit{E-node} è $x$ e genera discendenti chiamati $w_1,..., w_n$.
 \begin{align}        
@@ -350,10 +400,14 @@ Riprendendo l'idea del punto precendente abbiamo due \textit{live node} $x,z$, l
 		se \; (\Delta >> \Delta') &\text{ $w_1$ non è un nodo conveniente} \notag
 	\end{cases}
 	\end{equation}
+%todo: volendo aggiungere immagine (quella di sopra)
 In questa situazione i valori di $\hat c(w_1), \hat c(w_2), . . . , \hat c(w_n)$ possono superare quelli relativi a live node inseriti nella lista prima di $w_1, w_2, . . . , w_n$ e, quindi, risultare sconvenienti da seguire rispetto ad altri.
 \end{adjustwidth}
 \subsection{C.4}
 \label{SEC:C4}
+\emph{Inquadrare e descrivere la relazione tra le componenti della funzione costo  $\hat c (x)$ e le strategie Breadth-search e D-search in uno spazio degli stati.}
+
+
 Come già mostrato in sezione~\ref{SEC:C_1}, più precisamente in figura~\ref{FIG:C_1} \textit{FIFO} e \textit{LIFO} sono "i due estremi di un ventaglio di possibili criteri di scelta" ed in quanto tali possono essere ottenuti tramite una precisa formulazione della \textit{funzione costo}.
 Infatti analizzando la \textit{funzione costo} $\hat c(x) = f(h(x)) + \hat g(x)$ si nota facilmente quali sono le possibili casistiche che possono portare ad un estremo o all'altro.
 \begin{itemize}
@@ -371,7 +425,7 @@ L'equazione del punto (1) deriva dal fatto che per giungere a $w_1,w_2$ è stato
 
 	\item $\hat c(x) = 0 + \hat g(x)$ Questa casistica, già affrontata nella sezione~\ref{SEC:C3} al \textbf{Punto 2} si riconduce ad una \textit{D-search}.
 		Se $f(h(x)) =0$ il \textit{costo noto} non ha influenza sul risultato generato da $\hat c(x)$ e la \textit{funzione costo} può essere riscritta come: $$\hat c(x) = \hat g(x)$$
-Questo ci riporta ad un algoritmo di \textit{Backtracking}, in quanto non vi è "penalità" nell' espandere nodi in profondità nell'albero degli stati.
+Questo ci riporta ad un algoritmo di \textit{DFS}, in quanto non vi è "penalità" nell' espandere nodi in profondità nell'albero degli stati.
 Considerando che dati due nodi $x,y$ se $y$ è un discendente di $x$ allora $\hat g(x) > \hat g(y)$ la scelta che minimizza la \textit{funzione costo} è sempre quella che espande un nodo di livello successivo, quindi una \textit{D-search}.
 Immaginiamo ad esempio due \textit{live node} $x,z$, l' \textit{E-node} è $x$ e genera due discendenti: $w_1, w_2$.
                 \begin{align}
@@ -383,6 +437,9 @@ Di conseguenza il prossimo \textit{E-node} sarà scelto tra $w_1$ e $w_2$
 
 \end{itemize}
 \subsection{C.5}
+\emph{La seguente immagine riporta l’Algoritmo 8.1 in [HSR07]. Commentarne il funzionamento in base ad una qualche struttura dati fissata per la rappresentazione dello spazio degli stati su cui opera.}
+
+
 L'algoritmo in figura~\ref{FIG:C5} rappresenta un generico algoritmo per una visita \textit{Least Cost}.\\
 \begin{figure*}[!ht]
 \centering
@@ -391,7 +448,7 @@ L'algoritmo in figura~\ref{FIG:C5} rappresenta un generico algoritmo per una vis
 \end{figure*}\\
 La struttura dati su cui si appoggia è una lista di \textit{record}, in cui ogni record può essere visto come un "nodo" dell'albero che rappresenta lo spazio degli stati.\\
 La struttura dati \textit{listnode} fornisce due operazioni \texttt{Add(\textit{x})} e \texttt{Least()} che forniscono la possibilità di inserire o estrarre record.
-Possiamo assumere che l'operazione \texttt{Least()} estrae dalla struttura dati il nodo che restituisce il minor valore quando inserito come imput nella funzione costo $ \hat c(\cdot)$.
+Possiamo assumere che l'operazione \texttt{Least()} estrae dalla struttura dati il nodo che ha il minimo costo tra i live node $ \hat c(\cdot)$.
 A seconda di come sono è implementata l'operazione \texttt{Add(\textit{x})} avremo differenti comportamenti nel caso si incontrassero nodi aventi lo stesso \textit{costo}, allo stesso modo di quanto discuso in sezione \ref{SEC:C3} e sezione \ref{SEC:C4}.
 
 Analisi dell'algoritmo:
@@ -403,6 +460,9 @@ Analisi dell'algoritmo:
 \end{itemize}
 \subsection{C.6}
 \label{SEC:C6}
+\emph{Definire una funzione costo per il problema \textbf{Subsetsum} e discuterne le possibili interazioni con meccanismi \textbf{FIFO/LIFO} di accumulo dei live node e con criteri di pruning.}
+
+
 L'idea da cui partire per sviluppare una \textit{funzione costo} per \imp{SubsetSum} è quella di individuare un intervallo di valori al cui interno è compreso il valore \emph{s} del problema \imp{SubsetSum} $X =({X_0 ... X_{n-1}},S)$ 
 Per chiarezza presentiamo con $X_k$ il valore numerico di un elemento, $x_k \in {0,1}$ indica se il numero è inserito nell'insieme o no.
 Come descritto nella sezione~\ref{SEC:C3} la \textit{funzione costo} $\hat c$ è composta da una \textit{parte nota} ed una \textit{parte stimata}.
@@ -411,26 +471,31 @@ $$\hat c(x[0..j)) = f(h(x[0..j))) + \hat g(x[0..j))$$
 	\item La parte nota è facilmente individuabile come la somma dei numeri già inseriti nell'insieme.$$ f(h(x[0..j)))=\sum_{0 \leq k < j} X_kx_k$$
 	\item La parte stimata viene calcolata in modo che valga la seguente condizione:
 		$$ f(h(x[0..j))) + \hat g(x[0..j)) - V \leq S \leq f(h(x[0..j))) + \hat g(x[0..j)) $$
-	Rivmuovendo $V$ ottengo una approssimazione per difetto di $S$, se non lo rimuovo ottengo una approssimazione per eccesso.
+	Rimuovendo $V$ ottengo una approssimazione per difetto di $S$, se non lo rimuovo ottengo una approssimazione per eccesso.
 	Se però $V$ viene preso dall'insieme $X$ diventa l'elemento che se tolto dalla somma degli elementi che mi rimangono da inserire fornisce la migliore approssimazione per difetto/eccesso di $S$
 	$$ \hat g(x[0..j))=\sum_{j \leq k < split} X_k$$ in cui il valore split è t.c:
 	$$\sum_{j \leq k < split-1} X_k \leq S \leq \sum_{j \leq k < split} X_k$$
+	%todo: aggiungere l'immagine con confronto tra valore con xsplit e s4nza
 \end{itemize}
 Lo scopo di questa funzione costo è esplorare in maniera più intelligente lo spazio delle soluzioni, la strategia \textit{LC} diventa la strategia di scelta del prossimo \textit{E-node} tra tutti i possibili \textit{live-node}.
-Ma a parità di \imp{costo} bisogna comunque affidarsi ad uno dei due criteri (\textit{LIFO/FIFO}) ma si potrebbe pensare anche di non affidarsi ad un criterio fisso e decidere randomicamente di volta in volta, per introdurre "perturbazioni" che riducano il rischio di svolgere ripetutamente scelte sbagliate.
+Ma a parità di \imp{costo} bisogna comunque affidarsi ad uno dei due criteri (\textit{LIFO/FIFO}).\\
+A seconda di come sono è implementata l'operazione di aggiunta avremo differenti comportamenti nel caso si incontrassero nodi aventi lo stesso \textit{costo}, allo stesso modo di quanto discuso in sezione \ref{SEC:C3} e sezione \ref{SEC:C4}.
+ma si potrebbe pensare anche di non affidarsi ad un criterio fisso e decidere randomicamente di volta in volta, per introdurre "perturbazioni" che riducano il rischio di svolgere ripetutamente scelte sbagliate.
 E naturalmente anche possibile migliorare l'efficenza di questa visita tramite pruning rimuovendo i rami dell'albero il cui valore $ f(h(x[0..j))) + \hat g(x[0..j)) - V > S$.Non ha infatti senso esplorare i sottoalberi che generano, in quanto non possono contenere soluzioni.
 \subsection{C.7}
+\emph{Definire una funzione costo per il problema \textbf{4Regine} e discuterne le possibili interazioni con meccanismi \textbf{FIFO/LIFO} di accumulo dei live node e con meccanismi di pruning.}
+
 Per semplicità di comprensione individuiamo la n-esima casella con le sue indicazioni di riga e colonna $n = i*4 + j$, quindi la vediamo come una matrice.
 
 L'algoritmo quando posiziona una regina su una cella incrementa di 1 il valore di tutte le caselle che la regina può "mangiare" quindi tutte le caselle sulla stessa riga, tutte le caselle sulla stessa colonna e le righe sulle due diagonali.
 \begin{itemize}
-	\item La parte nota è data dal numero di caselle della scacchiera occupabili, quindi le celle in nessuna regina è presente o può muoversi e di conseguenza mangiare.
+	\item La parte nota è data dal numero di caselle della scacchiera occupabili, quindi le celle in nessuna regina è presente o può muoversi e di conseguenza mangiare.\\
 	\item la stima $\hat g$ è data dalla somma del valore di tutte le caselle adiacenti alla casella che si sta analizzano cambiata di segno.
 \end{itemize}
 Si può facilmente effettuare pruning, andando a rimuovere i sotto-alberi generati dai nodi che rappresentano l'inserimento di regine su caselle $x \in X$ aventi $x_{ij} \neq 0$.\\
 \begin{figure*}[!ht]
 \centering
-\includegraphics[width=0.8\textwidth]{./img/C7.png}
+\includegraphics[width=0.8\textwidth]{./img/4 regine.pdf}
 \caption{Algoritmo Least Cost 4-regine} \label{FIG:C7}
 \end{figure*}\\
 
@@ -448,6 +513,9 @@ Come in sezione \ref{SEC:C6} a parità di \imp{costo} bisogna comunque affidarsi
 Ad esempio al secondo passo è stato scelto di posizionare la regina nella cella $x_{0 \, 1}$ ma la si sarebbe potuta inserire anche in $x_{1 \, 2}$ o $x_{2 \, 3}$.
 Notiamo che se la regina fosse stati inserita in $x_{1 \, 2}$ non avremmo potuto ottenere una soluzione. 
 \subsection{C.8}
+\emph{Illustrare gli algoritmi \textbf{Greedy} e \textbf{Greedy-split}. Discutere la qualità della soluzione offerta da \textbf{Greedy} al variare del valore M, se applicato all’istanza \textbf{KP}}
+
+
 La qualità di tutti gli algoritmi greedy può essere migliorata ordinando gli elementi in base al rapporto $\frac{valore}{peso}$, operazione con costo $O(n\log_n)$.
 In generale le approssimazioni fornite da algoritmi greedy per la risoluzione di \imp{Knapspack} sono molto vicine alla risposta. %il prof se non sbaglio diceva 80%
 Per entrambi gli algoritmi presupponiamo tre strutture dati di dimensione $n$, "vettore" $w$ dei pesi (che rappresenta l'isieme dei pesi degli elementi), "vettore" $p$ dei profitti  (che rappresenta l'isieme dei pesi degli elementi) e vettore $x$ delle scelte. $x[j] \in {0,1}$ indica se l'elemento di indice $j$ è inserito o no nello zaino.
@@ -489,7 +557,7 @@ Per entrambi gli algoritmi presupponiamo tre strutture dati di dimensione $n$, "
 \end{itemize}
 Entrambi gli algoritmi soffrono di un problema, sono \textit{potenzialmente pessimi}, ma non è questo il caso presentato nella domanda.
 $$(\vec w = (1,M)), \vec p = (3,M), 2M$$
-Questo caso ha un particolarità, analizzando i pesi si può notare che $p_{max} = M +1$ essendoci solo due elementi, uno di peso $M$ l'altro di peso $1$.La particolarità è che $2M > M + 1 \forall M > 0$, quindi se lo zaino ha una capienza maggiore di $0$ potrà sempre contenere tutti gli elementi che siamo intenzionati ad inserire.
+Questo caso ha un particolarità, analizzando i pesi si può notare che $p_{max} = M +1$ essendoci solo due elementi, uno di peso $M$ l'altro di peso $1$.La particolarità è che $2M > M + 1 \; \forall M > 0$, quindi se lo zaino ha una capienza maggiore di $0$ potrà sempre contenere tutti gli elementi che siamo intenzionati ad inserire.
 \begin{figure*}[!ht]
 \centering
 \includegraphics[width=0.5\textwidth]{./img/C_8.png}
@@ -497,6 +565,9 @@ Questo caso ha un particolarità, analizzando i pesi si può notare che $p_{max}
 \end{figure*}\\
 In questo caso \textbf{Greedy-split} si dimostra perfettamente identico in termini di soluzione a \textbf{Greedy}, in quanto non si incontra mai un elemento che causa il superamento del limite $c$, unica differenza dei due algoritmi.
 \subsection{C.9}
+\emph{Illustrare gli algoritmi \textbf{Greedy-Split} e \textbf{Ext-Greedy}. Discutere la qualità della soluzione prodotta da entrambi gli algoritmi, se applicati all’istanza \textbf{KP}}
+
+
 La qualità di tutti gli algoritmi greedy può essere migliorata ordinando gli elementi in base al rapporto $\frac{valore}{peso}$, operazione con costo $O(n\log_n)$.
 In generale le approssimazioni fornite da algoritmi greedy per la risoluzione di \imp{Knapspack} sono molto vicine alla risposta. %il prof se non sbaglio diceva 80%
 Per entrambi gli algoritmi presupponiamo tre strutture dati di dimensione $n$, "vettore" $w$ dei pesi (che rappresenta l'isieme dei pesi degli elementi), "vettore" $p$ dei profitti  (che rappresenta l'isieme dei pesi degli elementi) e vettore $x$ delle scelte. $x[j] \in {0,1}$ indica se l'elemento di indice $j$ è inserito o no nello zaino.
@@ -565,6 +636,10 @@ for j = 0 to n do
 \end{figure*}\\
 \end{itemize}
 \subsection{C.10}
+\emph{Illustrare l’algoritmo \textbf{Ext-Greedy}, inquadrare il significato della classe di algoritmi k-approximation e dimostrare che \textbf{Ext-Greedy} appartiene alla classe 1/2-approxiamtion. Argomentare sul perché \textbf{Ext-Greedy} non può appartenere a una classe di migliore di 1/2-approximation.}
+
+
+%todo: saltata, vedere assieme
 \textbf{Ext-Greedy}:
 		\begin{lstlisting}[numbers=left,firstnumber=1,language=Matlab, stepnumber=1, xleftmargin=10pt]
 w_tot = 0
@@ -629,6 +704,9 @@ nel caso peggiore il \textit{profitto ottimale} è il doppio del profitto fornit
 	Dato che entrambi i limiti tendono a $\frac{1}{2}$ si può affermare che $ \forall Q 1+\epsilon \leq Q \leq 2- \epsilon \Rightarrow Z^{EG} \in \frac{1}{2}-approx$
 \end{dimostrazione}
 \subsection{C.11}
+\emph{Illustrare l’algoritmo \textbf{Greedy-LKP}, illustrandone il funzionamento su una istanza di \textbf{KP}, come, nell'esempio seguente, ed enunciarne la proprietà principale.}
+$$(\vec w = (2, 3, 6, 7, 5, 4), \vec p = (6, 5, 8, 9, 6, 3), 10)$$
+
 \imp{LKP} è un rilassamento lineare del problema dello zaino, non è quindi necessario trovare una soluzione intera e si può formalizzare come il seguente problema di programmazione lineare:
 \begin{align*}
 	\text{maximize} \sum_{k=1}^n p_kx_k&\\
@@ -652,8 +730,9 @@ x_lp[j] = ((c-w_tot)/w[j])
 La sostanziale differenza sta nella riga 9,nel calcolo del profitto generato della frazione di oggetto inseribile nello zaino, qui riportato per chiarezza: $$\frac{c - w_{tot}}{w_j}*p_j$$
 Volendo mantenere anche l'informazione di quale combinazione di oggetti porta alla soluzione bisognerebbe trasformare la struttura dati $x^{LP} \in [0,..,1]$ in modo da permettergli di contenere valori razionali e inserire all'indice $j$ la frazione di oggetto: $x^{LP}[j]=\frac{c - w_{tot}}{w_j}$ (riga 10)
 
-\textbf{Greedy-LKP} non fornisce una soluzione per il problema dello zaino, ma può essere utilizzato per fornire una stima per eccesso della \emph{risposta} $z^*$.
-\textbf{Greedy-LKP} genera una \emph{risposta} ottimale, quindi siamo sicuri che nessun algoritmo per la soluzione di \imp{KP}troverà una \textit{soluzione} maggiore di quella ottenuta con \textbf{LKP}. %è questa la proprietà principale??
+\textbf{Greedy-LKP} non fornisce una soluzione per il problema dello zaino, ma può essere utilizzato per fornire una stima per eccesso della \emph{risposta} $z^*$.\\
+\textbf{Greedy-LKP} genera una \emph{risposta} ottimale, quindi siamo sicuri che nessun algoritmo per la soluzione di \imp{KP} troverà una \textit{soluzione} maggiore di quella ottenuta con \textbf{LKP}.
+Dire che un algoritmo gode della cosiddetta \textit{greedy-choice property} vuol dire che "scelte ottime locali forniscono un ottimo locale".\textbf{Greedy-LKP} è un esempio di tale situazione.
 Eseguiamo \textbf{Greedy-LKP} sull'istanza del problema: $$(\vec w = (2, 3, 6, 7, 5, 4), \vec p = (6, 5, 8, 9, 6, 3), 10)$$
 \begin{adjustwidth}{.8cm}{0cm}
 	Per prima cosa gli elementi vanno ordinati secondo $\frac{profit}{weight}$ decrescente, nel problema fornito sono già in questo ordine. 
@@ -666,6 +745,9 @@ Eseguiamo \textbf{Greedy-LKP} sull'istanza del problema: $$(\vec w = (2, 3, 6, 7
 	$$ z^{LP}= 6 + 5 + (8 * \frac{5}{6} ) = \frac{53}{3} \qquad x^{LP} = (1,1,\frac{5}{6},0,0,0) $$
 \end{adjustwidth}
 \subsection{C.12}
+\emph{Dimostrare almeno un caso dell’enunciato: “\textbf{Greedy-LKP} gode della proprità Greedy Choice Property”.}
+
+
 Dire che un algoritmo gode della cosiddetta \textit{greedy-choice property} vuol dire che "scelte ottime locali forniscono un ottimo locale".\textbf{Greedy-LKP} è un esempio di tale situazione.
 \begin{theorem}
 	Se $\frac{p_1}{w_1} \leq \frac{p_2}{w_2} \leq ...$ allora il vettore soluzione 
@@ -699,6 +781,9 @@ Ciò vuol dire che $\frac{p_b}{p_a} > \frac{w_b}{w_a}$ che può essere riscritto
 \end{dimostrazione}
 \subsection{C.13}
 \label{SEC:C.13}
+\emph{Illustrare significato ed origine della sequenza di inclusioni tra profitti seguenti}
+
+
 La seguente gerarchia illustra i valori di profitto offerti dai vari algoritmi:
 $$\hat p \leq z^G \leq z^* \leq \lfloor z^LP \rfloor  \leq z^LP \leq \hat p + p_split \leq z^G + p_{split}$$
 Abbiamo i valori ottenuti da \textbf{Greedy-split} ($\hat p$), \textbf{Greedy}($z^G$) e \textbf{Greedy-LKP}($z^{LP}$).\\
@@ -713,6 +798,10 @@ Queste approssimazioni servirano a fornire un \textit{upper bound} ed un \textit
 \caption{Grafico della gerarchia di inclusioni} \label{FIG:C_13}
 \end{figure*}\\
 \subsection{C.14}
+\emph{Discutere la sintesi di un algoritmo Branch\char`&Bound per KP}
+
+
+%todo: rivedere questa anche
 Nella creazione di un algoritmo \textit{Branch\&Bound} per \emph{KP} la prima cosa da fare è stabilire una \textbf{funzione costo}.Questo può essere fatto basandosi sulla gerarchia dei profitti degli algoritmi greedy vista in precedenza.In particolare il costo ad un \textit{E-node}$x[0..j)$ può essere scritto come:
 $$\hat{c}(x[0..j)) = f(h(x[0..j))) + \hat{g}(x[0..j))$$
 \begin{itemize}
@@ -780,6 +869,9 @@ L'idea di base è quindi quella di raffinare tramite le diverse iterazioni i due
 \end{adjustwidth}
 \section{Programmazione dinamica}
 \subsection{D.1}
+emph{Illustrare una soluzione ricorsiva del problema \textbf{KP}, impostata in accordo con la tecnica “Programmazione Dinamica” con accenni alla sua complessità pseudo-polinomiale.}
+
+
 Il \textit{problema dello zaino} può essere suddifiso in una serie di sotto-problemi \textbf{KP} tra di loro indipendenti, prendiamo ad esempio $KP = (\vec w = (3,5,9,4), \vec p = (5, 6, 7, 3),9)$\\
 Questo problema puù essere visto secondo il seguente formalismo:$$ max \sum_{j=1}^4 p_jx_j \text{ con } \sum_{j=1}^4 w_jx_j$$
 Estraendo l'elemento di indice 4 si ottiene: $ max\; 3x_4 \sum_{j=1}^4 p_jx_j \text{ con } 4x_4\sum_{j=1}^4 w_jx_j$.
@@ -814,6 +906,9 @@ Quindi al crescere di $c$ la sua rappresentazione cresce seguendo l'equazione $b
 La complessità dell'algoritmo di \textit{programmazione dinamica} per la risoluzione di \textbf{KP} è \imp{Pseudo polinomiale} in quanto è polinomiale per almeno uno dei valori dell'input ($c$).
 
 \subsection{D.2}
+\emph{Illustrare vari algoritmi iterativi che implementano soluzioni al problema \textbf{KP}, impostati in accordo con la tecnica “Programmazione Dinamica”.}
+
+
 L'algoritmo ricorsivo sviluppato tramite \textit{programmazione dinamica}permette di costruire una soluzione generando una tabella la cui ispirazione può essere ricondotta alla figura~\ref{FIG:D1_albero}.\\
 \begin{center}
 	\begin{tabular}{| c | c | c | c |}
@@ -855,7 +950,7 @@ z_sol=z[n][c]
 	\end{equation*}
 	Nelle righe 7-9 abbiamo il caso in cui $j$ migliora la soluzione, quindi la soluzione viene aggiornata aggiungendo $j$, nelle righe 11-12 invece abbiamo la situazione in cui è meglio mantere la vecchia soluzione dato che questa fornisce un profito migliore.
 \end{itemize}
-IMMAGINE TABELLA SU CUI FARE L'ESEMPIO QUANDO IL PROF LA CARICA
+%todo:IMMAGINE TABELLA SU CUI FARE L'ESEMPIO QUANDO IL PROF LA CARICA
 Questo algoritmo si porta dietro una struttura dati aggiuntiva, la tabella $A$ che mantiene l'informazione di quale sia la tupla che risolve il problema (la \textit{risposta}).
 
 Una prima ottimizzazione sullo spazio si può fare liberandosi di questa matrice e ricavando la tupla \textit{risposta} dalla tabella $z$.\\
@@ -882,6 +977,9 @@ Notiamo anche che tutte queste ottimizzazioni sono relative alla memoria, non al
 
 \section{Complessità computazionale}
 \subsection{E.1}
+\emph{Illustrare le classi \textbf{PTime} ed \textbf{NPTime} in termini classici.}
+
+
 Una volta accordatici su una ragionevole rappresentazione dell'input si può parlare dei modelli di computazione, riconducendoci alla capacità degli automi (Macchine di Turing) di riconoscere un linguaggio.\\
 Le Macchine di Turing deterministiche (\textbf{DTM}) sono composte da un nastro infinito ed una testina in grado di leggere e scrivere, in particolare hanno 3 caratteristiche:
 \begin{enumerate}
@@ -918,6 +1016,9 @@ $$\exists p \; t.c. \; \forall x \in \{0,1\}^* \; costo(DTM(x,y)) \leq p(\lvert 
 \caption{costo di NDTM(x)} \label{FIG:E1_NDTM}
 \end{figure*} 
 \subsection{E.2}
+\emph{Illustrare le classi \textbf{PTime} ed \textbf{NPTime} in termini di possibili linguaggi imperativi paradigmatici.}
+
+
 Utlizzare il formalismo delle macchine di Turing è scomodo e complesso per essere usato direttamente per il calcolo del costo computazionale.
 Abbiamo bisogno di lavorare su strutture dati complesse con strumenti più "di alto livello" senza doverci per forza ricondurre al binario, ma mantenendo la possibilità di definire la complessità.\\
 La soluzione è definire dei linguaggi in cui poter scrivere i programmi che corrispondano ad una macchina di Turing, semplificandone l'utilizzo, come se fosse una API per interagire con una macchina di Turing.
@@ -944,6 +1045,9 @@ La soluzione è definire dei linguaggi in cui poter scrivere i programmi che cor
 		In tal modo è possibile generare una programma che contemporaneamente computa tutti it possibili stati dell'albero delle scelte, come mostrato in figura~\ref{FIG:E1_NDTM}
 		\end{itemize}
 \subsection{E.3}
+\emph{Argomentare sul perché la definizione della classe \textbf{PTime} può essere basata indifferentemente sulla definizione di \textbf{Macchine di Turing} o su un ragionevole linguaggio di programmazione paradigmatico.}
+
+
 Utlizzare il formalismo delle macchine di Turing è scomodo e complesso per essere usato direttamente per il calcolo del costo computazionale.
 Abbiamo bisogno di lavorare su strutture dati complesse con strumenti più "di alto livello" senza doverci per forza ricondurre al binario, ma mantenendo la possibilità di definire la complessità.\\
 La soluzione è definire dei linguaggi in cui poter scrivere i programmi che corrispondano ad una macchina di Turing, semplificandone l'utilizzo, come se fosse una API per interagire con una macchina di Turing.
@@ -959,7 +1063,9 @@ Perciò possiamo affermare che un algoritmo scritto in linguaggio \textbf{LID} h
 \end{figure*}\\
 
 \subsection{E.4}
-n
+\emph{Argomentare sul perché proprietà sulla complessità computazionale di un problema di ottimizzazione sono trasferibili al corrispondente problema decisionale e viceversa.}
+
+
 La teoria della \imp{NP-completeness} si è sviluppata in relazione alla complessità di problemi decisionali, non di ottimizzazione, a causa di come si è evoluta la teoria degli automi.\\
 Infatti utilizzando il formalismo degli automi (Macchine di Turing) risulta molto più naturale guardare al problema come se fosse un linguaggio da decidere. Se l'input fornito appartiene al linguaggio l'automa risponderà \textit{True}, \textit{False} altrimenti.\\
 Nasce quindi la necessità di passare da problemi di ottimizzazione a problemi decisionali, per poterne valutare la complessità, e viceversa.
@@ -989,6 +1095,9 @@ else
 \end{lstlisting}
 \end{itemize}
 \subsection{E.5}
+\emph{Ricordando il concetto “Riduzione”, dimostrare che \textbf{KP} è intrattabile, assumendo che \textbf{SAT} lo sia.}
+
+
 La \textit{riduzione} tra problemi decisionali è un'operazione che permette di confrontare due problemi computazionali e la complessità delle loro soluzioni.\\
 Si indica con "$\leq_p$", quindi $P_1 \leq_p P_2$ significa affermare che se $P_2$ si può risolvere "velocemente" allora anche $P_1$ può essere risolto velocemente.
 Negando l'implicazione se non è noto alcun algoritmo polinomiale per risolvere $P_2$ nemmeno $P_1$ può essere risolto in tempo polinomiale.
@@ -1017,6 +1126,9 @@ $\exists \varphi:FV(f) \in \{true,false\}^* \; t.c. \; \Phi _ {\varphi}(f) = tru
 	\item \textbf{SUBSETSUM}:Siano dati un insieme numerico finito $X$ ed un numero $S$. Determinare l’esistenza di un sottoinsieme $Y$ di $X$, tale che la somma di tutti gli elementi di $Y$ sia pari ad $S$. 
 \end{itemize}
 \subsection{E.6}
+\emph{Illustrare un qualche aspetto fondamentale della dimostrazione che \textbf{SAT} $\leq_P$ \textbf{NNF}.}
+
+
 Le formule \textbf{NNF}(Negation Normal Form) sono tutte quelle formule in cui la negazione è presente solo sullevariabili, non sulle sotto-formule.
 La sintassi diventa quindi:
 $$ N ::= true|false|var|\overline{var}|N \land N|N \lor N$$
@@ -1028,6 +1140,9 @@ L'intuizione è quella di "spingere" le negazioni presenti nella \textit{formula
                 \includegraphics[width = 1\textwidth]{./img/E6.png}
 \end{figure*}\\
 \subsection{E.7}
+\emph{Nell’ambito della dimostrazione di \textbf{NNF} $\leq_P$ \textbf{CNF}, illustrare intuizione sulla e definizione della trasformazione di Tseytin, dimostrando la sua proprietà principale.}
+
+
 Le formule in \textbf{CNF} (Conjunctive Normal Form) sono formule composte da una congiunzione di clausole a loro volta composte da una disgiunzione di letterali.
 \begin{definition}[Sintassi]
 	$$F::= [C]|[C],F \; congiunzione \: (\land)$$
@@ -1080,6 +1195,8 @@ La \textit{Trasformazione di Tseitin} genera delle \textbf{CNF}, ma ciò va dimo
 	\end{itemize}
 \end{dimostrazione}
 \subsection{E:8}
+\emph{Dimostrare \textbf{NNF} $\leq_P$ \textbf{CNF}, supponendo di avere a disposizione la trasformazione di Tseytin ed il suo lemma principale.}
+
 La dimostrazione di $NNF \red CNF$ si basa su un lemma derivante dalla costruzione della \textit{funzione di Tseitin}
 \begin{equation*}
 	\text{Lemma T}\begin{cases}
@@ -1109,6 +1226,8 @@ La dimostrazione di $NNF \red CNF$ si basa su un lemma derivante dalla costruzio
 	\end{itemize}
 \end{dimostrazione}
 \subsection{E.9}
+\emph{Illustrare un qualche aspetto fondamentale della dimostrazione che \textbf{CNF} $\leq_P$ \textbf{3CNF}.}
+
 Le formule \textbf{3CNF} sono formule in \textit{conjunctive normal form} le cui clausole sono composte esattamente da 3 letterali.
 Ad esempio $[x][\overline x] \notin C$ mentre $[x,y,z],[k,\overline z, y] \in C$.
 La funzione di riduzione da \textbf{CNF} a \textbf{3CNF} si basa sull'idea di aggiungere variabili che però non intruducano vincolo alla soddifacibilità.
@@ -1146,6 +1265,9 @@ Ci possono quindi essere 4 casi ed altrettante strategie di riduzione.Di seguito
 
 \end{enumerate}
 \subsection{E.10}
+\emph{Nell’ambito della dimostrazione \textbf{3CNF} $\leq_P$ \textbf{3COL}, definire i tratti fondamentali della riduzione \textbf{L} da formule a grafi e l’intuizione che ne guida la definizione.}
+
+
 Lo scopo della funzione di riduzione $L : 3CNF \rightarrow 3COL$ è quello di generare un grafo partendo da una formula \textbf{3CNF}, tale grafico può essere colorato con 3 colori senza che due nodi adiacenti abbiano lo stesso colore se la formula di partenza è soddisfacibile, è incolorabile in caso contrario.
 \begin{definition}Sia $G = (V,E)$, grafo non orientato $\exists c : Vertex \rightarrow \{col1,col2,col3\}$ t.c. $\forall u,v \in V \; e \; (u,v) \in E c(v) \neq c(u)$.
 \end{definition}
@@ -1183,6 +1305,9 @@ Intuitivamente si può dire che questo metodo di costruzione del grafo è una fu
 Se invece una clausola non è soddisfacibile tutti i letterali del sottografo generato al passo 3 hanno lo stesso colore (viola) ed è quindio impossibile assegnare un colore distinto ai 3 nodi $y$.
 Essendoci una clausola insoddisfacibile tutta la formula lo è.
 \subsection{E.11}
+\emph{Nell’ambito della dimostrazione \textbf{3COL} $\leq_P$ \textbf{EXCO}, definire i tratti fondamentali della riduzione $E_x$ da grafi ad insiemi e l’intuizione che ne guida la definizione.}
+
+
 Dati $U$ ed $S \subseteq \mathcal{P}(U)$ esiste un sottoinsieme $S' \subseteq S$ che è una copertura esatta di $U$ cioè tra gli insiemi elementi di $S$ compaiono tutti ed una sola volta gli elementi di $U$:
 $$\forall z,y \in S'\, x \neq y \quad x \cap y = \emptyset \quad \bigcup_{x \in S'}X $$
 La funzione di riduzione $E_x$ da \textbf{3COL} a \textbf{EXCO} si basa sulla seguente intuzione:\\
@@ -1225,6 +1350,8 @@ Formalmente otterremo, $U^*$ e $S^*$ "correzzioni" di $U$ ed $S$:
 \end{align*}
 In tal modo è impossibile assegnare due colori allo stesso nodo (avremmo una ripetizione della variabile) ed è anche impossibile assegnare a due nodi adiacenti lo stesso colore (avremmo una intersezione di due insiemi o una non copertura).Ad esempio inserendo sia $\{x,v_x\}$ che $\{x,b_x\}$ avremmo $x$ nell'intersezione ed avendo rimosso i singoletti è impossibile scegliere $x_{colore}$ senza scegliere anche $x$.
 \subsection{E.12}
+\emph{Nell’ambito della dimostrazione \textbf{EXCO} $\leq_P$ \textbf{Subsetsum}, definire i tratti fondamentali della riduzione $E_s$ da insiemi a insiemi e l’intuizione che ne guida la definizione.}
+
 Questa \textit{funzione di riduzione} si basa sull'idea di "codificare" in binario la presenza o l'assenza degli elementi di $S$ in $S'$.Quindi dato l'insieme degli elementi $U={s_1, s_2,...,s_n}$ andremo a trasformare $S$ in un insieme composto da numeri binari di lunghezza $n$ (equivalente a $|U|$).\\
 Posto ad esempio $U = \{1,2,3\}$ un possibile $S$ sarebbe $S= \{\{1,2,3\},\{1,3\},\{\emptyset\}\}$ quindi $E_x(S) = \{\{1,1,1\},\{1,0,1\},\{0,0,0\}\}$.\\
 La prima intuizione prosegue proponendo di sommare i tutti i numeri codificati in binario di $S'$ e di confrontare il valore con $2^{|U|}-1$, dato che la configurazione binaria di tale numero è $111...11$ ripetuto $|U|$ volte la somma di tutti i numeri in $S$ dovrebbe fornire $2^{|U|}-1$ se e solo se sono presenti tutti gli elementi di $U$ al massimo una volta.\\
@@ -1245,8 +1372,7 @@ La soluzione è utilizzare una base che non permetta il verificarsi di tale situ
 	$$ E_s: Set \times Set \times Set \rightarrow \mathcal{P}(\mathbb{N}) \times \mathbb{N}$$
 	$$(U,S,S') \rightarrow (\{\sum_{i=o}^{\rvert u \lvert -1} p^tx[i] | z \in S'\}, \frac{p^{\rvert u \lvert} -1}{p -1})$$
 \end{definition}
-\section{Problemi computazionali}
-\subsection{F.1}
+\subsection{E.13}
 \begin{definition}[SubsetSum]
 	Siano dati un insieme numerico finito $X$ ed un numero $S$. Determinare l’esistenza di un sottoinsieme $Y \subset X$, tale che la somma di tutti gli elementi di $Y$ sia pari ad $S$.
 \end{definition}
@@ -1266,7 +1392,7 @@ Supponiamo per assurdo che esista una scelta che fornisce un peso maggiore di qu
 Allora $sum_{1 \leq j \leq n} w_jy_j^. > \sum_{j=1}^n w_jx_j^. = S $, ed essendo necessario identificare una sequenza di scelte $z_1,...,z_n$ t.c. $\sum_{j=1}^n w_jz_j \leq S$ non possiamo accettare $y^.$ come istanza risolutiva del problema dal momento che:
 $$\sum_{j=1}^n w_jy_j^. > S $$
 \end{dimostrazione}
-\subsection{F.2}
+\subsection{E.14}
 Dimostrare che i problemi \emph{KP} e \emph{Bounded-KP} sono equivalenti.\\Cioè $KP \Leftrightarrow BKP$.\\
 \begin{dimostrazione}
 	$KP \Rightarrow BKP$: ogni problema \emph{KP} è un problema \emph{BKP}.\\
@@ -1298,4 +1424,19 @@ Dimostrare che i problemi \emph{KP} e \emph{Bounded-KP} sono equivalenti.\\Cioè
 	%non posso prendere 5 x', e poi 3 x', sarebbe come prendere 8 x'
 	DA FINIRE CON OSSERVAZIONE DEL PROF RIGUARDO AL FATTO DI DOVER DIMOSTRARE LA RISOLVIBILITà
 \end{dimostrazione}
+
+\section{Problemi computazionali}
+\emph{Nell’ambito della riduzione \textbf{“Sotto-insiemi a Somma Identica”} $\leq_P$ \textbf{QUBO}, descrivere i passi fondamentali del processo che trasforma un’istanza del primo problema in una del secondo, sottolineando il ruolo giocato dall’elemento al quadrato finale.}
+
+\emph{Nell’ambito della riduzione \textbf{MAXCUT} $\leq_P$ \textbf{QUBO}, descrivere i passi fondamentali del processo che trasforma un’istanza del primo problema in una del secondo.}
+
+\emph{Illustrare la tecnica che permette di trasformare tipici vincoli, che si possono presentare nella formulazione di problemi in \textbf{PLI}, in modelli \textbf{QUBO}.}
+
+\emph{Nell’ambito della riduzione \textbf{MVC} $\leq_P$ \textbf{QUBO}, descrivere i tratti fondamentali del processo che trasforma un’istanza del primo problema in una del secondo, sottolineando il ruolo del lagrangiano scelto.}
+
+\emph{Nell’ambito della riduzione \textbf{Max2SAT} $\leq_P$ \textbf{QUBO}, descrivere i tratti fondamentali del processo che trasforma un’istanza del primo problema in una del secondo.}
+
+\emph{Nell’ambito della riduzione di un generico problema in \textbf{PLI} a \textbf{QUBO}, descrivere i tratti fondamentali del processo che trasforma un’istanza del primo problema in una del secondo, evidenziando i meccanismi di trasformazione dei vincoli in penalità.}
+
+\emph{Nell’ambito della riduzione \textbf{KP} $\leq_P$ \textbf{QUBO}, descrivere i tratti fondamentali della processo che trasforma un’istanza del primo problema in una del secondo.}
 \end{document}
