@@ -374,8 +374,13 @@ Notiamo anche che dati due nodi $x,y$ se $y$ è un discendente di $x$ ci aspetti
 	La \textit{funzione costo} $\hat c(x)$ di un \textit{live node x} è una funzione atta a individuare il nodo più conveniente da far diventare \textit{E-node} $\hat c(x) = f(h(x)) + \hat g(x)$ \ref{SEC:C3.1}\\
 Analizziamo la situazione: $f(h(x)) =0$, in questo caso il \textit{costo noto} non ha influenza sul risultato generato da $\hat c(x)$ e la \textit{funzione costo} può essere riscritta come $$\hat c(x) = \hat g(x)$$
 Questo ci riporta ad un algoritmo \textit{DFS}, in quanto non vi è "penalità" nell' espandere nodi in profondità nell'albero degli stati.Considerando che dati due nodi $x,y$ se $y$ è un discendente di $x$ allora $\hat g(x) > \hat g(y)$ la scelta che minimizza la \textit{funzione costo} è sempre quella che espande un nodo di livello successivo, quindi una \textit{D-search}.
-Immaginiamo ad esempio due \textit{live node} $x,z$, l' \textit{E-node} è $x$ e genera due discendenti: $w_1, w_2$.
-%todo: volendo aggiungere immagine triangolo con w1, w2 etc
+Immaginiamo ad esempio due \textit{live node} $x,z$, l' \textit{E-node} è $x$ e genera due discendenti: $w_1, w_2$.\\
+\begin{figure*}[!ht]
+\centering
+\includegraphics[width=0.5\textwidth]{./img/C3_next.png}
+\caption{funzione costo} \label{FIG:C3_next1}
+\end{figure*}\\
+
 		\begin{align}
 			&0 + \hat g(x) < 0 + \hat g(z) \text{ dato che $x$ è \textit{E-node}} \notag \\
 			&0 + \hat g(w_1) \leq 0 + \hat g(w_2) < 0 + \hat g(z) \text{ dato che $\hat g$ è monotona} \notag\\
@@ -400,8 +405,12 @@ Riprendendo l'idea del punto precendente abbiamo due \textit{live node} $x,z$, l
 		se \; (\Delta >> \Delta') &\text{ $w_1$ non è un nodo conveniente} \notag
 	\end{cases}
 	\end{equation}
-%todo: volendo aggiungere immagine (quella di sopra)
-In questa situazione i valori di $\hat c(w_1), \hat c(w_2), . . . , \hat c(w_n)$ possono superare quelli relativi a live node inseriti nella lista prima di $w_1, w_2, . . . , w_n$ e, quindi, risultare sconvenienti da seguire rispetto ad altri.
+In questa situazione i valori di $\hat c(w_1), \hat c(w_2), . . . , \hat c(w_n)$ possono superare quelli relativi a live node inseriti nella lista prima di $w_1, w_2, . . . , w_n$ e, quindi, risultare sconvenienti da seguire rispetto ad altri.\\
+\begin{figure*}[!ht]
+\centering
+\includegraphics[width=0.5\textwidth]{./img/C3_next.png}
+\caption{scelta del prossimo E-node} \label{FIG:C3_next2}
+\end{figure*}\\
 \end{adjustwidth}
 \subsection{C.4}
 \label{SEC:C4}
@@ -475,8 +484,12 @@ $$\hat c(x[0..j)) = f(h(x[0..j))) + \hat g(x[0..j))$$
 	Se però $V$ viene preso dall'insieme $X$ diventa l'elemento che se tolto dalla somma degli elementi che mi rimangono da inserire fornisce la migliore approssimazione per difetto/eccesso di $S$
 	$$ \hat g(x[0..j))=\sum_{j \leq k < split} X_k$$ in cui il valore split è t.c:
 	$$\sum_{j \leq k < split-1} X_k \leq S \leq \sum_{j \leq k < split} X_k$$
-	%todo: aggiungere l'immagine con confronto tra valore con xsplit e s4nza
 \end{itemize}
+\begin{figure*}[!ht]
+\centering
+\includegraphics[width=0.8\textwidth]{./img/C6.png}
+\caption{risultato con/senza $X_{split}$} \label{FIG:C6}
+\end{figure*}
 Lo scopo di questa funzione costo è esplorare in maniera più intelligente lo spazio delle soluzioni, la strategia \textit{LC} diventa la strategia di scelta del prossimo \textit{E-node} tra tutti i possibili \textit{live-node}.
 Ma a parità di \imp{costo} bisogna comunque affidarsi ad uno dei due criteri (\textit{LIFO/FIFO}).\\
 A seconda di come sono è implementata l'operazione di aggiunta avremo differenti comportamenti nel caso si incontrassero nodi aventi lo stesso \textit{costo}, allo stesso modo di quanto discuso in sezione \ref{SEC:C3} e sezione \ref{SEC:C4}.
