@@ -1439,17 +1439,162 @@ Dimostrare che i problemi \emph{KP} e \emph{Bounded-KP} sono equivalenti.\\Cioè
 \end{dimostrazione}
 
 \section{Problemi computazionali}
+\subsection{F.1}
+\label{SEC:F1}
 \emph{Nell’ambito della riduzione \textbf{“Sotto-insiemi a Somma Identica”} $\leq_P$ \textbf{QUBO}, descrivere i passi fondamentali del processo che trasforma un’istanza del primo problema in una del secondo, sottolineando il ruolo giocato dall’elemento al quadrato finale.}
 
-\emph{Nell’ambito della riduzione \textbf{MAXCUT} $\leq_P$ \textbf{QUBO}, descrivere i passi fondamentali del processo che trasforma un’istanza del primo problema in una del secondo.}
+\begin{definition}
+	Supponiamo sia dato un insieme $S = {v_1 , . . . , v_n }$ di numeri naturali. Trovare un sotto-insieme $T \subset S$ t.c.  $\sum_{v\in T} v = \sum_{v \in S \setminus T}v $.
+\end{definition}
+Per prima cosa si può notare come cambia il problema rappresentando $S \setminus T$ come la rimozione degli elementi di $T$ da $S$.
+\begin{align*}
+	 &\text{dato che }\sum_{v \in S \setminus T}v = \sum_{v\in S} v - \sum_{v\in T} v \\
+	 &\sum_{v\in T} = \sum_{v \in S \setminus T}v = \sum_{v\in S} v - \sum_{v\in T} v \\
+	 &0 = \sum_{v\in S} v - 2 * \sum_{v\in T} v \\
+\end{align*}
+Volendo ottenere un problema \textbf{QUBO} l'obbiettivo è rivalutare il problema nell'ottica della ricerca di un minimo.
 
+Un problema equivalente è: $$ min(\sum_{v\in S} v - 2 * \sum_{x \in \{1,...,n\}} x_iv_i)^2$$ \textit{$x_i$ indica se l'i-esimo elemento (avente valore $v_i$) viene inserito o meno nell'insieme $T$}.\\
+Il problema è equivalente in quanto il quadrato fa sì che vengano considerati solo elementi positivi e che, se esiste un insieme $T$ che risolve il problema, il minimo del quadrato sarà esattamente 0.\\
+Infatti $\sum_{v\in S} v - 2 * \sum_{v\in T} v = 0 \Leftrightarrow (\sum_{v\in S} v - 2 * \sum_{v\in T} v)^2=0$\\
+\textit{se la retta che rappresenta tutte le soluzioni del problema ha valore in zero allora anche la parabola costruita elevando al quadrato l'equazione avrà un valore in zero}.
+\begin{figure*}[!ht]
+                \centering
+                \includegraphics[width = 0.5\textwidth]{./img/F1.png}
+                \caption{Giustificazione grafica} \label{FIG:F1}
+\end{figure*}
+\subsection{F.2}
+\label{SEC:F2}
+\emph{Nell’ambito della riduzione \textbf{MAXCUT} $\leq_P$ \textbf{QUBO}, descrivere i passi fondamentali del processo che trasforma un’istanza del primo problema in una del secondo.}
+\begin{definition}
+	Dato un insieme $G=(V,E)$ trovare due sottoinsiemi $X,Y \subseteq V$ disgiunti e che coprono $V$ ($X \cup Y = V$) tali che il numero di archi tra $X$ e $Y$ è massimo.
+	\begin{align*}
+		& max((x,y) \in E \vert x \in X, y \in Y) \qquad X \subseteq V, Y \subseteq V \\
+		& subject \; to \; X \cap Y = \emptyset , X \cup Y = V\\
+	\end{align*}
+\end{definition}
+L'idea alla base della trasformazione in un problema \textbf{QUBO} è quella di andare ad indicare con variabili binarie se un arco attraversa o no il taglio.\\
+Quindi per ogni coppia di nodi $x,y$ unita da un arco avremo la seguente tabella di verità (un $xor$):
+\begin{center}$\begin{array}{c|c|c}
+ a \in X & b \in X & attraversa \\
+\hline
+ 0 & 0 & 0  \\ 
+ 0 & 1 & 1  \\
+ 1 & 0 & 1  \\
+ 1 & 1 & 0  \\ %result
+\end{array}$
+\end{center}
+Sviluppando la tabella di verità di ogni arco e sommando i valori ottenuti otterremo il numero di archi che "attraversano" il taglio, quantità che vogliamo massimizzare.\\
+Ad esempio:\\
+\begin{figure*}[!ht]
+                \centering
+		\begin{align*}
+			& peso(a,b) = a + b -2ab = 1 + 0 - 0 = 1 \\
+			& peso(b,c) = b + c -2bc = 0 + 0 - 0 = 0 \\
+			& peso_{totale} = 1\\
+		\end{align*}
+                \includegraphics[width = 0.3\textwidth]{./img/F2_NR.png}
+                \caption{Non risposta} \label{FIG:F2_false}
+\end{figure*}\\
+\begin{figure*}[!ht]
+                \centering
+		\begin{align*}
+                        & peso(a,b) = a + b -2ab = 1 + 0 - 0 = 1 \\
+                        & peso(b,c) = b + c -2bc = 0 + 1 - 0 = 1 \\
+                        & peso_{totale} = 2\\
+                \end{align*}
+                \includegraphics[width = 0.3\textwidth]{./img/F2_R.png}
+                \caption{Risposta} \label{FIG:F2_true}
+\end{figure*}\\
+Questo principio può essere applicato a qualsiasi grafo, sommando le coppie di vertici che condividono un arco, in questo caso $peso(a,b) + peso(b,c) = a +b -2ab +b +c -2bc$.\\
+Notiamo però che questa equazione fornisce una soluzione quando massimizzata, per renderla un problema \textbf{QUBO} va minimizzata, quindi si cambia il segno.
+$$ min(-(a + b + b + c - 2ab - 2 bc))$$
+\subsection{F.3}
+\label{SEC:F3}
 \emph{Illustrare la tecnica che permette di trasformare tipici vincoli, che si possono presentare nella formulazione di problemi in \textbf{PLI}, in modelli \textbf{QUBO}.}
 
-\emph{Nell’ambito della riduzione \textbf{MVC} $\leq_P$ \textbf{QUBO}, descrivere i tratti fondamentali del processo che trasforma un’istanza del primo problema in una del secondo, sottolineando il ruolo del lagrangiano scelto.}
 
+Le sezioni \ref{SEC:F1} e \ref{SEC:F2} hanno mostrato come ottenere una funzione da minimizzare partendo da un problema, ma questa è solo la \textit{funzione obbiettivo}, nei problemi comunemente si incontrano dei vincoli.\\
+Ad esempio in \imp{KP} è importante trovare il profitto massimo (\textit{funzione obbiettivo}) ma bisogna esprimere il vincolo che impedisce il superamento della capienza.\\
+In problemi \textbf{QUBO} i vincoli possono essere espressi tramite un \textit{Hamiltoniano penalità}, cioè un polinomio quadratico da sommare al \textit{Hamiltoniano} da minimizzare.
+
+Si può comporre questo nuovo \textit{Hamiltoniano} $\mathcal{H}$ di nuovo basandosi sulle tabelle di verità.
+In particolare vogliamo generare una equazione che abbia valore "$0$" quando il valore delle sue variabili soddisfa un dato vincolo, dato che l'obbiettivo è trovare una penalità.\\
+Esempio:
+\begin{center}$\begin{array}{c|c|c}
+ x & y & \mathcal{H}\\
+\hline
+ 0 & 0 & 0  \\ 
+ 0 & 1 & 1  \\
+ 1 & 0 & 1  \\
+ 1 & 1 & 0  \\ %result
+\end{array}$
+$$ x + y -2xy = 0$$
+\end{center}
+Questo equazione è l' \textit{Hamiltoniano} relativo all'operatore logico \textit{se e solo se} $ \Leftrightarrow$, nonostante sembri l'esatto opposto.\\
+Infatti lo scopo è sempre minimizzare l' "energia" del sistema e il nuovo $\mathcal{H}$ deve fungere da penalità, andando ad incrementarla qualora il vincolo non fosse rispettato.
+
+L'obbiettivo è, partendo da un problema in \imp{PLI}, generare un equivalente problema \imp{QUBO} di minimizzazione composto da: 
+\begin{itemize}
+	\item $\mathcal{H}_{obbiettivo}$, un \textit{Hamiltoniano} corrispondente alla funzione che si vuole minimizzare.
+	\item $\mathcal{H}_{penalita}$, l' \textit{Hamiltoniano} corrispondente ai vincoli appena discusso
+	\item $\lambda$, un operatore detto \textit{Lagrangiano} il cui scopo è aumentare il contributo di $\mathcal{H}_{penalita}$ in modo che violare i vincoli sia impossibile, non solo sconveniente (discusso in maniera più approfondita in sezione \ref{SEC:F4})
+\end{itemize} 
+$$ min(\mathcal{H}_{obbiettivo} + \lambda * \mathcal{H}_{penalita})$$
+
+\subsection{F.4}
+\label{SEC:F4}
+\emph{Nell’ambito della riduzione \textbf{MVC} $\leq_P$ \textbf{QUBO}, descrivere i tratti fondamentali del processo che trasforma un’istanza del primo problema in una del secondo, sottolineando il ruolo del lagrangiano scelto.}
+\begin{definition}
+	Dato $G = (V, E)$, l’insieme ${c1,. . . , cn} = C \subseteq V$ è una copertura minima di G se tutti gli archi di G hanno almeno una estremità in C.
+\end{definition}
+Riformulandolo come minimizzazione possiamo dire che vogliamo minimizzare il numero di vertici inclusi in $C$, rispettando il vincolo che tutte le coppie di archi $\in E$ hanno almeno un elemento della coppia $\in C$.
+
+Formalmente:
+\begin{align}
+	&min(\sum_{i=1}^{\lvert V \rvert}v_i)\\
+	&subject \; to \; v_i + v_j \geq 1 \quad \forall (i,j) \in E \\
+	& v_i \in \{0,1\} \notag
+\end{align}
+Un nodo è incluso in $C$ se il valore di $v_i$ (con $i$ indice del nodo) è 1.\\
+I vincoli garantiscono che almeno uno degli elementi della coppia vertice-vertice che compone un archo sia stato "scelto" per essere incluso nel \textit{vertex cover}.
+
+La sommatoria (2) è già un polinomio quadratico ed è perciò adatta ad essere usata come \textit{Hamiltoniano}, però mancano i vincoli.\\
+Una penalità può essere quella di assegnare un peso anche agli archi, appoggiandosi a quanto detto in sezione \ref{SEC:F3} e definendo l'hamiltoniano di una relazione \textit{and}.
+\begin{center}$\begin{array}{c|c|c}
+ v_i & v_j & \mathcal{H}\\
+\hline
+ 0 & 0 & 1  \\
+ 0 & 1 & 0  \\
+ 1 & 0 & 0  \\
+ 1 & 1 & 0  \\ %result
+\end{array}$
+$$ 1- v_i - v_j +v_iv_j = 0$$
+\end{center}
+In questo modo se di un arco è presente almeno un vertice (o entrambi) non ci sono penalità, ma se nessuno dei due è presente il valore ottenuto è 1, rendendo sconveniente la scelta.
+
+
+Non è abbastanza però rendere sconveniente la scelta, potrebbe infatti esserci una istanza del problema in cui converrebbe comunque ricevere la penalità dell'arco mancante in quanto questa produce una "energia" $\leq$ di quella prodotta da una soluzione corretta.\\
+%TODO: in questo problema in realtà non credo sia possibile avere una penalità < dell'energia, solo uguale.
+\begin{figure*}[!ht]
+\centering
+\includegraphics[width = 0.8\textwidth]{./img/F4_errato.png}
+\caption{Vertex cover errati ma Energia minima} \label{FIG:F4_errato}
+\end{figure*}\\
+Come accennato in sezione \ref{SEC:F3} si può risolvere questo problema introducendo una costante moltiplicativa $\lambda$ chiamata \textit{Lagrangiano} in modo da penalizzare maggiormente soluzioni che violano i vincoli.
+La dimensione del Lagrangiano è fondamentale per evitare di ottenere insiemi non completamente coprenti; ricordiamo la composizione di un problema \textbf{QUBO} mentre analizziamo i valori che $\lambda$ può assumere:
+$$ min(\mathcal{H}_{obbiettivo} + \lambda * \mathcal{H}_{penalita})$$
+\begin{itemize}
+	\item $\lambda = 1$: Questo è il caso più semplice, si riconduce al caso in cui il contributo dell' \textit{Hamiltoniano obbiettivo} è pari al contributo dell' \textit{Hamiltoniano penalità}, come se il Lagrangiano non ci fosse. Risultato incorretto.
+	\item $\lambda < 1$: Questo caso è peggiore del precendente, in quanto la penalità ha una influenza sul risultato finale minore di quella che avrebbe senza Lagrangiano. Risultato incorretto.
+	\item $\lambda > 1$:in questo caso si ottiene un risultato corretto (per questo particolare problema! Il Lagrangiano corretto varia da problema a problema). Infatti non è più possibile individuare una istanza in cui una soluzione che esclude archi risulta più conveniente di una soluzione che li include tutti.
+\end{itemize}
+\subsection{F.5}
 \emph{Nell’ambito della riduzione \textbf{Max2SAT} $\leq_P$ \textbf{QUBO}, descrivere i tratti fondamentali del processo che trasforma un’istanza del primo problema in una del secondo.}
 
+\subsection{F.6}
 \emph{Nell’ambito della riduzione di un generico problema in \textbf{PLI} a \textbf{QUBO}, descrivere i tratti fondamentali del processo che trasforma un’istanza del primo problema in una del secondo, evidenziando i meccanismi di trasformazione dei vincoli in penalità.}
 
+\subsection{F.7}
 \emph{Nell’ambito della riduzione \textbf{KP} $\leq_P$ \textbf{QUBO}, descrivere i tratti fondamentali della processo che trasforma un’istanza del primo problema in una del secondo.}
 \end{document}
