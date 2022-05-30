@@ -128,7 +128,7 @@ Dimostrare che è algoritmo che genera permutazioni di una lista di elementi è 
 \end{figure*}\\
 	Intuitivamente stiamo ripetendo l'operazione $distribute \; h \; l'$ per $len(t) ! $ volte ogni volta producendo una lista di $1 + len(l')$ elementi, quindi otterremo una lista di liste con $(1 + len(l')) * len(t)! $ elementi.\\
 	Essendo le liste $l'$ permutazioni di $t$ dovrà valere la seguente equivalenza $len(l') = len(t) $, dato che sto solo eseguendo scambi, non sto aggiungendo ne togliendo elementi.\\
-	Sostituendo $len(t)$ a $len(l')$ nell'equazione che specificava il numero di elementi (TODO: fare un ref all'equazione) delle liste otteniamo che $permutation  \; h::t$ genera una lista di liste di $(1+len(t)) * len(t)!$ elementi.\\ %Todo: leggi
+	Sostituendo $len(t)$ a $len(l')$ nell'equazione che specificava il numero di elementi ($(1 + len(l')) * len(t)! $) delle liste otteniamo che $permutation  \; h::t$ genera una lista di liste di $(1+len(t)) * len(t)!$ elementi.\\ %Todo: leggi
 	Dato che $(1+len(t)) * len(t)! = len([h::t])!$ (poichè un fattoriale (1 +n)* n! = (1 + n)! per definizione) possiamo affermare che: 
 	$$len(permutation \; [h::t]) = len([h::t])!$$
 \end{dimostrazione}
@@ -1125,11 +1125,15 @@ Formalmente:
 		\item $\exists p, \forall x \; t.c. \; costo(Alg_F(x))\leq p(\lvert x \rvert)$, cioè il costo di applicare la trasformazione $F$ all'istanza $x$ è inferiore ad un polinomio calcolato sulla dimensione di $x$.
 	\end{itemize}
 \end{definition}
-%todo: aggiungere 2 proprietà: transitività e "se risolvo p1 in Ptime allora risolvo P2 in pt" la complessità temporale rimane
+La riduzione possiede due proprietà fondamentali per la dimostrazione di intrattabilità di \textbf{SAT}:
+\begin{enumerate}
+	\item Transititività: se $P_1 \red P_2$ e $P_2 \red P_3$ allora $P_1 \red P_3$.
+	\item Mantenimento della complessità: Se esiste un algoritmo in \textbf{PTime} e $P_1 \red P_2$ allora esiste un algoritmo in \textbf{PTime} per $P_2$.\\
+		Questa proprietà presenta un utile corollario: se $P_1$ è intrattabile anche $P_2$ è intrattabile.
+\end{enumerate}
 Posto \textbf{SAT} intrattabile si può affermare che \textbf{KP} è intrattabile perchè $SAT \red KP$, dalla seguente catena di riduzioni:
 $$ SAT \red NNF \red CNF \red 3CNF \red 3COL \red EXCO \red Subsetsum \red KP$$
-%todo: aggiungere il discorso di ruben, basata sulle proprietà, screenshot. no, non lo screen semplicemente dimostrare basandosi sulle proprietà.
-%todo: 7.5.1 Perché la riduzione è per noi rilevante?
+Posta la transitività della riduzione si può affermare che $SAT \red KP$ e grazie al corollario della proprietà 2 possiamo affermare che se \textbf{SAT} è intrattabile pure \textbf{KP} lo è.
 \begin{itemize}
 	\item \textbf{SAT}: data una formula proposizionale $f$, dice se questa è soddisfacibile. $\exists \varphi \Phi _ {\varphi}(f) = true $
 	\item \textbf{NNF}: data una formula Negation Normal Form $f$, dice se esiste una assegnazione delle variabili $FV(f)$ che soddisfa $f$.\\$\exists \varphi:FV(f) \in \{true,false\}^* \; t.c. \; \Phi _ {\varphi}(f) = true $
@@ -1158,8 +1162,55 @@ L'intuizione è quella di "spingere" le negazioni presenti nella \textit{formula
                 \centering
                 \includegraphics[width = 1\textwidth]{./img/E6.png}
 \end{figure*}\\
-%todo: mancano grossi pezzi. 2 lemmi vengono mantenuti. Vedere screenshot e dispense.
-%ruben per ogni lemma propone di fare un esempio, l'aspetto fondamentale sono i 2 lemmi! (1 caso per il lemma 1 ed il lemma 2)
+Per dimostrare \textbf{SAT} $\leq_P$ \textbf{NNF} dobbiamo dimostrare che la trasformazione tramite le leggi di De Morgan preserva la soddisfacibilità, se la formula era soddisfacibile rimane tale dopo l'applicazione di De Morgan e che l'applicazione delle leggi non aumenta il costo della ricerca di una soluzione.
+\begin{dimostrazione}
+	La seconda affermazione è facile da dimostrare: la dimensione della formula è identica, non vengono aggiunte variabili ne relazioni.
+	Anzi, dato che vengono svolte meno operazioni di negazione il costo della ricerca di una soluzione in \textbf{NNF} è probabilmente inferiore.
+
+	Per dimostrare la prima affermazione bisogna dimostrare due Lemmi:
+	il Lemma 1 che afferma che la trasformazione preserva il valore delle variabili ed il Lemma due che afferma che la trasformazione preserva il valore delle formule.\\
+	Nella dimostrazione ci riferiamo alla trasformazione tramite le leggi di De Morgan con il simbolo $M$.
+
+	$$\textit{dimostrare } \forall f, FV(f) = FV(M(f)) $$
+	Dimostriamo caso per caso:
+	\begin{itemize}
+	\item $FV(x) = x = FV(M(x)$. Dato che $M$ non effettua alcun cambiamento alla variabile $x$ il suo valore sicuramente non viene cambiato.
+	\item $FV(\overline x) = \overline x = FV(M(\overline x)$. Dato che $M$ non effettua alcun cambiamento alla variabile $\overline x$ il suo valore sicuramente non viene cambiato.
+	\item $FV(g \circ h)$ 
+		\begin{align*}
+		FV(g \circ h) =& FV(g) \cup FV(h) \text{  \textit{per definizione di FV}}\\
+			=& FV(M(g)) \cup FV(M(h)) \text{  \textit{per ipotesi induttiva}}\\
+			=& FV(M(g) \circ M(h))\\
+			=& FV(M(g \circ h))\\
+		\end{align*}
+		L'operazione $FV$ su variabili composto è, per definizione, l'unione dell'operazione $FV$ applicata alle due variabili distinte.
+		Poi si procede per induzione andando a sostituire a $FV(x) \; FV(M(x))$ e poi si riapplica la definizione di $FV$ al contrario per ottenere di nuovo una composizione. 
+	\item $FV(g \circ h)$
+                \begin{align*}
+			FV(g \circ h) =& FV(\overline g \: \overline \circ \: \overline h)\\
+			=& FV(\overline g) \cup FV(\overline h)\\
+                        =& FV(M(\overline g)) \cup FV(M(\overline h))\\
+                        =& FV(M(\overline g) \: \overline \circ \: M( \overline h))\\
+			=& FV(M \overline{(g \circ h)})\\
+                \end{align*}
+		In maniera analoga al caso precedente si scompone prima la relazione nelle due singole variabili, questa volta negate, e grazie al passaggio induttivo si afferma $FV(M(\overline g)) \cup FV(M(\overline h))$.
+	\end{itemize}
+
+
+	Il Lemma 2 si dimostra in maniera molto simile al Lemma 1, riporto un solo caso per completezza
+	$$\textit{dimostrare } \forall \varphi, \phi_\varphi(M(f)) = M(\phi_\varphi(f)) $$
+	\begin{align*}
+                        \phi_\varphi(M(g \circ h)) =& \phi_\varphi(M(\overline g) \: \overline \circ \: M(\overline h))\\
+			=& \phi_\varphi(M(\overline g)) \: \overline \circ \: \phi_\varphi(M(\overline h))\\
+			=& M(\phi_\varphi(\overline g)) \: \overline \circ \: M(\phi_\varphi(\overline h)) \textit{  per ipotesi induttiva}\\
+			=& M(\overline{\phi_\varphi(g)}) \: \overline \circ \: M(\overline{\phi_\varphi(h)})\\
+			=& M\overline{(\phi_\varphi (g \circ h})\\
+			=& M(\phi_\varphi \overline{(g \circ h})
+                \end{align*}
+	Di nuovo si sfrutta la definizione di $FV$ per interpretare le sotto-formule al posto della formula e poi per ipotesi induttiva si si applica la trasformazione $M$ sulle sotto componenti.
+	Infine si ricompone la formula assegnando le opportune negazioni.
+\end{dimostrazione}
+%TODO:ruben per ogni lemma propone di fare un esempio, l'aspetto fondamentale sono i 2 lemmi! (1 caso per il lemma 1 ed il lemma 2)
 \subsection{E.7}
 \emph{Nell’ambito della dimostrazione di \textbf{NNF} $\leq_P$ \textbf{CNF}, illustrare intuizione sulla e definizione della trasformazione di Tseytin, dimostrando la sua proprietà principale.}
 
