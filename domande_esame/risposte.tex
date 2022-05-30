@@ -1627,8 +1627,57 @@ L'idea per ridurre \textbf{Max2SAT} a \textbf{QUBO} è la solita: individuare un
 %TODO: Esempio? prendo quello del prof? se lo metto lo riscrivo in latex
 \subsection{F.6}
 \emph{Nell’ambito della riduzione di un generico problema in \textbf{PLI} a \textbf{QUBO}, descrivere i tratti fondamentali del processo che trasforma un’istanza del primo problema in una del secondo, evidenziando i meccanismi di trasformazione dei vincoli in penalità.}
-%todo: guardare il video per capire cos'è lo slack
 
+
+Per trasformare un generico problema in un problema \textbf{QUBO} innanzitutto bisogna esprimerlo come problema di ottimizzazione, quindi ottenere un problema composto da una \textit{funzione obbiettivo} da minimizzare e dei \textit{vincoli}.
+La prima operazione da svolgere è identificare un \textit{Hamiltoniano obbiettivo} $\mathcal{H}_{obb}$ la cui minimizzazione corrisponde alla soluzione del problema di partenza.
+La trasformazione di un generico problema in un problema di ottimizzazione è differente per ogni problema ma in generale può succedere che la trasformazione richieda l'elevamento al quadrato della \textit{funzione obbiettivo}, ad esempio il caso in sezione \ref{SEC:F1} richiede di identificare una soluzione che fornisce un preciso valore (la sommatoria deve essere azzerata), operazione non necessaria quando il problema è già la ricerca di un minimo o un massimo (ad esempio \imp{KP}).\\
+Tale elevazione è necessaria in quanto permette di impostare il valore che si vuole ottenere come vertice di una equazione parabolica, in modo che la minimizzazione dell'equazione fornisca proprio quel valore.
+\begin{figure*}[!ht]
+                \centering
+                \includegraphics[width = 0.5\textwidth]{./img/F1.png}
+                \caption{Esempio del problema trattato in F1} \label{FIG:F1_2}
+\end{figure*}
+Situazione più semplice si verifica quando il problema è già di minimizzazione o massimizzazione (ad esempio \imp{KP}).
+Se il problema richiede la ricerca di un minimo la trasformazione è triviale, se la ricerca è di un massimo basta cambiare di segno la \textit{funzione obbiettivo} e cercare il minimo.\\
+
+Una volta ottenuto l'\textit{Hamiltoniano obbiettivo} bisogna definire i vincoli, se questi non sono già espressi in forma numerica bisogna renderli tali studiando le tabelle di verità delle variabili o le equazioni che ne definiscono la relazione
+Il seguente esempio (preso dalla sezione \ref{SEC:F3}) presenta l' \textit{Hamiltoniano} relativo all'operatore logico \textit{se e solo se} $ \Leftrightarrow$ che corrisponde al vincolo $x=y$ 
+\begin{center}$\begin{array}{c|c|c}
+ x & y & \mathcal{H}\\
+\hline
+ 0 & 0 & 0  \\
+ 0 & 1 & 1  \\
+ 1 & 0 & 1  \\
+ 1 & 1 & 0  \\ %result
+\end{array}$
+$$ x + y -2xy = 0$$
+\end{center}
+Può sempbrare che l'equazione codifichi una tabella di verità esattamente opposta a quella derivante dall'operatore \textit{se e solo se} ma non è così, bisogna infatti ricordare che lo scopo è sempre minimizzare l' "energia" del sistema e il nuovo $\mathcal{H}_{pen}$ deve fungere da penalità, andando ad incrementarla qualora il vincolo non fosse rispettato.
+
+Una volta ottenuto i vincoli in forma numerica possiamo notare che possono appartenere a due categorie, vincoli espressi come equazioni o come disequazioni.\\
+Per i primi il corrispondente \textit{Hamiltoniano penalità} si può ottenere facilmente sottraendo il valore a destra dell'uguale ad entrambi i membri.
+$$\text{equazione: } 2x_1 + 3x_2 + 2x_3 = 5 $$
+$$\text{vincolo: } 2x_1 + 3x_2 + 2x_3 -5 $$
+Se invece i vincolo sono disequazioni bisogna fare affidamento su varibili di \textit{slack}.\\
+L'idea è quella di introdurre una variabile che possa assumere un intervallo di valori e che "sposti" il valore da raggiungere fino allo zero.
+Se ad esempio il vincolo è $2x_1 + 3x_2 + x_3 \geq 3 $ si vuole arrivare ad un vincolo del tipo $2x_1 + 3x_2 + x_3 - S =3 $ per poter compiere la stessa operazione compiuta nel caso di vincoli espressi da equazioni.\\
+Il problema sta ne fatto che $S$ non può godere di completa libertà, in questo caso ad esempio non possiamo accettare valori di $S$ negativi, in quanto creerebbero un vincolo sempre vero e di conseguenza inutile.
+$$ x1=x2=x3=0, S= -3 \quad \Rightarrow \quad 0 + 0 + 0 + 3 = 3 $$
+Bisonga quindi limitare la libertà di $S$ ma ricordando che si possono introdurre solo variabili binarie e che non si possono usare disequazioni.
+Quello che si fa è calcolare il valore massimo assumibile da $S$ ed effettuare un'espansione binaria della variabile.
+Riprendendo il solito esempio $0 \leq S \leq 6-3$ dato che il massimo valore raggiungibile dal'equazione è 6 ed il valore obbiettivo è 3.
+%TODO: l'esempio del prof con il >= sembra errato.
+A questo punto si tratta solo di effettuare l'espansione binaria, cioè di scrivere $S$ come somma di variabili binarie che permettano di ottenere tutti i valori tra 0 e 3.
+$$ S = (z_1 + 2z_2) $$
+Così si ottiene il vincolo corrispondente all'equazione, infatti se $\exists z_1,z_2 \; t.c. \; 2x_1 + 3x_2 + x_3 - (z_1 + 2z_2)=3 $ allora $z_1,z_2,z_3$ soddisfano la disequazione da cui siamo partiti.
+Vale anche l'implicazione opposta: se $z_1,z_2,z_3$ non soddisfano la disequazione allora non $\nexists z_1,z_2$ che possano soddisfare la nuova equazione.
+%TODO: non sono sicuro sia corretto
+
+In ultimo bisogna introdurre una costante moltiplicativa $\lambda$ chiamata \textit{Lagrangiano} in modo da penalizzare maggiormente soluzioni che violano i vincoli.
+Il valore del \textit{lagrangiano} è di fondamentale importanza, in quanto un lagrangiano troppo piccolo permette di ottenere soluzioni che violando i vincoli, come mostrato in figura \ref{FIG:F4_errato}. %TODO:ed invece se il lagrangiano è troppo grande? perchè non possiamo metterlo enorme?
+Lo scopo del lagrangiano è far sì che la penalità introdotta da una scelta che viola un vincolo sia così sconveniente da non poter essere "bilanciata" da alcun valore di $\mathcal{H}_obb$, per quanto basso questo possa essere.
+Ci sono studi riguardo al valore che dovrebbe assumere a seconda del problema, ma in generale ci si affida all'euristica ed all'esperienza.
 \subsection{F.7}
 \label{SEC:F6}
 \emph{Nell’ambito della riduzione \textbf{KP} $\leq_P$ \textbf{QUBO}, descrivere i tratti fondamentali della processo che trasforma un’istanza del primo problema in una del secondo.}
@@ -1636,7 +1685,7 @@ L'idea per ridurre \textbf{Max2SAT} a \textbf{QUBO} è la solita: individuare un
 	Dati i “pesi” $(w_1, . . . , w_n)$, i “profitti” $(p_1, . . . , p_n)$, ed una “capacità massima” $C$, cercare un’opportuna istanza $x^* = (x^*_1, . . . , x^*_n)$ di $x = (x1, . . . , xn)$ nell’insieme  $\{0, 1\}^n$ in modo che:
 \begin{align*}
         \text{maximize} \sum_{k=1}^n p_kx_k&\\
-        \text{subject to} \sum_{k=1}^n w_kx_k& \leq C\\
+	\text{subject to} \sum_{k=1}^n w_kx_k&\leq C\\
 x_1,...,x_n \in \{0,1\}&
 \end{align*}
 \end{definition}
@@ -1644,10 +1693,14 @@ Il procedimento è sempre lo stesso, partendo da un problema di minimizzazione b
 
 Nel caso di \textbf{KP} la funzione obbiettivo è una massimizzazione, quindi per trasformarla in un \textit{Hamiltoniano obbiettivo} è sufficente cambiarla di segno.
 Quindi $max(\sum_{k=1}^{n} p_kx_k )$ diventa $min(-\sum_{k=1}^{n} p_kx_k )$.\\
-Invece il vincolo $\text{subject to} \sum_{k=1}^n w_kx_k& \leq C$ essendo una disequazione va trasformato con l'ausilio di una o più variabili di \textit{slack} il cui scopo è spiegato in sezione \ref{SEC:F6}.
+Invece il vincolo $\text{subject to} \sum_{k=1}^n w_kx_k \leq C$ essendo una disequazione va trasformato con l'ausilio di una o più variabili di \textit{slack} il cui scopo è spiegato in sezione \ref{SEC:F6}.
 \textbf{KP} si presta molto bene all'individuazione delle variabili di slack in quanto è possibile applicare \textit{Greedy-split} per trovare una prima approssimazione del risultato da ottenere.
-Ma oltre ad ottenere una approssimazione del risultato \textit{Greedy-split} ci permette anche di individuare un valore minimo dello spazio occupato, abbiamo la certezza che una soluzione ottimale occuperà più spazio di $z^{G_{slpit}}$.
-%todo: per trovare cosa??non ho capito cos'è lo slack
+Ma oltre ad ottenere una approssimazione del risultato \textit{Greedy-split} ci permette anche di individuare un valore minimo dello spazio occupato, abbiamo la certezza che una soluzione ottimale occuperà più spazio di $z^{G_{slpit}}$.\\
+Il vincolo $\text{\textit{subject to}} \sum_{k=1}^n w_kx_k \leq C$ può quindi essere espresso tramite l'equazione: $\sum_{k=1}^n w_kx_k + S=C$.
+L' espansione binaria della variabile di slack $S$ è facilmente calcolabile grazi al valore minimo di spazio occupato ottenuto applicando \textit{Greedy-split}.
+Posto che l'algoritmo restituisce un valore di spazio occupato $w^*$ l'espansione binaria sarà la combinazione di variabili che permettono di ottenere tutti i valori $\in [0,C-w^*]$.
+Il problema \textbf{QUBO} diventa quindi: $ min(-(sum_{k=1}^n p_kx_k) + \lambda * (\sum_{k=1}^n w_kx_k + S_1,...,S_n - C)) $ con $S_1, ..., S_n$ espansione binaria di $S$.
 
 In ultimo bisogna impostare il \textit{Lagrangiano}, molto dipendente dai dati. un'euristica derivata dall'esprienza suggerisce di fissare un valore del lagrangiano in un intervallo che varia tra il 70\% ed il 150\% del valore del polinomio da minimizzare.
+%TODO: inserire un problema di esempio
 \end{document}
