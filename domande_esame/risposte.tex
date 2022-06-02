@@ -106,7 +106,19 @@ Definizione formale di una permutazione (definizione ricorsiva):
 \emph{Dimostrare formalmente la completezza di un algoritmo di generazione di permutazioni di una lista di elementi.}
 
 
-%TODO: premettere cosa fa distribute e concat_map (e anche permutation, ma è esplicativo). 
+Come premessa stabiliamo il ruolo ed il funzionamento di due algoritmi:
+\texttt{Permutation} \ref{FIG:PERM} è un algoritmo ricorsivo che presa una lista ne genera le permutazioni.
+\begin{figure*}[!ht]
+\centering
+\includegraphics[width=1\textwidth]{./img/A3_perm.png}
+\caption{algormitmo Permutations} \label{FIG:PERM}
+\end{figure*}\\
+\texttt{Distribute} \ref{FIG:DIST}. Presi in input un elemento $e$ ed una lista $[e_1,e_2,e_3,e_4,...,e_n]$, distribute genera una lista di liste con $n+1$ elementi, andando a posizionare l'elemento $e$ ogni volta in una posizione diversa, avremo quindi $n+1$ liste (Lemma \textit{distribute\_lenght)} così composte: $[[e,e_1,e_2,...,e_n],[e_1,e,e_2,...,e_n],[e_1,e_2,...,e,e_n],[e_1,e_2,...,e_n,e]]$  
+\begin{figure*}[!ht]
+\centering
+\includegraphics[width=1\textwidth]{./img/A3_perm.png}
+\caption{algormitmo Distribute} \label{FIG:DIST}
+\end{figure*}\\
 Dimostrare che è algoritmo che genera permutazioni di una lista di elementi è completo significa dimostrare che genera $n!$ permutazioni, con $n$ pari al numero di elementi. Formalmente:
 \begin{theorem}[Completezza] $\forall l \in Lists$, $len($\textit{permutation} $l) = len(l)!$\end{theorem}
 \begin{dimostrazione}
@@ -152,18 +164,21 @@ Una \emph{visita esaustiva} anche detta \imp{Brute-force} è una strategia di vi
 		Attenzione, vengono calcolate tutte le permutazioni, durante la fase di valutazione si va a calcolare il voto e ci si ferma quando il valore viene superato.
 		Se facessimo questo distinguo in fase di generazione delle permutazioni staremmo già facendo pruning.\\
 		Eseguendo questa operazione su tutti i rami dell'albero si ottengono tutte le \emph{soluzioni}, scegliendo le soluzioni con votazione migliore si ottengono una o più \emph{risposte}.
+		In questo caso un cammino (non unico) che porta alla risposta è il seguente: $1 \rightarrow 2 \rightarrow 4$, l'elemento con indice 3 non viene inserito poichè violerebbe il vincolo.
 	\item \textbf{Sottoinsiemi}:\emph{Descrivere una ricerca Brute-Force della risposta in uno spazio degli stati organizzato a sottoinsiemi.}
 
 		Si può individuare una \emph{risposta} al problema \textbf{Valutazione} generando l'albero di tutte le possibili scelte:
 		\begin{center}
+			\makebox[\textwidth][c]{
 			\begin{forest}
 				for tree={ l sep=20pt, s sep=20pt}
-			[1 [2, edge label = {node[midway,left,green] {T}} [3, edge label = {node[midway,left,green] {T}}[4, edge label = {node[midway,left,green] {T}}] [4, edge label = {node[midway,right,red] {F}}]] [3, edge label = {node[midway,right,red] {F}}[4, edge label = {node[midway,left,green] {T}}] [4, edge label = {node[midway,right,red] {F}}]]][2, edge label = {node[midway,right,red] {F}} [3, edge label = {node[midway,left,green] {T}}[4, edge label = {node[midway,left,green] {T}}] [4, edge label = {node[midway,right,red] {F}}]] [3, edge label = {node[midway,right,red] {F}}[4, edge label = {node[midway,left,green] {T}}] [4, edge label = {node[midway,right,red] {F}}]]]] 			\end{forest}
+			[1 [2, edge label = {node[midway,left,green] {T}} [3, edge label = {node[midway,left,green] {T}}[4, edge label = {node[midway,left,green] {T}}[,edge label = {node[midway,left,green] {T}}][,edge label = {node[midway,right,red] {F}}]] [4, edge label = {node[midway,right,red] {F}}[,edge label = {node[midway,left,green] {T}}][,edge label = {node[midway,right,red] {F}}]]] [3, edge label = {node[midway,right,red] {F}}[4, edge label = {node[midway,left,green] {T}}[,edge label = {node[midway,left,green] {T}}][,edge label = {node[midway,right,red] {F}}]] [4, edge label = {node[midway,right,red] {F}}[,edge label = {node[midway,left,green] {T}}][,edge label = {node[midway,right,red] {F}}]]]][2, edge label = {node[midway,right,red] {F}} [3, edge label = {node[midway,left,green] {T}}[4, edge label = {node[midway,left,green] {T}}[,edge label = {node[midway,left,green] {T}}][,edge label = {node[midway,right,red] {F}}]] [4, edge label = {node[midway,right,red] {F}}[,edge label = {node[midway,left,green] {T}}][,edge label = {node[midway,right,red] {F}}]]] [3, edge label = {node[midway,right,red] {F}}[4, edge label = {node[midway,left,green] {T}}[,edge label = {node[midway,left,green] {T}}][,edge label = {node[midway,right,red] {F}}]] [4, edge label = {node[midway,right,red] {F}}[,edge label = {node[midway,left,green] {T}}][,edge label = {node[midway,right,red] {F}}]]]]] 			
+	\end{forest}}
 		\end{center}
 		A seconda che si scelga un ramo o l'altro la domanda sarà inclusa nella possibile \emph{soluzione} quindi percorrendo un ramo fino alla foglia si giunge sempre ad una sequenza di voti.
 		Non tutti i sottoinsiemi così generati sono però \emph{soluzioni}, in quanto alcuni superano il vincolo del voto massimo ammesso (in questo caso 9); considerando solo le \emph{soluzioni} e scegliendo quelle aventi la migliore votazioni si ottengono una o più \emph{risposte}
+		In questo caso il cammino (a differenza del punto 1 il cammino qui è univoco) che porta alla risposta è il seguente: $T \rightarrow T \rightarrow F \rightarrow T$.
 \end{itemize}
-%TODO: per entrambi mostrare il cammino che porta alla risposta
 \section{Backtrack}
 \subsection{B.1}
 \emph{Illustrare uno pseudo-algoritmo a piacere che implementa la tecnica Backtrack, giustificando le varie parti.}
@@ -325,10 +340,9 @@ Presupponiamo di visitare l'albero degli stati tramite le due diverse politiche,
 \caption{confronto visita in profondità ed ampiezza} \label{FIG:C_2_DFSvsBFS}
 \end{figure*}\\ 
 In generale è vero che la politica \textit{FIFO} permette di "buttare via" in un sol colpo un sacco di non soluzioni, ma in questo caso prima di giungere a nodi non accettabili si è obbligati a visitare gran parte dell'albero degli stati.
-Sto sì eliminando moltissimi sotto-alberi rispetto alla \textit{DFS} ma per farlo ne sto esplorando molti di più.Più l'albero è ampio rispetto alla sua profondità peggiori sono le prestazioni di una visita in \textit{ampiezza}
+Sto sì eliminando moltissimi sotto-alberi rispetto alla \textit{DFS} ma per farlo ne sto esplorando molti di più.Più l'albero è ampio rispetto alla sua profondità peggiori sono le prestazioni di una visita in \textit{ampiezza}.
+Vi è inoltre la mancanza di una euristica per sapere quando andre in profondità, ad esempio nella parte sinistra di figura \ref{FIG:C_2_DFSvsBFS} arrivati al nodo 30 basterebbe scendere in profondità di un nodo per trovare la soluzione, al posto che continuare in ampiezza.
 
-%TODO: ruben ha aggiunto "mancanza di una euristica per sapere quando andare in profondità" (ad esempio nella foto a sinistra di figura 12, quando siamo al nodo 30 basterebbe scendere di un nodo)
-%non mi piace proprio questa risposta.
 
 L'ideale sarebbe visitare in ampiezza ma scendere in profondità quando un ramo sembra promettente, per individuare i rami più promettenti si potrebbe ad esempio ordinare i live node minimizzando una delle seguenti proprietà:
 \begin{enumerate}
@@ -341,7 +355,10 @@ Questa situazione è però paradossale, se conoscessi la risposta non la starei 
 \end{adjustwidth}
 \subsection{C.3}
 \label{SEC:C3}
-\includegraphics[width=\textwidth]{./img/C3.png}
+\begin{figure*}[!ht]
+\centering
+\includegraphics[width=0.4\textwidth]{./img/C3.png}
+\end{figure*}
 \emph{Considerare, ad esempio, il seguente schema riassuntivo}
 
 
@@ -890,7 +907,12 @@ La programmazione dinamica (o “Pianificazione Dinamica" per sottolineare la di
 Il \textit{problema dello zaino} può essere suddifiso in una serie di sotto-problemi \textbf{KP} tra di loro indipendenti, prendiamo ad esempio $KP = (\vec w = (3,5,9,4), \vec p = (5, 6, 7, 3),9)$\\
 Questo problema puù essere visto secondo il seguente formalismo:$$ max \sum_{j=1}^4 p_jx_j \text{ con } \sum_{j=1}^4 w_jx_j \leq d$$
 Estraendo l'elemento di indice 4 si ottiene: $ max\; 3x_4 \sum_{j=1}^4 p_jx_j \text{ con } 4x_4\sum_{j=1}^4 w_jx_j$.
-%TODO: qui serve l'immagine del prof di tutti gli alberi della ricorsione, magari uno snippet
+\begin{figure*}[!ht]
+\centering
+\makebox[\textwidth][c]{\includegraphics[width=1.3\textwidth]{./img/D1_intuizione}}
+\caption{Intuizione dell'algoritmo ricorsivo} \label{FIG:D1_intuizione}
+\end{figure*}\\
+
 In tal modo si può generare l'albero delle scelte seguendo il formalismo, ad esempio la scelta $x=[?,1, 0 ,1]$ (scelta incompleta, non è una \textit{soluzione}) può essere formalizzata in:
 $max\; 3 + 6 +5x_1 \sum_{j=1}^0 p_jx_j \text{ con } 4x_4\sum_{j=1}^4 w_jx_j$.\\
 Sviluppando completamente l'albero delle scelte come in figura~\ref{FIG:D1_albero} si nota come l'istanza del problema \textbf{KP} presenta dei sottoproblemi condivisi, si può quindi configurare una soluzione che faccia uso delle tecniche di \textit{programmazione dinamica}.
@@ -1210,7 +1232,6 @@ Per dimostrare \textbf{SAT} $\leq_P$ \textbf{NNF} dobbiamo dimostrare che la tra
 	Di nuovo si sfrutta la definizione di $FV$ per interpretare le sotto-formule al posto della formula e poi per ipotesi induttiva si si applica la trasformazione $M$ sulle sotto componenti.
 	Infine si ricompone la formula assegnando le opportune negazioni.
 \end{dimostrazione}
-%TODO:ruben per ogni lemma propone di fare un esempio, l'aspetto fondamentale sono i 2 lemmi! (1 caso per il lemma 1 ed il lemma 2)
 \subsection{E.7}
 \emph{Nell’ambito della dimostrazione di \textbf{NNF} $\leq_P$ \textbf{CNF}, illustrare intuizione sulla e definizione della trasformazione di Tseytin, dimostrando la sua proprietà principale.}
 
@@ -1421,7 +1442,16 @@ Formalmente otterremo, $U^*$ e $S^*$ "correzzioni" di $U$ ed $S$:
 & 	S^* = (S \ \{\{v_x\}, \{b_x\}, \{r_x\}, \{v_y\}, \{b_y\}, \{r_y\}, \{v_z\}, \{b_z\}, \{r_z\}\}) \\
 &	\cup \{\{x, v_x\}, \{x, b_x\}, \{x, r_x\}, \{y, v_y\}, \{y, b_y\}, \{y, r_y\}, \{z, v_z\}, \{z, b_z\}, \{z, r_z\}\}
 \end{align*}
-In tal modo è impossibile assegnare due colori allo stesso nodo (avremmo una ripetizione della variabile) ed è anche impossibile assegnare a due nodi adiacenti lo stesso colore (avremmo una intersezione di due insiemi o una non copertura).%TODO:se prendo x prendo anche v_x o r_x o b_x (fingiamo che io prenda v_x). in questo modo sto lasciando fuori v_xy che si deve legare ad un' altro ?_yx che quindi non potrà più stare in un una tripletta. non può stare con v_yx? eh no, sarei costretto a prendere v_y e quindi y dato che non posso prendere la tripletta v_xy, v_y, v_yz
+In tal modo è impossibile assegnare due colori allo stesso nodo (avremmo una ripetizione della variabile) ed è anche impossibile assegnare a due nodi adiacenti lo stesso colore (avremmo una intersezione di due insiemi o una non copertura).
+Infatti se il nodo $v_x$ viene scelto (coloriamo il nodo $x$ di verde) questi si "porterà dietro" anche il nodo $x$ essendo parte della coppia ${x,v_x}$, lasciando fuori il nodo $v_xy$ che si dovrà legare ad un'altro nodo $colore_yx$.Questo nodo non potrà essere però $v_yx$ dato che due "sbavature" dello stesso colore non si possono legare (questa cosa è vera?).
+E se $v_yx$ si non si lega con $v_xy$ si dovrà legare con uno degli altri due colori lasciando "spaiato" un singoletto che data la rimozione dei singoletti dall'insieme $U$ non può fare parte di $S'$.
+\begin{figure*}[!ht]
+                \centering
+                \includegraphics[width = 0.8\textwidth]{./img/E11_sameCol.png}
+                \caption{Stesso colore per nodi adiacenti} \label{FIG:E11_sameCol}
+\end{figure*}\\
+
+%TODO:leggere.
 
 
 \subsection{E.12}
@@ -1638,7 +1668,6 @@ In questo modo se di un arco è presente almeno un vertice (o entrambi) non ci s
 
 
 Non è abbastanza però rendere sconveniente la scelta, potrebbe infatti esserci una istanza del problema in cui converrebbe comunque ricevere la penalità dell'arco mancante in quanto questa produce una "energia" $\leq$ di quella prodotta da una soluzione corretta.\\
-%TODO: in questo problema in realtà non credo sia possibile avere una penalità < dell'energia, solo uguale.
 \begin{figure*}[!ht]
 \centering
 \includegraphics[width = 0.8\textwidth]{./img/F4_errato.png}
@@ -1725,7 +1754,6 @@ A questo punto si tratta solo di effettuare l'espansione binaria, cioè di scriv
 $$ S = (z_1 + 2z_2) $$
 Così si ottiene il vincolo corrispondente all'equazione, infatti se $\exists z_1,z_2 \; t.c. \; 2x_1 + 3x_2 + x_3 - (z_1 + 2z_2)=3 $ allora $z_1,z_2,z_3$ soddisfano la disequazione da cui siamo partiti.
 Vale anche l'implicazione opposta: se $z_1,z_2,z_3$ non soddisfano la disequazione allora non $\nexists z_1,z_2$ che possano soddisfare la nuova equazione.
-%TODO: non sono sicuro sia corretto
 
 In ultimo bisogna introdurre una costante moltiplicativa $\lambda$ chiamata \textit{Lagrangiano} in modo da penalizzare maggiormente soluzioni che violano i vincoli.
 Il valore del \textit{lagrangiano} è di fondamentale importanza, in quanto un lagrangiano troppo piccolo permette di ottenere soluzioni che violando i vincoli, come mostrato in figura \ref{FIG:F4_errato}. %TODO:ed invece se il lagrangiano è troppo grande? perchè non possiamo metterlo enorme?
