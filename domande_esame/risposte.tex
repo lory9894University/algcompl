@@ -1421,7 +1421,9 @@ Formalmente otterremo, $U^*$ e $S^*$ "correzzioni" di $U$ ed $S$:
 & 	S^* = (S \ \{\{v_x\}, \{b_x\}, \{r_x\}, \{v_y\}, \{b_y\}, \{r_y\}, \{v_z\}, \{b_z\}, \{r_z\}\}) \\
 &	\cup \{\{x, v_x\}, \{x, b_x\}, \{x, r_x\}, \{y, v_y\}, \{y, b_y\}, \{y, r_y\}, \{z, v_z\}, \{z, b_z\}, \{z, r_z\}\}
 \end{align*}
-In tal modo è impossibile assegnare due colori allo stesso nodo (avremmo una ripetizione della variabile) ed è anche impossibile assegnare a due nodi adiacenti lo stesso colore (avremmo una intersezione di due insiemi o una non copertura).Ad esempio inserendo sia $\{x,v_x\}$ che $\{x,b_x\}$ avremmo $x$ nell'intersezione ed avendo rimosso i singoletti è impossibile scegliere $x_{colore}$ senza scegliere anche $x$.
+In tal modo è impossibile assegnare due colori allo stesso nodo (avremmo una ripetizione della variabile) ed è anche impossibile assegnare a due nodi adiacenti lo stesso colore (avremmo una intersezione di due insiemi o una non copertura).%TODO:se prendo x prendo anche v_x o r_x o b_x (fingiamo che io prenda v_x). in questo modo sto lasciando fuori v_xy che si deve legare ad un' altro ?_yx che quindi non potrà più stare in un una tripletta. non può stare con v_yx? eh no, sarei costretto a prendere v_y e quindi y dato che non posso prendere la tripletta v_xy, v_y, v_yz
+
+
 \subsection{E.12}
 \emph{Nell’ambito della dimostrazione \textbf{EXCO} $\leq_P$ \textbf{Subsetsum}, definire i tratti fondamentali della riduzione $E_s$ da insiemi a insiemi e l’intuizione che ne guida la definizione.}
 
@@ -1567,6 +1569,7 @@ Ad esempio:\\
                 \caption{Risposta} \label{FIG:F2_true}
 \end{figure*}\\
 Questo principio può essere applicato a qualsiasi grafo, sommando le coppie di vertici che condividono un arco, in questo caso $peso(a,b) + peso(b,c) = a +b -2ab +b +c -2bc$.\\
+%argomentare meglio il discorso di poliniomio. video di ciò che ha scritto a Ruben.
 Notiamo però che questa equazione fornisce una soluzione quando massimizzata, per renderla un problema \textbf{QUBO} va minimizzata, quindi si cambia il segno.
 $$ min(-(a + b + b + c - 2ab - 2 bc))$$
 \subsection{F.3}
@@ -1718,7 +1721,6 @@ $$ x1=x2=x3=0, S= -3 \quad \Rightarrow \quad 0 + 0 + 0 + 3 = 3 $$
 Bisonga quindi limitare la libertà di $S$ ma ricordando che si possono introdurre solo variabili binarie e che non si possono usare disequazioni.
 Quello che si fa è calcolare il valore massimo assumibile da $S$ ed effettuare un'espansione binaria della variabile.
 Riprendendo il solito esempio $0 \leq S \leq 6-3$ dato che il massimo valore raggiungibile dal'equazione è 6 ed il valore obbiettivo è 3.
-%TODO: l'esempio del prof con il >= sembra errato.
 A questo punto si tratta solo di effettuare l'espansione binaria, cioè di scrivere $S$ come somma di variabili binarie che permettano di ottenere tutti i valori tra 0 e 3.
 $$ S = (z_1 + 2z_2) $$
 Così si ottiene il vincolo corrispondente all'equazione, infatti se $\exists z_1,z_2 \; t.c. \; 2x_1 + 3x_2 + x_3 - (z_1 + 2z_2)=3 $ allora $z_1,z_2,z_3$ soddisfano la disequazione da cui siamo partiti.
@@ -1727,7 +1729,7 @@ Vale anche l'implicazione opposta: se $z_1,z_2,z_3$ non soddisfano la disequazio
 
 In ultimo bisogna introdurre una costante moltiplicativa $\lambda$ chiamata \textit{Lagrangiano} in modo da penalizzare maggiormente soluzioni che violano i vincoli.
 Il valore del \textit{lagrangiano} è di fondamentale importanza, in quanto un lagrangiano troppo piccolo permette di ottenere soluzioni che violando i vincoli, come mostrato in figura \ref{FIG:F4_errato}. %TODO:ed invece se il lagrangiano è troppo grande? perchè non possiamo metterlo enorme?
-Lo scopo del lagrangiano è far sì che la penalità introdotta da una scelta che viola un vincolo sia così sconveniente da non poter essere "bilanciata" da alcun valore di $\mathcal{H}_obb$, per quanto basso questo possa essere.
+Lo scopo del lagrangiano è far sì che la penalità introdotta da una scelta che viola un vincolo sia così sconveniente da non poter essere "bilanciata" da alcun valore di $\mathcal{H}_{obb}$, per quanto basso questo possa essere.
 Ci sono studi riguardo al valore che dovrebbe assumere a seconda del problema, ma in generale ci si affida all'euristica ed all'esperienza.
 \subsection{F.7}
 \label{SEC:F6}
