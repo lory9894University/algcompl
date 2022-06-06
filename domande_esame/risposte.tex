@@ -423,13 +423,13 @@ Immaginiamo ad esempio due \textit{live node} $x,z$, l' \textit{E-node} è $x$ e
 Analizziamo la situazione: $f(h(x)) \neq 0$, $\hat c(x) = f(h(x)) + \hat g(x)$.\\
 Riprendendo l'idea del punto precedente abbiamo due \textit{live node} $x,z$, l'\textit{E-node} è $x$ e genera discendenti chiamati $w_1,..., w_n$.
 \begin{align}        
-	f(h(x)) + \hat g(x) &< f(h(x)) + \hat g(z) \notag \\
+	f(h(x)) + \hat g(x) &< f(h(z)) + \hat g(z) \notag \\
 	c(w_1) = (f(h(x) + &\Delta) + (\hat g(x) - \Delta') \notag \\
 	c(w_1) = (f(h(x)) + &\hat g(x)) + (\Delta - \Delta') \notag
 	\end{align}
 	\begin{equation}
 	\begin{cases}
-		se \; (\Delta - \Delta') &\leq 0 \text{ proseguiamo lungo il ramo di $w_1$} \notag \\
+		se \; (\Delta - \Delta') \leq 0 &\text{ proseguiamo lungo il ramo di $w_1$} \notag \\
 		se \; (\Delta >> \Delta') &\text{ $w_1$ non è un nodo conveniente} \notag
 	\end{cases}
 	\end{equation}
@@ -454,10 +454,10 @@ Infatti analizzando la \textit{funzione costo} $\hat c(x) = f(h(x)) + \hat g(x)$
 Immaginiamo ad esempio due \textit{live node} $x,z$, l' \textit{E-node} è $x$ e genera due discendenti: $w_1, w_2$.
                 \begin{align}
                         &f(h(x)) + 0 < f(h(z)) + 0 \text{ dato che $x$ è \textit{E-node}} \notag \\
-                        &f(h(w_1)) + 0 = f(h(w_1)) + 0 > f(h(z)) + 0 \\
+                        &f(h(w_1)) + 0 \leq f(h(w_)) + 0 > f(h(z)) + 0 \\
                         &\hat c(w_1) = c(w_2) > \hat c(z) \notag
                 \end{align}
-Di conseguenza il prossimo \textit{E-node} sarà sicuramente $z$.\\
+		Di conseguenza il prossimo \textit{E-node} sarà sicuramente $z$.(Fare riferimento a figura \ref{FIG:C3_next2})\\
 L'equazione del punto (1) deriva dal fatto che per giungere a $w_1,w_2$ è stato fatto del lavoro in più, esattamente il lavoro necessario ad espandere $x$
 
 	\item $\hat c(x) = 0 + \hat g(x)$ Questa casistica, già affrontata nella sezione~\ref{SEC:C3} al \textbf{Punto 2} si riconduce ad una \textit{D-search}.
@@ -477,12 +477,12 @@ Di conseguenza il prossimo \textit{E-node} sarà scelto tra $w_1$ e $w_2$
 \emph{La seguente immagine riporta l'Algoritmo 8.1 in [HSR07]. Commentarne il funzionamento in base ad una qualche struttura dati fissata per la rappresentazione dello spazio degli stati su cui opera.}
 
 
-L'algoritmo in figura~\ref{FIG:C5} rappresenta un generico algoritmo per una visita \textit{Least Cost}.\\
+L'algoritmo in figura~\ref{FIG:C5} rappresenta un generico algoritmo per una visita \textit{Least Cost}.
 \begin{figure*}[!ht]
 \centering
-\includegraphics[width=0.8\textwidth]{./img/C5.png}
+\includegraphics[width=0.7\textwidth]{./img/C5.png}
 \caption{Algoritmo Least Cost} \label{FIG:C5}
-\end{figure*}\\
+\end{figure*}
 La struttura dati su cui si appoggia è una lista di \textit{record}, in cui ogni record può essere visto come un "nodo" dell'albero che rappresenta lo spazio degli stati.\\
 La struttura dati \textit{listnode} fornisce due operazioni \texttt{Add(\textit{x})} e \texttt{Least()} che forniscono la possibilità di inserire o estrarre record.
 Possiamo assumere che l'operazione \texttt{Least()} estrae dalla struttura dati il nodo che ha il minimo costo tra i live node $ \hat c(\cdot)$.
@@ -646,7 +646,7 @@ Inoltre supponiamo non esista alcun elemento di indice $j$ tale che $p[j] > c$.
 \begin{figure*}[!ht]
 \centering
 \includegraphics[width=0.5\textwidth]{./img/C_9_greedy.png}
-\caption{Qualità della soluzione di \textbf{Ext-Greedy} al crescere di $M$} \label{FIG:C_9_greedy}
+\caption{Qualità della soluzione di \textbf{Greedy-split} al crescere di $M$} \label{FIG:C_9_greedy}
 \end{figure*}\\
 \item \textbf{Ext-Greedy}:
 		\begin{lstlisting}[numbers=left,firstnumber=1,language=Matlab, stepnumber=1, xleftmargin=50pt]
@@ -718,7 +718,7 @@ $$\forall I_{KP}, \frac{z^{EG}(I_{KP})}{z^*_p(I_{KP})} \geq \frac{1}{2}$$
 	La gerarchia di profitti può quindi essere espansa.\\
 \begin{figure*}[!ht]
 \centering
-\includegraphics[width=0.6\textwidth]{./img/C_13.png}
+\includegraphics[width=0.5\textwidth]{./img/C_13.png}
 \caption{Grafico della gerarchia dei profitti} \label{FIG:C_13_2}
 \end{figure*}
 Possiamo quindi affermare:
@@ -805,7 +805,7 @@ Per semplicità chiamiamo $c- \sum_{1 \leq k \leq s}w_k \; w_s^{LP}$
 	$$ \exists y =(y_1, ..., y_n) \; t.c. \; \sum_{1 \leq k \leq n}y_nw_k > \sum_{1 \leq k \leq s} p_k+\frac{p_s}{w_s}w_s^{LP} \text{ e }\sum_{1 \leq k \leq n}y_nw_k = (\sum_{1 \leq k \leq s}w_k)+ w_s^{LP}  $$
 	Cioè un vettore $y$ che fornisce un profitto migliore di $x^{LP}$ saturando lo spazio.\\
 	Per proseguire la dimostrazione bisogna analizzare caso per caso in cosa è differente il vettore $y$ dal vettore $x^{LP}$.\\
-	Analizziamo ad esempio il seguente caso, in cui il vettore $y$ (sopra) è presentato a confronto con il vettore $x^{LP}$ (sotto)
+	Analizziamo ad esempio il seguente caso, in cui il vettore $y$ (sopra) è presentato a confronto con il vettore $x^{LP}$ (sotto)\\
 	\begin{table}[!ht]
 		\centering
 \begin{tabular}{lllllll}
@@ -814,7 +814,7 @@ Per semplicità chiamiamo $c- \sum_{1 \leq k \leq s}w_k \; w_s^{LP}$
 \multicolumn{1}{|l|}{1} & \multicolumn{1}{l|}{1}    & \multicolumn{1}{l|}{1} & \multicolumn{1}{l|}{$x_s^{LP}$} & \multicolumn{1}{l|}{0} & \multicolumn{1}{l|}{0}    & \multicolumn{1}{l|}{0} \\ \hline
                         & a                         &                        & s                                                 &                        & b                         &                       
 \end{tabular}
-\end{table}
+\end{table}\\
 $y_aw_a +  y_bw_b = w_a$ dato che lo spazio disponibile deve essere riempito qualsiasi frazione di peso dell'elemento con indice $a$ (che potrebbe anche essere 1, toglo tutte l'elemento) che io tolgo deve essere "riaggiunta" con l'inserimento di parte dell'elemento b.
 $$y_bw_b=w_a(1-y_a)$$
 $$\frac{w_b}{w_a}=\frac{1-y_a}{y_b}$$
@@ -839,9 +839,9 @@ Queste approssimazioni serviranno a fornire un \textit{upper bound} ed un \texti
 %oltretutto sugli appunti ho scritto che servono a valutare le approssimazioni, ma non ricordo cosa intendo
 \begin{figure*}[!ht]
 \centering
-\includegraphics[width=0.6\textwidth]{./img/C_13.png}
+\includegraphics[width=0.5\textwidth]{./img/C_13.png}
 \caption{Grafico della gerarchia di inclusioni} \label{FIG:C_13}
-\end{figure*}\\
+\end{figure*}
 \subsection{C.14}
 \emph{Discutere la sintesi di un algoritmo Branch\char`&Bound per KP}
 
@@ -876,10 +876,9 @@ L'idea di base è quindi quella di raffinare tramite le diverse iterazioni i due
 		Non avendo visitato alcun nodo l' \textit{E-node} è la radice dello spazio degli stati.
 		Il \textit{lower bound} è quindi l'algoritmo greedy scelto applicato al problema completo, allo stesso modo l' \textit{upper bound} è il risultato dell'algoritmo di soluzione di \emph{LKP} applicato al problema completo.
 		In questo stadio la miglior soluzione (che identifichiamo come $x[0..r)$) è la soluzione trovata tramite l'algoritmo greedy.
-\newpage
 \begin{figure*}[!ht]
 \centering
-\includegraphics[width=0.7\textwidth]{./img/C14_profitto_z.png}
+\includegraphics[width=0.75\textwidth]{./img/C14_profitto_z.png}
 \caption{Bounds del profitto z} \label{FIG:C14_profitto_z}
 \end{figure*}
 \end{adjustwidth}
@@ -902,7 +901,8 @@ L'idea di base è quindi quella di raffinare tramite le diverse iterazioni i due
 		\item $f(h(x[0..j)) < C \land f(h(x[0..j)) > z^*(x[0..r))$\\
 			E' stata trovata una \textit{soluzione} che migliora il profitto $z^*(x[0..r))$, viene salvata ed i passi successivi faranno riferimento al profitto generato da $x[0..j)$.
 	\end{itemize}
-	\begin{figure*}[!ht]
+\newpage
+\begin{figure*}[!ht]
 \centering
 \textbf{$((2,4,6,9),(10,10,12,18),15) \in KP$}
 \includegraphics[width=1\textwidth]{./img/C14_BB_manuale.png}
@@ -1001,6 +1001,7 @@ z_sol=z[n][c]
 	\end{equation*}
 	Nelle righe 7-9 abbiamo il caso in cui $j$ migliora la soluzione, quindi la soluzione viene aggiornata aggiungendo $j$, nelle righe 11-12 invece abbiamo la situazione in cui è meglio mantere la vecchia soluzione dato che questa fornisce un profitto migliore.
 \end{itemize}
+\newpage
 Questo algoritmo si porta dietro una struttura dati aggiuntiva, la tabella $A$ che mantiene l'informazione di quale sia la tupla che risolve il problema (la \textit{risposta}).
 
 Una prima ottimizzazione sullo spazio si può fare liberandosi di questa matrice e ricavando la tupla \textit{risposta} dalla tabella $z$.\\
