@@ -1,5 +1,6 @@
 \documentclass[a4paper]{article}
 \usepackage{listings}
+\usepackage{geometry}
 \usepackage{qtree}
 \usepackage{xcolor}
 \usepackage{forest}
@@ -221,9 +222,14 @@ BT(a,soluzione)=
 	\item \textbf{ordinamento}: una possibile funzione di bound è $a[j-2] > a[j-1]$, presupponendo un vettore $a_0, ... , a_n$ l'algoritmo si basa sul mantenere un indice $j$ t.c. $a_0 \leq ... \leq a_{j-2}$ mentre gli elementi $a_{j}, ..., a_{n}$ non sono ancora stati analizzati.
 	Notiamo però che non ha molto senso utilizzare tecniche \textbf{Brute Force} o derivate, perché l'operazione di confronto fra due numeri può essere sempre effettuata con consto minimo.Potendo confrontare ogni elemento con tutti gli altri elementi posso cancellare una grossa parte dello spazio delle soluzioni.
 	L'esempio più sciocco di questa cosa è il \textbf{Boublesort} che , pur confrontando ogni elemento dell'insieme con tutti gli altri, è più efficiente di un approccio \textbf{BruteForce}
-	\item \textbf{Cammino Hamiltoniano}: formalmente possiamo definire un cammino Hamiltoniano di un grafo $G$ come una sequenza di archi $SE \subset E, G= (V,E)$ che permette di visitare ogni nodo $V$ esattamente una volta.
+	\item \textbf{Cammino Hamiltoniano}: formalmente possiamo definire un cammino Hamiltoniano di un grafo $G$ come una sequenza di archi $S \subset E, G= (V,E)$ che permette di visitare ogni nodo $V$ esattamente una volta.
 	La prima cosa che si può notare è che in questo caso una soluzione equivale ad una risposta, una volta trovato il primo cammino si può effettuare \textit{pruning} di tutto il restante spazio degli stati.\\
 	Una buona \textit{funzione bound} è una funzione che interrompe l'esplorazione quando si cerca di inserire un arco non esistente.partendo da un nodo qualsiasi e scegliendo di visitare un altro nodo possiamo sicuramente escludere tutti i nodi che non sono collegati al nodo di partenza da alcun arco, stessa cosa iterando sul prossimo nodo.Bisogna prestare attenzione al fatto che per come è costruito lo spazio degli stati non è possibile visitare un nodo "già visitato".
+	\begin{figure*}[!ht]
+\centering
+\includegraphics[width=1\textwidth]{./img/B2_hamiltoniano.png}
+\caption{Calcolo di un cammino hamiltoniano} \label{FIG:B2_hamiltoniano}
+\end{figure*}\\
 	\item \textbf{Colorazione di un grafo}: Lo scopo del problema è assegnare un colore $c \in C$ ad ogni nodo $v \in V$ di un grafo $G=(V,E)$. in modo che vertici adiacenti abbiano colore diverso.\\
 	Supponiamo di aver colorato fino al nodo $j$ e di avergli dato il colore $c_a$.
 	Guardando il corrispettivo stato nella raffigurazione ad albero dello spazio degli stati (Figura~\ref{FIG:B2_colorazione}) i suoi figli saranno tutti i possibili colori di un altro nodo $x$.Se scelgo di scendere lungo il ramo contrassegnato dal colore $c_a$ mi devo assicurare che tra il nodo $j$ ed il nodo $x$ non vi sia alcun arco.\\
@@ -243,7 +249,6 @@ In entrambi i casi però devo controllare che tutti i nodi connessi da un arco a
 		\item se i primi due punti non sono veri sommo agli elementi presenti nella mia \textit{potenziale soluzione} $Z$ tutti gli altri elementi dell'insieme $X$, se il risultato è comunque minore di $S$ non ha senso proseguire.Anche inserendo tutti gli elementi rimasti non otterrei comunque $S$
 	\end{enumerate}
 \end{itemize}
-%TODO:  INSERIRE UN ESEMPIO PER OGNUNA (grafo, matrice e albero di esplorazione). si possono prendere quelli del prof
 \subsection{B.3}
 \emph{Le figure riportano proposte in [HSR07] di pseudo-algoritmi di Backtrack. Commentare la funzionalità delle loro parti in base ad una qualche struttura dati fissata per la rappresentazione dello spazio degli stati su cui opera.}
 \begin{figure*}[!ht]
@@ -253,6 +258,8 @@ In entrambi i casi però devo controllare che tutti i nodi connessi da un arco a
 \includegraphics[width=0.85\textwidth]{./img/B3_iterative.png}}
 \caption{Backtracking ricorsivo ed iterativo} \label{FIG:B3_algorithms}
 \end{figure*}
+
+
 La sostanziale differenza tra i due algoritmi sta in come viene generato lo \textit{spazio degli stati}, in un caso ricorsivamente, nell'altro tramite un algoritmo iterativo.\\
 Questa distinzione è importante in quanto la versione ricorsiva fornisce uno stack implicito, assente nella versione iterativa.Bisogna quindi implementare una struttura dati che permetta di effettuare le operazioni che nel libro (riga 9-10) vengono definite in maniera informale.
 
@@ -281,11 +288,12 @@ $T(x_1,...x_i)$ è il set di tutti i possibili valori di $x_{i+1}$ tali che $(x_
 		\item \textcolor{red}{\textit{E-node}}: L' \textit{expanded node} è il nodo che si sta visitando in questo momento, cioè il nodo del quale si sta per generare un figlio.L' \textit{E-node} e per definizione un \textit{live node}.
 \end{itemize}
 A seconda di come si gestisce la visita dei nodi e l'assegnamento del' \textit{E-node} si può generare una visita dello spazio degli stati differente.
+\newpage
 \begin{figure*}[!ht]
 \centering
 \includegraphics[width=0.7\textwidth]{./img/C_1.png}
 \caption{criteri di scelta} \label{FIG:C_1}
-\end{figure*}\\
+\end{figure*}
 Come mostrato in figura~\ref{FIG:C_1} FIFO e LIFO sono "i due estremi di un ventaglio di possibili criteri di scelta".
 Gestendo i live node con uno \emph{stack} e quindi andando ad estrarre l'ultimo nodo inserito si ottiene una visita \textit{depth-first} in cui si trasferisce la condizione di essere \textit{E-node} dal padre al figlio appena generato.
 In tal modo un nodo non diventa "\emph{dead}" finché tutti i suoi figli non sono stati visitati, di conseguenza si tende ad arrivare al fondo dell'albero degli stati il più in fretta possibile.
@@ -296,15 +304,15 @@ In tal modo un nodo non diventa "\emph{dead}" finché tutti i suoi figli non son
 \end{figure*}\\
 In maniera diametralmente opposta funziona la gestione dei nodi con una \emph{queue} in cui il primo nodo inserito è il primo ad essere estratto.Questa politica genera una visita \textit{breadth-first} in cui prima di passare ai nodi del livello successivo i nodi del livello attuale vengono tutti visitati, una volta generati tutti i figli di un nodo questi diventa "dead".
 Ciò porta a visite dello spazio degli stati che prima di giungere alle foglie dell'albero degli stati "esplorano" tutte le possibilità.
+\newpage
 \begin{figure*}[!ht]
 \centering
 \includegraphics[width=1\textwidth]{./img/C_1_BFS.png}
 \caption{visita in ampiezza} \label{FIG:C_1_BFS}
-\end{figure*}\\
+\end{figure*}
 Come anticipato in figura~\ref{FIG:C_1}, tra DFS e BFS si trovano tutte le possibili politiche intermedie, tra cui le \textit{least cost}. Naturalmente l'individuazione di una politica \textit{least cost} è fortemente dipendente dal problema.
 \subsection{C.2}
 \emph{L'albero degli stati del problema 4Regine è riportato, che è la Figura 7.2 de [HSR07].}\\
-
 \begin{figure*}[!ht]
 \centering
 \includegraphics[width=1\textwidth]{./img/C_2.png}
@@ -324,7 +332,8 @@ Presupponiamo di visitare l'albero degli stati tramite le due diverse politiche,
 	\item \textbf{BFS}:Tramite la visita in ampiezza invece si va ad espandere ogni nodo di un livello dell'albero prima di passare al livello successivo.
 		In generale la politica \textit{FIFO} butta via in un sol colpo un sacco di non soluzioni, ma in questo caso prima di incontrare una violazione di qualche vincolo bisogna scendere fino al secondo livello dell'albero, analizzando 16 nodi (che è esattamente il numero di nodi necessari a trovare la \textbf{risposta} con la visita in profondità).
 		La politica \textit{LIFO} si dimostra quindi molto meno vantaggiosa, oltretutto si porta dietro un altro svantaggio: se infatti la \textit{FIFO} approfittava dello stack generato dalla ricorsione per mantenere i suoi progressi in memoria nella \textit{LIFO} bisogna costruire tante strutture dati quanti sono i live node atte a mantenere i nodi della "frontiera" in memoria, dato che ogni soluzione viene costruita in parallelo.
-		\begin{figure*}[!ht]
+\newpage	
+\begin{figure*}[!ht]
 \centering
 \includegraphics[width=1\textwidth]{./img/C_2_BFS.png}
 \caption{Soluzione con BFS} \label{FIG:C_2_BFS}
@@ -596,6 +605,7 @@ Questo caso ha un particolarità, analizzando i pesi si può notare che $p_{max}
 \caption{Dimensione soluzione vs spazio al crescere di M} \label{FIG:C_8}
 \end{figure*}\\
 In questo caso \textbf{Greedy-split} si dimostra perfettamente identico in termini di soluzione a \textbf{Greedy}, in quanto non si incontra mai un elemento che causa il superamento del limite $c$, unica differenza dei due algoritmi.
+\newpage
 \subsection{C.9}
 \emph{Illustrare gli algoritmi \textbf{Greedy-Split} e \textbf{Ext-Greedy}. Discutere la qualità della soluzione prodotta da entrambi gli algoritmi, se applicati all’istanza \textbf{KP}}
 
@@ -866,11 +876,12 @@ L'idea di base è quindi quella di raffinare tramite le diverse iterazioni i due
 		Non avendo visitato alcun nodo l' \textit{E-node} è la radice dello spazio degli stati.
 		Il \textit{lower bound} è quindi l'algoritmo greedy scelto applicato al problema completo, allo stesso modo l' \textit{upper bound} è il risultato dell'algoritmo di soluzione di \emph{LKP} applicato al problema completo.
 		In questo stadio la miglior soluzione (che identifichiamo come $x[0..r)$) è la soluzione trovata tramite l'algoritmo greedy.
+\newpage
 \begin{figure*}[!ht]
 \centering
 \includegraphics[width=0.7\textwidth]{./img/C14_profitto_z.png}
 \caption{Bounds del profitto z} \label{FIG:C14_profitto_z}
-\end{figure*}\\
+\end{figure*}
 \end{adjustwidth}
 \textit{Passo induttivo}:
 \begin{adjustwidth}{.8cm}{0cm}
@@ -1014,6 +1025,7 @@ Notiamo anche che tutte queste ottimizzazioni sono relative alla memoria, non al
 \caption{Ottimizzazioni della tabella} \label{FIG:D2_ottimizzazioni}
 \end{figure*}\\
 
+\newpage
 \section{Complessità computazionale}
 \subsection{E.1}
 \emph{Illustrare le classi \textbf{PTime} ed \textbf{NPTime} in termini classici.}
@@ -1031,12 +1043,9 @@ La classe \textbf{PTime} contiene tutti i problemi che possono essere risolti tr
 Cioè esiste un polinomio $p$ tale che per ogni possibile sequenza di 0 ed 1 in input il costo per produrre un risultato dall'algoritmo deterministico è minore o uguale al calcolo del polinomio sulla dimensione della sequenza di input.
 \begin{figure*}[!ht]
 \centering
-\includegraphics[scale = 0.5]{./img/E1_DTM.png}
+\includegraphics[scale = 0.6]{./img/E1_DTM.png}
 \caption{costo di DTM(x)} \label{FIG:E1_DTM}
 \end{figure*}\\
-
-
-La classe \textbf{NPTime} si basa invece sul concetto di Macchina di Turing \textbf{non} deterministica (\textbf{NDTM}).\\
 A differenza delle \textbf{DTM} non vi è una sola "testina", bensì due: un \textit{controllo a stati finiti} che può leggere o scrivere (è la testina della \textbf{DTM}), limitato a lavorare sulle celle$[0 + \infty)$, ed un \textit{guessing module} che lavora invece sulle celle $[-1,- \infty)$.\\
 Questo "oracolo" scrive a caso nelle celle, generando una sequenza casuale di simboli dell'alfabeto (\textit{guessing stage}.
 Anche la lunghezza della stringa generata è casuale, potenzialmente infinita.\\
@@ -1051,7 +1060,7 @@ $$\exists p \; t.c. \; \forall x \in \{0,1\}^* \; costo(DTM(x,y)) \leq p(\lvert 
 	Cioè la sequenza in input viene verificata in tempo polinomiale rispetto alla dimensione dell'input da una \textbf{DTM} a cui viene fornita non solo l'input ma anche la stringa generata dall'oracolo che si sà condurre ad una soluzione (comunemente detta certificato).
 \begin{figure*}[!ht]
 \centering
-\includegraphics[scale = 0.5]{./img/E1_NDTM.png}
+\includegraphics[scale = 0.6]{./img/E1_NDTM.png}
 \caption{costo di NDTM(x)} \label{FIG:E1_NDTM}
 \end{figure*} 
 \subsection{E.2}
@@ -1497,39 +1506,8 @@ Supponiamo per assurdo che esista una scelta che fornisce un peso maggiore di qu
 Allora $sum_{1 \leq j \leq n} w_jy_j^. > \sum_{j=1}^n w_jx_j^. = S $, ed essendo necessario identificare una sequenza di scelte $z_1,...,z_n$ t.c. $\sum_{j=1}^n w_jz_j \leq S$ non possiamo accettare $y^.$ come istanza risolutiva del problema dal momento che:
 $$\sum_{j=1}^n w_jy_j^. > S $$
 \end{dimostrazione}
-\subsection{E.14}
-Dimostrare che i problemi \emph{KP} e \emph{Bounded-KP} sono equivalenti.\\Cioè $KP \Leftrightarrow BKP$.\\
-\begin{dimostrazione}
-	$KP \Rightarrow BKP$: ogni problema \emph{KP} è un problema \emph{BKP}.\\
-	La dimostrazione è immediata in quanto un generico problema\\$((P_1, ... ,P_n),(W_1, ... ,W_n),C)\in KP$ può essere riscritto come\\ $((P_1, ... ,P_n),(W_1, ... ,W_n),(1, ... ,1),C) \in BKP$.
-
-	$KP \Leftarrow BKP$: ogni problema \emph{BKP} è un problema \emph{KP}.\\
-	per prima cosa introduciamo $B_i + 1$ nuove variabili, $\forall i \in B_1 ... B_n$.\\
-	Avremo quindi
-	\begin{align}
-		x_{0}', ... ,&x_{b_i}' \in \{0,1\}  \notag \\
-   		&\;\;\vdots \notag \\
-		x_{0}^n, ... ,&x_{b_i}^n \in \{0,1\}  \notag 
-	\end{align}
-	Queste variabili indicano "quanti" oggetti di tipo $x^i$ sto prendendo, quindi 
-	\begin{equation}
-		x_{j}^i=\begin{cases}
-      		0\; se\; x_i = 0\\
-      		1\; se\; x_i = j \notag
-    		\end{cases}
-	\end{equation}
-	Il problema è diventato un esempio di \emph{BKP} di questo tipo:
-	\begin{center}
-		\scalebox{0.89}{$((p_1, 2p_1 ,...,b_1p_1, ... ,p_n, 2p_n, ..., b_np_n),(w_1, 2w_1 ,...,b_1p_1, ... ,w_n, 2w_n, ..., b_nw_n),C))$}\\
-		$maximize \; \sum_{i=1}^{n} \sum_{j=0}^{b_i} p_j*j*x^i_j$\\
-		$subject \; to \; \sum_{i=1}^{n} \sum_{j=0}^{b_i} w_j*j*x^i_j$\\
-		con la condizione aggiuntiva $ \forall i \sum_{j=0}^{b_i} x_j^i = 1$
-	\end{center}
-	In modo che  si possano prendere solo $j$ oggetti fi tipo $x^i$
-	%non posso prendere 5 x', e poi 3 x', sarebbe come prendere 8 x'
-	DA FINIRE CON OSSERVAZIONE DEL PROF RIGUARDO AL FATTO DI DOVER DIMOSTRARE LA RISOLVIBILITà
-\end{dimostrazione}
-
+\newpage
+\newgeometry{bottom=0.1cm}
 \section{Problemi computazionali}
 \subsection{F.1}
 \label{SEC:F1}
@@ -1552,9 +1530,11 @@ Infatti $\sum_{v\in S} v - 2 * \sum_{v\in T} v = 0 \Leftrightarrow (\sum_{v\in S
 \textit{se la retta che rappresenta tutte le soluzioni del problema ha valore in zero allora anche la parabola costruita elevando al quadrato l'equazione avrà un valore in zero}.
 \begin{figure*}[!ht]
                 \centering
-                \includegraphics[width = 0.5\textwidth]{./img/F1.png}
+                \includegraphics[width = 0.6\textwidth]{./img/F1.png}
                 \caption{Giustificazione grafica} \label{FIG:F1}
 \end{figure*}
+\newpage
+\restoregeometry
 \subsection{F.2}
 \label{SEC:F2}
 \emph{Nell’ambito della riduzione \textbf{MAXCUT} $\leq_P$ \textbf{QUBO}, descrivere i passi fondamentali del processo che trasforma un’istanza del primo problema in una del secondo.}
@@ -1587,7 +1567,8 @@ Ad esempio:\\
 		\end{align*}
                 \includegraphics[width = 0.3\textwidth]{./img/F2_NR.png}
                 \caption{Non risposta} \label{FIG:F2_false}
-\end{figure*}\\
+\end{figure*}
+\newpage
 \begin{figure*}[!ht]
                 \centering
 		\begin{align*}
@@ -1597,7 +1578,7 @@ Ad esempio:\\
                 \end{align*}
                 \includegraphics[width = 0.3\textwidth]{./img/F2_R.png}
                 \caption{Risposta} \label{FIG:F2_true}
-\end{figure*}\\
+\end{figure*}
 L'idea è ottenere dalle tabelle di verità dei polinomi quadratici multivariati che, dopo l'operazione di minimizzazione del $peso$, forniranno un valore preciso delle variabili.Questi polinomi verrano pori sommati in un unico polinomio che diventerà l' \textit{Hamiltoniano} da minimizzare.
 \begin{figure*}[!ht]
                 \centering
@@ -1608,6 +1589,7 @@ L'idea è ottenere dalle tabelle di verità dei polinomi quadratici multivariati
 Questo principio può essere applicato a qualsiasi grafo, sommando le coppie di vertici che condividono un arco, in questo caso $peso(a,b) + peso(b,c) = a +b -2ab +b +c -2bc$.\\
 Notiamo però che questa equazione fornisce una soluzione quando massimizzata, per renderla un problema \textbf{QUBO} va minimizzata, quindi si cambia il segno.
 $$ min(-(a + b + b + c - 2ab - 2 bc))$$
+\newpage
 \subsection{F.3}
 \label{SEC:F3}
 \emph{Illustrare la tecnica che permette di trasformare tipici vincoli, che si possono presentare nella formulazione di problemi in \textbf{PLI}, in modelli \textbf{QUBO}.}
@@ -1640,7 +1622,7 @@ L'obbiettivo è, partendo da un problema in \imp{PLI}, generare un equivalente p
 	\item $\lambda$, un operatore detto \textit{Lagrangiano} il cui scopo è aumentare il contributo di $\mathcal{H}_{penalita}$ in modo che violare i vincoli sia impossibile, non solo sconveniente (discusso in maniera più approfondita in sezione \ref{SEC:F4})
 \end{itemize} 
 $$ min(\mathcal{H}_{obbiettivo} + \lambda * \mathcal{H}_{penalita})$$
-
+\newpage
 \subsection{F.4}
 \label{SEC:F4}
 \emph{Nell’ambito della riduzione \textbf{MVC} $\leq_P$ \textbf{QUBO}, descrivere i tratti fondamentali del processo che trasforma un’istanza del primo problema in una del secondo, sottolineando il ruolo del Lagrangiano scelto.}
@@ -1674,11 +1656,12 @@ In questo modo se di un arco è presente almeno un vertice (o entrambi) non ci s
 
 
 Non è abbastanza però rendere sconveniente la scelta, potrebbe infatti esserci una istanza del problema in cui converrebbe comunque ricevere la penalità dell'arco mancante in quanto questa produce una "energia" $\leq$ di quella prodotta da una soluzione corretta.\\
+\newpage
 \begin{figure*}[!ht]
 \centering
 \includegraphics[width = 0.8\textwidth]{./img/F4_errato.png}
 \caption{Vertex cover errati ma Energia minima} \label{FIG:F4_errato}
-\end{figure*}\\
+\end{figure*}
 Come accennato in sezione \ref{SEC:F3} si può risolvere questo problema introducendo una costante moltiplicativa $\lambda$ chiamata \textit{Lagrangiano} in modo da penalizzare maggiormente soluzioni che violano i vincoli.
 La dimensione del Lagrangiano è fondamentale per evitare di ottenere insiemi non completamente coprenti; ricordiamo la composizione di un problema \textbf{QUBO} mentre analizziamo i valori che $\lambda$ può assumere:
 $$ min(\mathcal{H}_{obbiettivo} + \lambda * \mathcal{H}_{penalita})$$
@@ -1723,6 +1706,7 @@ Per trasformare un generico problema in un problema \textbf{QUBO} innanzitutto b
 La prima operazione da svolgere è identificare un \textit{Hamiltoniano obbiettivo} $\mathcal{H}_{obb}$ la cui minimizzazione corrisponde alla soluzione del problema di partenza.
 La trasformazione di un generico problema in un problema di ottimizzazione è differente per ogni problema ma in generale può succedere che la trasformazione richieda l'elevamento al quadrato della \textit{funzione obbiettivo}, ad esempio il caso in sezione \ref{SEC:F1} richiede di identificare una soluzione che fornisce un preciso valore (la sommatoria deve essere azzerata), operazione non necessaria quando il problema è già la ricerca di un minimo o un massimo (ad esempio \imp{KP}).\\
 Tale elevazione è necessaria in quanto permette di impostare il valore che si vuole ottenere come vertice di una equazione parabolica, in modo che la minimizzazione dell'equazione fornisca proprio quel valore.
+\newpage
 \begin{figure*}[!ht]
                 \centering
                 \includegraphics[width = 0.5\textwidth]{./img/F1.png}
@@ -1766,6 +1750,7 @@ In ultimo bisogna introdurre una costante moltiplicativa $\lambda$ chiamata \tex
 Il valore del \textit{Lagrangiano} è di fondamentale importanza, in quanto un Lagrangiano troppo piccolo permette di ottenere soluzioni che violando i vincoli, come mostrato in figura \ref{FIG:F4_errato}. %TODO:ed invece se il lagrangiano è troppo grande? perchè non possiamo metterlo enorme?
 Lo scopo del Lagrangiano è far sì che la penalità introdotta da una scelta che viola un vincolo sia così sconveniente da non poter essere "bilanciata" da alcun valore di $\mathcal{H}_{obb}$, per quanto basso questo possa essere.
 Ci sono studi riguardo al valore che dovrebbe assumere a seconda del problema, ma in generale ci si affida all'euristica ed all'esperienza.
+\newpage
 \subsection{F.7}
 \label{SEC:F6}
 %quadratica unconstraint binary models.
