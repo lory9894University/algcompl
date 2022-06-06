@@ -1486,26 +1486,6 @@ La soluzione è utilizzare una base che non permetta il verificarsi di tale situ
 	$$ E_s: Set \times Set \times Set \rightarrow \mathcal{P}(\mathbb{N}) \times \mathbb{N}$$
 	$$(U,S,S') \rightarrow (\{\sum_{i=o}^{\rvert u \lvert -1} p^tx[i] | z \in S'\}, \frac{p^{\rvert u \lvert} -1}{p -1})$$
 \end{definition}
-\subsection{E.13}
-\begin{definition}[SubsetSum]
-	Siano dati un insieme numerico finito $X$ ed un numero $S$. Determinare l’esistenza di un sottoinsieme $Y \subset X$, tale che la somma di tutti gli elementi di $Y$ sia pari ad $S$.
-\end{definition}
-	Vedendolo come problema decisionale può essere riscritto come:
-	$$((w_1,...,w_n),S) \in SubsetSum \; se \; \exists x_1, ... , x_n \in \{0,1\}^n \: t.c. \sum_{1 \leq k \leq n} x_kw_k = S$$
-	SubsetSum è un caso specifico di \imp{KP}, in particolare è un problema \textbf{Knapsack} in cui i profitti sono uguali ai pesi.
-	$$((w_1,...,w_n),S) \in SubsetSum \Rightarrow ((w_1,...,w_n),(w_1,...,w_n),S) \in KP$$
-\begin{dimostrazione}
-	Per ipotesi $\exists x_1^., ..., x_n^. \: tc \sum_{j=1}^n w_jx_j = S$ cioè esiste una scelta di valori $x_1,...,x_n$ che risolve il problema. ($x_1^., ..., x_n^.$ è un istanza di $x_1, ..., x_n$)
-
-	Dobbiamo dimostrare che esiste una soluzione del rispettivo problema \imp{KP} cioè che esista una istanza di scelte la cui somma dei pesi è minore di $S$ ma allo stesso tempo è la massima scelta possibile (è più grande del peso di ogni altra possibile istanza di scelte):
-	$$ \exists z_1^., ..., z_n^. \: tc \forall y_1,...,y_n \sum_{j=1}^n w_jz_j \geq \sum_{j=1}^n w_jy_j \text{ e } \sum_{j=1}^n w_jz_j \leq S$$
-	Prendendo come istanza $z^.$ l' istanza $z^.$ definita in precedenza abbiamo la sicurezza che, per ipotesi, $\sum_{j=1}^n w_jz_j \leq S$
-
-	La tesi diventa quindi $$ \forall y_1,...,y_n \sum_{j=1}^n w_jx_j^. \geq \sum_{j=1}^n w_jy_j$$
-Supponiamo per assurdo che esista una scelta che fornisce un peso maggiore di quello generato dall'istanza $x^.$:$$\exists y_1^.,...,y_n^. \sum_{j=1}^n w_jy_j^. > \sum_{j=1}^n w_jx_j^.$$
-Allora $sum_{1 \leq j \leq n} w_jy_j^. > \sum_{j=1}^n w_jx_j^. = S $, ed essendo necessario identificare una sequenza di scelte $z_1,...,z_n$ t.c. $\sum_{j=1}^n w_jz_j \leq S$ non possiamo accettare $y^.$ come istanza risolutiva del problema dal momento che:
-$$\sum_{j=1}^n w_jy_j^. > S $$
-\end{dimostrazione}
 \newpage
 \newgeometry{bottom=0.1cm}
 \section{Problemi computazionali}
