@@ -1406,6 +1406,7 @@ La funzione di riduzione $L$ può essere introdotta e definita grazie a tre intu
 		\caption{Grafo al passo 3} \label{FIG:E10_passo3}
 		\end{figure*}\\
 \end{enumerate}
+\newpage
 Ad esempio un grafo derivante dalla formula: $[x,a,b][x,\hat a, b][x,a,\hat b][x, \hat a, \hat b]$ può essere il seguente (il grafo e la colorazione non sono univoci).
 		\begin{figure*}[!ht]
 		\centering
@@ -1419,21 +1420,22 @@ Essendoci una clausola insoddisfabile tutta la formula lo è.
 \emph{Nell’ambito della dimostrazione \textbf{3COL} $\leq_P$ \textbf{EXCO}, definire i tratti fondamentali della riduzione $E_x$ da grafi ad insiemi e l’intuizione che ne guida la definizione.}
 
 
-Dati $U$ ed $S \subseteq \mathcal{P}(U)$ esiste un sottoinsieme $S' \subseteq S$ che è una copertura esatta di $U$ cioè tra gli insiemi elementi di $S$ compaiono tutti ed una sola volta gli elementi di $U$:
-$$\forall z,y \in S'\, x \neq y \quad x \cap y = \emptyset \quad \bigcup_{x \in S'}X $$
+Dati $U$ ed $S \subseteq \mathcal{P}(U)$ esiste un sottoinsieme $S' \subseteq S$ che è una copertura esatta di $U$ cioè tra gli insiemi elementi di $S'$ compaiono tutti ed una sola volta gli elementi di $U$:
+$$\forall x,y \subseteq S'\, x \neq y \quad x \cap y = \emptyset \quad \bigcup_{x \in S'}X = U$$
 La funzione di riduzione $E_x$ da \textbf{3COL} a \textbf{EXCO} si basa sulla seguente intuizione:\\
 Partendo dal grafo non colorato andiamo ad elencare tutte le possibili colorazioni di un nodo, aggiungendo una "sbavatura" in corrispondenza degli archi:
+\newpage
 \begin{figure*}[!ht]
                 \centering
                 \includegraphics[width = 0.5\textwidth]{./img/E11_sbavatura.png}
                 \caption{colorazioni di ogni nodo con sbavatura} \label{FIG:E11_sbavatura}
-\end{figure*}\\
+\end{figure*}
 Per definizione di \textbf{3COL} bisogna evitare che le \textit{sbavature} di due nodi con lo stesso colore si incontrino, sono invece accettabili incontri tra colori diversi.\\
 A questi "incontri" di differenti colori è possibile assegnare dei nomi, il punto in cui il nodo $x$ colorato verde si espande verso $y$ ( di colore non verde) può essere chiamato $v_{xy}$ e viceversa in punto in cui il nodo $y$ colorato ad esempio di rosso (ma andrebbe bene anche un altro colore che non sia verde, nell'esempio blu) si espande verso il nodo $x$ si può chiamare $r_{yx}$.
 Da questo possiamo ricavare un insieme di "punti" che corrispondono a relazioni tra nodi o "incontri" e colore ($r_x$ rosso $x$, $b_y$ blu $y$, $r_{yx}$ incrocio da y verso x colorato in rosso, etc ...).
 Questo insieme non è altro che l'insieme universo $U$, mentre una colorazione corrisponde ad $S'$.
 
-Per generare un modello equivalente al grafico \textbf{3COL} bisogna fare attenzione ad inserire nello stesso sottoinsieme gli archi di "incontro" ($\{v_{xy},r_{yx}\}$) in modo da avere in un altro sottoinsieme i singoletti che identificano il colore del nodo ($\{v_x\}$,$\{r_y\}$) ed in tal modo impedire a questi singoletti di entrare in altri sottoinsiemi. (se $y$ è rosso voglio evitare che entri nel sottoinsieme $\{b_yx,b_y,b_yz\}$)
+Per generare un modello equivalente al grafico \textbf{3COL} bisogna fare attenzione ad inserire nello stesso sottoinsieme gli archi di "incontro" ($\{v_{xy},r_{yx}\}$) in modo da avere in un altro sottoinsieme i singoletti che identificano il colore del nodo ($\{v_x\}$,$\{r_y\}$) ed in tal modo impedire a questi singoletti di entrare in altri sottoinsiemi. (se $y$ è rosso voglio evitare che entri nel sottoinsieme $\{r_{yx},r_y,r_{yz}\}$)
 \begin{figure*}[!ht]
                 \centering
                 \includegraphics[width = 0.5\textwidth]{./img/E11_colorazione.png}
@@ -1450,31 +1452,31 @@ La più notevole di queste coperture è la copertura in cui i singoletti $v_x,b_
                 \includegraphics[width = 0.8\textwidth]{./img/E11_degenere.png}
                 \caption{S' non è una colorazione} \label{FIG:E11_degenere}
 \end{figure*}\\
-Possiamo quindi raffinare l'intuizione aggiungendo ad $U$ tanti nodi quanti sono i vertici del grafo (nel nostro esempio aggiungiamo $\{x,y,z\}$) e utilizzandoli per decidere il colore di ogni nodo.
+Possiamo quindi raffinare l'intuizione aggiungendo ad $U$ tante variabili quanti sono i vertici del grafo (nel nostro esempio aggiungiamo $\{x,y,z\}$) e utilizzandoli per decidere il colore di ogni nodo.
 Quindi da $S$ rimuoviamo tutti i singoletti e aggiungiamo tutte le coppie variabile-singoletto (ad esempio $\{x,v_x\},\{x, b_x\},...,\{y,r_y\},...$).
 
 Formalmente otterremo, $U^*$ e $S^*$ "correzioni" di $U$ ed $S$:
 \begin{align*}
 &	U^* = \{x, y, z\} \cup U \\
-& 	S^* = (S \ \{\{v_x\}, \{b_x\}, \{r_x\}, \{v_y\}, \{b_y\}, \{r_y\}, \{v_z\}, \{b_z\}, \{r_z\}\}) \\
+& 	S^* = (S \setminus \{\{v_x\}, \{b_x\}, \{r_x\}, \{v_y\}, \{b_y\}, \{r_y\}, \{v_z\}, \{b_z\}, \{r_z\}\}) \\
 &	\cup \{\{x, v_x\}, \{x, b_x\}, \{x, r_x\}, \{y, v_y\}, \{y, b_y\}, \{y, r_y\}, \{z, v_z\}, \{z, b_z\}, \{z, r_z\}\}
 \end{align*}
 In tal modo è impossibile assegnare due colori allo stesso nodo (avremmo una ripetizione della variabile) ed è anche impossibile assegnare a due nodi adiacenti lo stesso colore (avremmo una intersezione di due insiemi o una non copertura).
-Infatti se il nodo $v_x$ viene scelto (coloriamo il nodo $x$ di verde) questi si "porterà dietro" anche il nodo $x$ essendo parte della coppia ${x,v_x}$, lasciando fuori il nodo $v_{xy}$ che si dovrà legare ad un'altro nodo $colore_{yx}$.
+Infatti se il nodo $v_x$ viene scelto (coloriamo il nodo $x$ di verde) questi si "porterà dietro" anche la variabile $x$ essendo parte della coppia ${x,v_x}$, lasciando fuori il nodo $v_{xy}$ che si dovrà legare ad un'altro nodo $colore_{yx}$.
 Questo nodo non potrà essere però $v_{yx}$ dato che due "sbavature" dello stesso colore non si possono legare ($\{v_{xy}, v_{yx}\} \not\in U$) e se $v_{yx}$ si non si lega con $v_{xy}$ si dovrà legare con uno degli altri due colori lasciando "spaiato" un singoletto che data la rimozione dei singoletti dall'insieme $U$ non può fare parte di $S'$.
+\newpage
 \begin{figure*}[!ht]
                 \centering
-                \includegraphics[width = 0.8\textwidth]{./img/E11_sameCol.png}
+                \includegraphics[width = 0.5\textwidth]{./img/E11_sameCol.png}
                 \caption{Stesso colore per nodi adiacenti} \label{FIG:E11_sameCol}
-\end{figure*}\\
-
+\end{figure*}
 
 \subsection{E.12}
 \emph{Nell’ambito della dimostrazione \textbf{EXCO} $\leq_P$ \textbf{Subsetsum}, definire i tratti fondamentali della riduzione $E_s$ da insiemi a insiemi e l’intuizione che ne guida la definizione.}
 
-Questa \textit{funzione di riduzione} si basa sull'idea di "codificare" in binario la presenza o l'assenza degli elementi di $S$ in $S'$.Quindi dato l'insieme degli elementi $U={s_1, s_2,...,s_n}$ andremo a trasformare $S$ in un insieme composto da numeri binari di lunghezza $n$ (equivalente a $|U|$).\\
+Questa \textit{funzione di riduzione} si basa sull'idea di "codificare" in binario la presenza o l'assenza degli elementi di $U$ in $S$.Quindi dato l'insieme degli elementi $U={s_1, s_2,...,s_n}$ andremo a trasformare $S$ in un insieme composto da numeri binari di lunghezza $n$ (equivalente a $|U|$).\\
 Posto ad esempio $U = \{1,2,3\}$ un possibile $S$ sarebbe $S= \{\{1,2,3\},\{1,3\},\{\emptyset\}\}$ quindi $E_x(S) = \{\{1,1,1\},\{1,0,1\},\{0,0,0\}\}$.\\
-La prima intuizione prosegue proponendo di sommare i tutti i numeri codificati in binario di $S'$ e di confrontare il valore con $2^{|U|}-1$, dato che la configurazione binaria di tale numero è $111...11$ ripetuto $|U|$ volte la somma di tutti i numeri in $S$ dovrebbe fornire $2^{|U|}-1$ se e solo se sono presenti tutti gli elementi di $U$ al massimo una volta.\\
+La prima intuizione prosegue proponendo di sommare i la codifica in binario degli elementi (che sono insiemi) di $S'$ e di confrontarne il valore con $2^{|U|}-1$, dato che la rappresentazione binaria di tale numero è $111...11$ ripetuto $|U|$ volte la somma di tutti i numeri in $S$ dovrebbe fornire $2^{|U|}-1$ se e solo se sono presenti tutti gli elementi di $U$ al massimo una volta.\\
 tale intuizione risulta però errata in quanto non tiene conto del riporto, infatti:
 \begin{center}$\begin{array}{llll}
   & 0 & 1  & 0  \\ %carry digits
@@ -1490,10 +1492,12 @@ La soluzione è utilizzare una base che non permetta il verificarsi di tale situ
 \begin{definition}
 	Dati $((U,S)S') \; t.c. \; S \subseteq \mathcal{P}(U), S' \subseteq S$:
 	$$ E_s: Set \times Set \times Set \rightarrow \mathcal{P}(\mathbb{N}) \times \mathbb{N}$$
-	$$(U,S,S') \rightarrow (\{\sum_{i=o}^{\rvert u \lvert -1} p^tx[i] | z \in S'\}, \frac{p^{\rvert u \lvert} -1}{p -1})$$
+	$$(U,S,S') \rightarrow (\{\sum_{i=o}^{\rvert u \lvert -1} p^tx[i] | x \in S'\}, \frac{p^{\rvert u \lvert} -1}{p -1})$$
 \end{definition}
-\newpage
-\newgeometry{bottom=0.1cm}
+Quindi partendo da un problema $(U,S,S')$ otteniamo una coppia, il cui primo elemento è la somma delle rappresentazioni in base $p$ di ogni elemento (insieme) di $S'$ ed il secondo elemento.
+\newgeometry{top=3cm,bottom=3cm}
+$p$ è il massimo numero di occorrenze di un elemento di $U$ su $S$ (non su $S'$) + 1.\\
+Il secondo elemento è il valore della serie geometrica $p^0 + p^1 +.....+ p^{m-1}$ cioè $\frac{p^{\rvert u \lvert} -1}{p -1})$
 \section{Problemi computazionali}
 \subsection{F.1}
 \label{SEC:F1}
@@ -1516,10 +1520,9 @@ Infatti $\sum_{v\in S} v - 2 * \sum_{v\in T} v = 0 \Leftrightarrow (\sum_{v\in S
 \textit{se la retta che rappresenta tutte le soluzioni del problema ha valore in zero allora anche la parabola costruita elevando al quadrato l'equazione avrà un valore in zero}.
 \begin{figure*}[!ht]
                 \centering
-                \includegraphics[width = 0.6\textwidth]{./img/F1.png}
+                \includegraphics[width = 0.3\textwidth]{./img/F1.png}
                 \caption{Giustificazione grafica} \label{FIG:F1}
 \end{figure*}
-\newpage
 \restoregeometry
 \subsection{F.2}
 \label{SEC:F2}
