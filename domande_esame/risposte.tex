@@ -189,7 +189,7 @@ Una \emph{visita esaustiva} anche detta \imp{Brute-force} è una strategia di vi
 Il \textbf{Backtracking} è una tecnica algoritmica atta a migliorare la visita \textbf{Bruteforce} tramite l'eliminazione di alcuni sotto-alberi del' albero delle scelte che non vale la pena di analizzare.
 Più precisamente vengono introdotti due concetti:
 \begin{itemize}
-	\item \textit{funzione bound:} una funzione che dato un nodo dell'albero delle scelte fornisce un criterio di valutazione sulla possibilità che il sotto-albero avente come radice quel nodo possa o meno fornire una \textit{risposta}
+	\item \textit{funzione bound:} una funzione che dato un nodo dell'albero delle scelte fornisce uncriterio di valutazione sulla possibilità che il sotto-albero avente come radice quel nodo possa o meno fornire una \textit{risposta}
 	\item \textit{pruning}: Rimozione di sotto-alberi dall'analisi dell'albero delle scelte per il quale la \textit{funzione bound} predice l'impossibilità di generare \textit{risposte}.Perché violerebbero i vincoli espliciti o perché produrrebbero una \textit{soluzione} peggiore di altre trovate in precedenza
 \end{itemize}
 Il \textbf{Backtracking} può essere visto quindi come una visita \textbf{Brute Force} con l'aggiunta di un filtro.$BT = BF + \text{ \textit{funzione criterio/bound} }+ pruning.$
@@ -287,8 +287,7 @@ $T(x_1,...x_i)$ è il set di tutti i possibili valori di $x_{i+1}$ tali che $(x_
 		\item \textcolor{red}{\textit{live node}}: nodo "vivo", cioè alcuni dei suoi figli sono ancora da espandere
 		\item \textcolor{red}{\textit{E-node}}: L' \textit{expanded node} è il nodo che si sta visitando in questo momento, cioè il nodo del quale si sta per generare un figlio.L' \textit{E-node} e per definizione un \textit{live node}.
 \end{itemize}
-A seconda di come si gestisce la visita dei nodi e l'assegnamento del' \textit{E-node} si può generare una visita dello spazio degli stati differente.
-\newpage
+A seconda di come si gestisce la visita dei nodi e l'assegnamento del' \textit{E-node} si può generare una visita dello spazio degli stati differente.\\
 \begin{figure*}[!ht]
 \centering
 \includegraphics[width=0.7\textwidth]{./img/C_1.png}
@@ -296,15 +295,10 @@ A seconda di come si gestisce la visita dei nodi e l'assegnamento del' \textit{E
 \end{figure*}
 Come mostrato in figura~\ref{FIG:C_1} FIFO e LIFO sono "i due estremi di un ventaglio di possibili criteri di scelta".
 Gestendo i live node con uno \emph{stack} e quindi andando ad estrarre l'ultimo nodo inserito si ottiene una visita \textit{depth-first} in cui si trasferisce la condizione di essere \textit{E-node} dal padre al figlio appena generato.
-In tal modo un nodo non diventa "\emph{dead}" finché tutti i suoi figli non sono stati visitati, di conseguenza si tende ad arrivare al fondo dell'albero degli stati il più in fretta possibile.
-\begin{figure*}[!ht]
-\centering
+In tal modo un nodo non diventa "\emph{dead}" finché tutti i suoi figli non sono stati visitati, di conseguenza si tende ad arrivare al fondo dell'albero degli stati il più in fretta possibile.\\
 \includegraphics[width=1\textwidth]{./img/C_1_DFS.png}
-\caption{visita in profondità} \label{FIG:C_1_DFS}
-\end{figure*}\\
 In maniera diametralmente opposta funziona la gestione dei nodi con una \emph{queue} in cui il primo nodo inserito è il primo ad essere estratto.Questa politica genera una visita \textit{breadth-first} in cui prima di passare ai nodi del livello successivo i nodi del livello attuale vengono tutti visitati, una volta generati tutti i figli di un nodo questi diventa "dead".
-Ciò porta a visite dello spazio degli stati che prima di giungere alle foglie dell'albero degli stati "esplorano" tutte le possibilità.
-\newpage
+Ciò porta a visite dello spazio degli stati che prima di giungere alle foglie dell'albero degli stati "esplorano" tutte le possibilità.\\
 \begin{figure*}[!ht]
 \centering
 \includegraphics[width=1\textwidth]{./img/C_1_BFS.png}
@@ -317,7 +311,7 @@ Come anticipato in figura~\ref{FIG:C_1}, tra DFS e BFS si trovano tutte le possi
 \centering
 \includegraphics[width=1\textwidth]{./img/C_2.png}
 \caption{spazio degli stati 4 regine} \label{FIG:C_2}
-\end{figure*}
+\end{figure*}\\
 \textbf{Punto 1}:\emph{Illustrare a grandi linee come si sviluppa la visita dello spazio degli stati qui sopra illustrato, che possiamo definire in profondità ed in ampiezza.}
 
 Presupponiamo di visitare l'albero degli stati tramite le due diverse politiche, effettuando pruning quando necessario.
