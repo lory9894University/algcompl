@@ -1671,13 +1671,14 @@ $$ min(\mathcal{H}_{obbiettivo} + \lambda * \mathcal{H}_{penalita})$$
 	\item $\lambda < 1$: Questo caso è peggiore del precedente, in quanto la penalità ha una influenza sul risultato finale minore di quella che avrebbe senza Lagrangiano. Risultato incorretto.
 	\item $\lambda > 1$:in questo caso si ottiene un risultato corretto (per questo particolare problema! Il Lagrangiano corretto varia da problema a problema). Infatti non è più possibile individuare una istanza in cui una soluzione che esclude archi risulta più conveniente di una soluzione che li include tutti.
 \end{itemize}
+\newpage
 \subsection{F.5}
 \label{SEC:F5}
 \emph{Nell’ambito della riduzione \textbf{Max2SAT} $\leq_P$ \textbf{QUBO}, descrivere i tratti fondamentali del processo che trasforma un’istanza del primo problema in una del secondo.}
 
 Avendo la possibilità di risolvere velocemente problemi \textbf{QUBO} viene subito in mente di risolvere \textbf{SAT}, vediamo la risoluzione di un'altra versione di \textbf{SAT}, più adatta ad essere ridotta.
 \begin{definition}
-	Sia data una formula proposizionale $f \in pf$ costituita da una congiunzione di clausole ciascuna con almeno un letterale ma non più di due e dato un $k \in \mathbb{N}$, esiste un'assegnazione di valori di verità alle variabili in $FV(f)$ che soddisfa almeno k clausole di f.
+	Sia data una formula proposizionale $f \in pf$ costituita da una congiunzione di clausole ciascuna con almeno un letterale ma non più di due e dato un $k \in \mathbb{N}$, esiste un'assegnazione di valori di verità alle variabili ($\varphi $) in $FV(f)$ che soddisfa almeno k clausole di f.
 \end{definition}
 Questo problema decisionale può essere trasformato in un problema di ottimizzazione la cui richiesta è trovare l'assegnazione di valori che rende vere il maggior numero di clausole di $f$.
 $$ trovare \; \varphi^* \; per \; cui \; \{C \vert C \in f,  \Phi _ {\varphi^*}(c) = true \} \text{\textit{ è il massimo }}$$
@@ -1697,8 +1698,15 @@ L'idea per ridurre \textbf{Max2SAT} a \textbf{QUBO} è la solita: individuare un
 		Questo \textit{Hamiltoniano} come ci si potrebbe aspettare equivale all' operatore "and"
 	\item $F(C_1,...,C_n) = \sum_{i=1}^n F(C_i)$. Per ricondurci alla minimizzazione a cui stiamo puntano è necessario sommare tutte le clausole in modo da ottenere l' "energia" della formula completa.
 \end{enumerate}
-%TODO: Esempio? prendo quello del prof? se lo metto lo riscrivo in latex
-%TODO: le due "proprietà" di ruben (Video)
+Questa trasformazione gode di due proprietà che la rendono adatta alla riduzione \textbf{Max2SAT} $\leq_P$ \textbf{QUBO}.Infatti:
+\begin{align*}
+\forall C \in \{\lvert l \rvert \lvert l_1 l_2 \rvert\}, \varphi \qquad \Phi_{\varphi}(C) = 1 \Rightarrow \varphi(F(C)) = 0 \\ 
+\forall C \in \{\lvert l \rvert \lvert l_1 l_2 \rvert\}, \varphi \qquad \Phi_{\varphi}(C) = 0 \Rightarrow \varphi(F(C)) = 1 
+\end{align*}
+Cioè se l'assegnazione di valori $\varphi$ soddisfa la la clausola il valore del relativo \textit{Hamiltoniano} è $0$, cioè fornisce energia minima; viceversa se $\varphi$ non soffisfa la clausola otteniamo un valore di energia dell' \textit{Hamiltoniano} pari ad uno.
+In questo modo ricavare il numero di clausole di $f$ soddisfatte dall'assegnazione $\varphi$ è la stessa cosa che contare il numero di clausole per cui $\varphi(F(f)) = 0$.
+Minimizzando il numero di clausole per cui $\varphi(F(f)) = 0$ (problema \textbf{QUBO}) otterremo il maggior numero di clausole di $f$ rese vere, e quindi una \textit{risposta} a \textbf{Max2SAT}.\\
+\includegraphics[width = 1\textwidth]{./img/F5.png}
 \subsection{F.6}
 \emph{Nell’ambito della riduzione di un generico problema in \textbf{PLI} a \textbf{QUBO}, descrivere i tratti fondamentali del processo che trasforma un’istanza del primo problema in una del secondo, evidenziando i meccanismi di trasformazione dei vincoli in penalità.}
 
@@ -1706,11 +1714,10 @@ L'idea per ridurre \textbf{Max2SAT} a \textbf{QUBO} è la solita: individuare un
 Per trasformare un generico problema in un problema \textbf{QUBO} innanzitutto bisogna esprimerlo come problema di ottimizzazione, quindi ottenere un problema composto da una \textit{funzione obbiettivo} da minimizzare e dei \textit{vincoli}.
 La prima operazione da svolgere è identificare un \textit{Hamiltoniano obbiettivo} $\mathcal{H}_{obb}$ la cui minimizzazione corrisponde alla soluzione del problema di partenza.
 La trasformazione di un generico problema in un problema di ottimizzazione è differente per ogni problema ma in generale può succedere che la trasformazione richieda l'elevamento al quadrato della \textit{funzione obbiettivo}, ad esempio il caso in sezione \ref{SEC:F1} richiede di identificare una soluzione che fornisce un preciso valore (la sommatoria deve essere azzerata), operazione non necessaria quando il problema è già la ricerca di un minimo o un massimo (ad esempio \imp{KP}).\\
-Tale elevazione è necessaria in quanto permette di impostare il valore che si vuole ottenere come vertice di una equazione parabolica, in modo che la minimizzazione dell'equazione fornisca proprio quel valore.
-\newpage
+Tale elevazione è necessaria in quanto permette di impostare il valore che si vuole ottenere come vertice di una equazione parabolica, in modo che la minimizzazione dell'equazione fornisca proprio quel valore.\\
 \begin{figure*}[!ht]
                 \centering
-                \includegraphics[width = 0.5\textwidth]{./img/F1.png}
+                \includegraphics[width = 0.35\textwidth]{./img/F1.png}
                 \caption{Esempio del problema trattato in F1} \label{FIG:F1_2}
 \end{figure*}
 Situazione più semplice si verifica quando il problema è già di minimizzazione o massimizzazione (ad esempio \imp{KP}).
