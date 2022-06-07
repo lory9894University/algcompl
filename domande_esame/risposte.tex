@@ -1678,11 +1678,11 @@ L'idea per ridurre \textbf{Max2SAT} a \textbf{QUBO} è la solita: individuare un
 	\item $F(0)=0$. Costante. 
 	\item $F([x])=1-x$ in quanto desideriamo ottenere 0 quando la clausola è soddisfatta.
 	\item $F([x,y])= 1-x-y +xy$. Hamiltoniano per l'operazione logica "OR", calcolata tramite la tabella di verità come in sezione \ref{SEC:F4}.
-	\item $F([x,\hat y])= y - xy$. negando il valore di $y$ nell' eq precedente si ottiene $1-x-(1-y)+x(1-y)$ che svolgendo i calcoli riporta al valore mostrato.
-		Notiamo anche che questo \textit{Hamiltoniano} corrisponde all'operazione logica \textit{implicazione}, infatti $F([x,\hat y])$ equivale a $ y \Rightarrow x$.
-	\item $F([x,\hat y])= x - xy$. negando il valore di $x$ nell' eq 4 si ottiene $1-(1-x)-y+y(1-x)$ che svolgendo i calcoli riporta al valore mostrato.
+	\item $F([x,\overline y])= y - xy$. negando il valore di $y$ nell' eq precedente si ottiene $1-x-(1-y)+x(1-y)$ che svolgendo i calcoli riporta al valore mostrato.
+		Notiamo anche che questo \textit{Hamiltoniano} corrisponde all'operazione logica \textit{implicazione}, infatti $F([x,\overline y])$ equivale a $ y \Rightarrow x$.
+	\item $F([\overline x, y])= x - xy$. negando il valore di $x$ nell' eq 4 si ottiene $1-(1-x)-y+y(1-x)$ che svolgendo i calcoli riporta al valore mostrato.
 		Anche questo equivale \textit{Hamiltoniano} equivale all'implicazione ma ribaltata.
-	\item $F([x,\hat y])= xy$. negando il valore di $y$ e di $x$ nell' eq 4 si ottiene $1-(1-x)-(1-y)+(1-x)(1-y)$ che svolgendo i calcoli riporta al valore mostrato.
+	\item $F([\overline x,\overline y])= xy$. negando il valore di $y$ e di $x$ nell' eq 4 si ottiene $1-(1-x)-(1-y)+(1-x)(1-y)$ che svolgendo i calcoli riporta al valore mostrato.
 		Questo \textit{Hamiltoniano} come ci si potrebbe aspettare equivale all' operatore "and"
 	\item $F(C_1,...,C_n) = \sum_{i=1}^n F(C_i)$. Per ricondurci alla minimizzazione a cui stiamo puntano è necessario sommare tutte le clausole in modo da ottenere l' "energia" della formula completa.
 \end{enumerate}
@@ -1728,7 +1728,7 @@ Può sempbrare che l'equazione codifichi una tabella di verità esattamente oppo
 Una volta ottenuto i vincoli in forma numerica possiamo notare che possono appartenere a due categorie, vincoli espressi come equazioni o come disequazioni.\\
 Per i primi il corrispondente \textit{Hamiltoniano penalità} si può ottenere facilmente sottraendo il valore a destra dell'uguale ad entrambi i membri.
 $$\text{equazione: } 2x_1 + 3x_2 + 2x_3 = 5 $$
-$$\text{vincolo: } 2x_1 + 3x_2 + 2x_3 -5 $$
+$$\text{vincolo: } (2x_1 + 3x_2 + 2x_3 -5)^2 $$
 Se invece i vincolo sono disequazioni bisogna fare affidamento su variabili di \textit{slack}.\\
 L'idea è quella di introdurre una variabile che possa assumere un intervallo di valori e che "sposti" il valore da raggiungere fino allo zero.
 Se ad esempio il vincolo è $2x_1 + 3x_2 + x_3 \geq 3 $ si vuole arrivare ad un vincolo del tipo $2x_1 + 3x_2 + x_3 - S =3 $ per poter compiere la stessa operazione compiuta nel caso di vincoli espressi da equazioni.\\
@@ -1752,7 +1752,7 @@ Ci sono studi riguardo al valore che dovrebbe assumere a seconda del problema, m
 %quadratica unconstraint binary models.
 \emph{Nell’ambito della riduzione \textbf{KP} $\leq_P$ \textbf{QUBO}, descrivere i tratti fondamentali della processo che trasforma un'istanza del primo problema in una del secondo.}
 \begin{definition} 
-	Dati i “pesi” $(w_1, . . . , w_n)$, i “profitti” $(p_1, . . . , p_n)$, ed una “capacità massima” $C$, cercare un'opportuna istanza $x^* = (x^*_1, . . . , x^*_n)$ di $x = (x1, . . . , xn)$ nell'insieme  $\{0, 1\}^n$ in modo che:
+	Dati i “pesi” $(w_1, . . . , w_n)$, i “profitti” $(p_1, . . . , p_n)$, ed una “capacità massima” $C$, cercare un'opportuna istanza $x^* = (x^*_1, . . . , x^*_n)$ di $x = (x1, . . . , x_n)$ nell'insieme  $\{0, 1\}^n$ in modo che:
 \begin{align*}
         \text{maximize} \sum_{k=1}^n p_kx_k&\\
 	\text{subject to} \sum_{k=1}^n w_kx_k&\leq C\\
@@ -1763,7 +1763,7 @@ Il procedimento è sempre lo stesso, partendo da un problema di minimizzazione b
 
 Nel caso di \textbf{KP} la funzione obbiettivo è una massimizzazione, quindi per trasformarla in un \textit{Hamiltoniano obbiettivo} è sufficiente cambiarla di segno.
 Quindi $max(\sum_{k=1}^{n} p_kx_k )$ diventa $min(-\sum_{k=1}^{n} p_kx_k )$.\\
-Invece il vincolo $\text{subject to} \sum_{k=1}^n w_kx_k \leq C$ essendo una disequazione va trasformato con l'ausilio di una o più variabili di \textit{slack} il cui scopo è spiegato in sezione \ref{SEC:F6}.
+Invece il vincolo $\text{subject to} \sum_{k=1}^n w_kx_k \leq C$ essendo una disequazione va trasformato con l'ausilio di una variabile di \textit{slack} il cui scopo è spiegato in sezione \ref{SEC:F6}.
 \textbf{KP} si presta molto bene all'individuazione delle variabili di slack in quanto è possibile applicare \textit{Greedy-split} per trovare una prima approssimazione del risultato da ottenere.
 Ma oltre ad ottenere una approssimazione del risultato \textit{Greedy-split} ci permette anche di individuare un valore minimo dello spazio occupato, abbiamo la certezza che una soluzione ottimale occuperà più spazio di $z^{G_{split}}$.\\
 Il vincolo $\text{\textit{subject to}} \sum_{k=1}^n w_kx_k \leq C$ può quindi essere espresso tramite l'equazione: $\sum_{k=1}^n w_kx_k + S=C$.
@@ -1775,7 +1775,7 @@ In ultimo bisogna impostare il \textit{Lagrangiano}, molto dipendente dai dati. 
 
 Ad esempio il problema $KP = ((10,10,12,18),(2,4,6,9),16)$ ha come funzione obbiettivo: $min(10x_0 + 10x_1 + 10x_2 + 18x_3)$.
 Grazie a \textit{Greedy-split} possiamo affermare che l'occupazione minima sarà sicuramente $15$ e possiamo inserire la variabile di slack $s$ di conseguenza.
-Essendo $16 - 150 = 1$ (abbiamo un $\leq$ quindi calcoliamo massimo valore - minimo valore) basta una sola variabile binaria, e grazie a questa si può esprimere il vincolo $2*x_1 +4*x_2 +6*x_3 +9*x_4 <= 16$ come $(2*x1 + 4*x2 +6*x3 +9*x4 + s -16)^2 $\\ %questo va al quadrato, non ci vanno bene i risultati sopra il 16 ma neanche quelli sotto il 15, se non mettessi il quadrato i risultati sotto il 15 sarebbero super favoriti perché sommerei un valore negativo alla funzione obbiettivo  
+Essendo $16 - 15 = 1$ (abbiamo un $\leq$ quindi calcoliamo massimo valore - minimo valore) basta una sola variabile binaria, e grazie a questa si può esprimere il vincolo $2*x_1 +4*x_2 +6*x_3 +9*x_4 <= 16$ come $(2*x1 + 4*x2 +6*x3 +9*x4 + s -16)^2 $\\ %questo va al quadrato, non ci vanno bene i risultati sopra il 16 ma neanche quelli sotto il 15, se non mettessi il quadrato i risultati sotto il 15 sarebbero super favoriti perché sommerei un valore negativo alla funzione obbiettivo  
 Infine l'esperienza e lo studio di \emph{KP} hanno identificato un valore ottimale del Lagrangiano in un intervallo che varia tra il 70\% ed il 150\% del valore del polinomio da minimizzare.
 Il problema completo risulta quindi: $$ min((10x_0 + 10x_1 + 10x_2 + 18x_3) + \lambda  ((2x_0 + 4x_1 +6x_2 +9x_3 + s -16 )^2)$$
 
